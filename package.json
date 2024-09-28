@@ -1,35 +1,16 @@
+
 {
-  "name": "kodack",
-  "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/krsachin9696/kodack.git"
-  },
-  "author": "sachin, lakshya",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/krsachin9696/kodack/issues"
-  },
-  "homepage": "https://github.com/krsachin9696/kodack#readme",
-  "description": "",
-  "devDependencies": {
-    "husky": "^9.1.6",
-    "lint-staged": "^15.2.10"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npx lint-staged"
-    }
   },
   "lint-staged": {
     "server/**/*.js": [
       "npm --prefix server run format",
       "npm --prefix server run lint"
     ]
+  },
+  "devDependencies": {
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
   }
 }
