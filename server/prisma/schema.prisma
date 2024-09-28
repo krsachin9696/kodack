@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userID       String    @id @default(uuid()) @db.Uuid
+  name         String    @db.VarChar(100)
+  username     String    @db.VarChar(50)
+  email        String    @unique @db.VarChar(100)
+  passwordHash String?   @db.VarChar(255)
+  tokens       Json?     @db.Json
+  otp          String?   @db.VarChar(6)
+  otpExpiresAt DateTime? @db.Timestamp(6)
+  otpVerified  Boolean   @default(false)
+  googleId     String?   @unique @db.VarChar(255)
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime  @updatedAt @db.Timestamp(6)
+
+  // One-to-many relation with List model
+  lists List[] @relation("UserLists")
+
+  // One-to-many relation with List model for created and updated lists
+  createdLists List[] @relation("ListCreatedBy")
+  updatedLists List[] @relation("ListUpdatedBy")
+
+  // One-to-many relation with Question model for created and updated questions
+  createdQuestions Question[] @relation("CreatedQuestions")
+  updatedQuestions Question[] @relation("UpdatedQuestions")
+
+  // One-to-many relation with UserQuestionStatus model
+  userQuestionStatuses        UserQuestionStatus[] @relation("UserQuestionStatuses")
+  UserQuestionStatusCreatedBy UserQuestionStatus[] @relation("UserQuestionStatusCreatedBy")
+  UserQuestionStatusUpdatedBy UserQuestionStatus[] @relation("UserQuestionStatusUpdatedBy")
+}
+
+model List {
+  listID     String   @id @default(uuid()) @db.Uuid
+  name       String   @db.VarChar(150)
+  visibility Int
+  isDeleted  Boolean  @default(false)
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @updatedAt @db.Timestamp(6)
+
+  // Foreign key field for the relation with User
+  userID      String @db.Uuid
+  updatedById String @db.Uuid
+  createdById String @db.Uuid
+
+  // Relation to User model
+  user      User @relation("UserLists", fields: [userID], references: [userID])
+  createdBy User @relation("ListCreatedBy", fields: [createdById], references: [userID])
+  updatedBy User @relation("ListUpdatedBy", fields: [updatedById], references: [userID])
+
+  // Many-to-many relation with Question model
+  questions ListQuestion[]
+
+  // One-to-many relation with UserQuestionStatus model
+  UserQuestionStatus UserQuestionStatus[]
+
+  // Many-to-many relation with Tag model
+  tags ListTag[]
+}
+
+model Question {
+  questionID String   @id @default(uuid()) @db.Uuid
+  title      String   @db.VarChar(255)
+  link       String   @db.Text
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @updatedAt @db.Timestamp(6)
+
+  // Foreign key fields for createdBy and updatedBy
+  createdById String @db.Uuid
+  updatedById String @db.Uuid
+
+  // Relations to User model for createdBy and updatedBy
+  createdBy User @relation("CreatedQuestions", fields: [createdById], references: [userID])
+  updatedBy User @relation("UpdatedQuestions", fields: [updatedById], references: [userID])
+
+  // Many-to-many relation with List model
+  lists ListQuestion[]
+
+  UserQuestionStatus UserQuestionStatus[]
+}
+
+model ListQuestion {
+  id         String  @id @default(uuid()) @db.Uuid
+  listID     String  @db.Uuid
+  questionID String  @db.Uuid
+  isStarred  Boolean @default(false)
+  isDeleted  Boolean @default(false)
+
+  // Relations
+  list     List     @relation(fields: [listID], references: [listID])
+  question Question @relation(fields: [questionID], references: [questionID])
+
+  // Composite unique constraint
+  @@unique([listID, questionID])
+}
+
+model UserQuestionStatus {
+  id          String   @id @default(uuid()) @db.Uuid
+  userID      String   @db.Uuid
+  listID      String   @db.Uuid
+  questionID  String   @db.Uuid
+  done        Boolean  @default(false)
+  important   Boolean  @default(false)
+  review      Boolean  @default(false)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+  createdById String   @db.Uuid
+  updatedById String   @db.Uuid
+
+  // Relations
+  user      User     @relation("UserQuestionStatuses", fields: [userID], references: [userID])
+  list      List     @relation(fields: [listID], references: [listID])
+  question  Question @relation(fields: [questionID], references: [questionID])
+  createdBy User     @relation("UserQuestionStatusCreatedBy", fields: [createdById], references: [userID])
+  updatedBy User     @relation("UserQuestionStatusUpdatedBy", fields: [updatedById], references: [userID])
+
+  // Composite unique constraint
+  @@unique([userID, listID, questionID])
+}
+
+model Tag {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String    @db.VarChar(50)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+
+  // Many-to-many relation with List model
+  lists ListTag[]
+}
+
+model ListTag {
+  id       String @id @default(uuid()) @db.Uuid
+  listID   String @db.Uuid
+  tagID    String @db.Uuid
+
+  // Relations
+  list List @relation(fields: [listID], references: [listID])
+  tag  Tag  @relation(fields: [tagID], references: [id])
+
+  // Composite unique constraint
+  @@unique([listID, tagID])
+}
