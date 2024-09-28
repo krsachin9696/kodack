@@ -11,8 +11,8 @@ const signup = async (req, res) => {
     const result = await signupUser(name, username, email);
     res.status(201).json(result);
   } catch (error) {
-        console.log(error)
-    res.status(400).json({ error: error.message })
+    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -68,10 +68,4 @@ const logout = (req, res) => {
   });
 };
 
-export {
-  signup,
-  verifyOtp,
-  setupPassword,
-  login,
-  logout,
-};
+export { signup, verifyOtp, setupPassword, login, logout };
