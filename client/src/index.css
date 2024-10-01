@@ -1,27 +1,15 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
+/* 
+html, body {
+  height: 100%;
   margin: 0;
-  display: flex;
-  justify-content: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+  padding: 0;
+} */
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+:root {
+  height: 100%;
+  background-image: radial-gradient(at 70% 51%, rgba(0, 41, 82, 0.5), rgb(9, 11, 17));
+  background-size: cover;
+  /* background-repeat: no-repeat; */
+  background-color: black;
+  color: rgba(255, 255, 255, 0.87);
 }

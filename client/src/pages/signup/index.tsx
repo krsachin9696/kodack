@@ -1,6 +1,8 @@
 const Signup = () => {
   return (
-    <>Signup</>
+    <>
+      Signup
+    </>
   )
 }
 
