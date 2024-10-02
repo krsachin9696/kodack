@@ -1,37 +1,23 @@
-import { Button, TextField, Typography } from '@mui/material'
-import { Google } from '@mui/icons-material'
-import { defaultStyles } from '../../constants/defaultStyles'
-import { Link } from 'react-router-dom'
+import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from '@mui/material';
+import { Google, Visibility, VisibilityOff } from '@mui/icons-material';
+import { defaultStyles } from '../../constants/defaultStyles';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const Signup = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
   return (
     <div className="min-h-screen flex px-[10%]">
       {/* Left Section */}
-      <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center" >
-      <h1 className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10">KODACK</h1>
-        {/* <div className="ml-10">
-          <h1 className="text-4xl mb-10 text-blue-400">KODACK</h1>
-          <div className="mb-8">
-            <h3 className="text-xl flex items-center">
-              🔧 Access master list of essential LeetCode problems
-            </h3>
-          </div>
-          <div className="mb-8">
-            <h3 className="text-xl flex items-center">
-              🛠 Create and customize personal problem lists.
-            </h3>
-          </div>
-          <div className="mb-8">
-            <h3 className="text-xl flex items-center">
-              👍 Track progress on problem-solving.
-            </h3>
-          </div>
-          <div>
-            <h3 className="text-xl flex items-center">
-              ✨ Share and collaborate on curated lists.
-            </h3>
-          </div>
-        </div> */}
+      <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
+        <h1 className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10">KODACK</h1>
       </div>
 
       {/* Right Section */}
@@ -47,24 +33,37 @@ const Signup = () => {
             label="Email"
             variant="outlined"
             fullWidth
-            // margin="normal"
             sx={defaultStyles.inputStyles}
           />
           <TextField
             label="Username"
             variant="outlined"
             fullWidth
-            // margin="normal"
             sx={defaultStyles.inputStyles}
           />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            // margin="normal"
-            sx={defaultStyles.inputStyles}
-          />
+
+          <FormControl variant="outlined" fullWidth sx={defaultStyles.inputStyles}>
+            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    color='primary'
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+            />
+          </FormControl>
+
           <Button
             fullWidth
             variant="contained"
@@ -87,7 +86,7 @@ const Signup = () => {
           </Button>
 
           <div className="mt-4 text-center text-white">
-            Already have an account?{" "}
+            Already have an account?{' '}
             <Link to="/login" className="text-blue-400 hover:underline">
               Log in
             </Link>
@@ -95,7 +94,7 @@ const Signup = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Signup
+export default Signup;

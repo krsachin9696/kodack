@@ -1,15 +1,24 @@
-import { Button, TextField, Typography } from '@mui/material'
-import { Google } from '@mui/icons-material'
-import { defaultStyles } from '../../constants/defaultStyles'
-import { Link } from 'react-router-dom'
+import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from '@mui/material';
+import { Google, VisibilityOff, Visibility } from '@mui/icons-material';
+import { defaultStyles } from '../../constants/defaultStyles';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
   return (
     <div className="min-h-screen flex px-[10%]">
       {/* Left Section */}
-      <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center" >
-      <h1 className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10">KODACK</h1>
-        {/* <div className="ml-10">
+      <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
+        <h1 className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10">KODACK</h1>
+         {/* <div className="ml-10">
           <h1 className="text-4xl mb-10 text-blue-400">KODACK</h1>
           <div className="mb-8">
             <h3 className="text-xl flex items-center">
@@ -47,17 +56,31 @@ const Login = () => {
             label="Email"
             variant="outlined"
             fullWidth
-            // margin="normal"
             sx={defaultStyles.inputStyles}
           />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            // margin="normal"
-            sx={defaultStyles.inputStyles}
-          />
+
+          <FormControl variant="outlined" fullWidth sx={defaultStyles.inputStyles}>
+            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    color='primary'
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+            />
+          </FormControl>
+
           <div className="text-right">
             <Link to="/forgot-password" className="text-blue-400 hover:underline">
               Forgot password?
@@ -71,9 +94,11 @@ const Login = () => {
             className="mt-4 mb-4"
             sx={{ padding: 2 }}
           >
-            log in
+            Log in
           </Button>
+
           <div className="mt-4 text-center text-white">or</div>
+
           <Button
             fullWidth
             variant="outlined"
@@ -85,7 +110,7 @@ const Login = () => {
           </Button>
 
           <div className="mt-4 text-center text-white">
-            New user?{" "}
+            New user?{' '}
             <Link to="/signup" className="text-blue-400 hover:underline">
               Sign up
             </Link>
@@ -93,7 +118,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
