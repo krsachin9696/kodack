@@ -1,15 +1,15 @@
-import { createBrowserRouter } from 'react-router-dom';
-import Contact from '../pages/contact';
-import Dashboard from '../pages/dashboard';
-import Login from '../pages/login';
-import Signup from '../pages/signup';
+import { createBrowserRouter } from 'react-router-dom'
+import Contact from '../pages/contact'
+import Dashboard from '../pages/dashboard'
+import Login from '../pages/login'
+import Signup from '../pages/signup'
 // import AuthLayout from '../layouts/AuthLayout';
-import ProtectedRoute from '../components/base/protectedRoutes';
-import UnprotectedRoute from '../components/base/unprotectRoute';
+import ProtectedRoute from '../components/base/protectedRoutes'
+import UnprotectedRoute from '../components/base/unprotectRoute'
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <ProtectedRoute />,
     children: [
       {
@@ -18,24 +18,24 @@ export const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "contact",
+        path: 'contact',
         element: <Contact />,
       },
     ],
   },
   {
-    path: "/",
+    path: '/',
     element: <UnprotectedRoute />,
     children: [
       {
         index: true,
-        path: "login",
+        path: 'login',
         element: <Login />,
       },
       {
-        path: "signup",
+        path: 'signup',
         element: <Signup />,
       },
     ],
   },
-]);
+])

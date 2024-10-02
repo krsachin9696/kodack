@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 interface ServiceState {
   isAuthenticated: boolean
-  user: null 
+  user: null
 }
 
 interface AuthServicesState {

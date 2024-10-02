@@ -1,5 +1,6 @@
-import { Button, TextField, Typography } from '@mui/material';
-import { Google } from '@mui/icons-material';
+import { Button, TextField, Typography } from '@mui/material'
+import { Google } from '@mui/icons-material'
+import { defaultStyles } from '../../constants/defaultStyles'
 
 const Login = () => {
   return (
@@ -9,23 +10,34 @@ const Login = () => {
         <div className="ml-10">
           <h1 className="text-4xl mb-10 text-blue-400">KODACK</h1>
           <div className="mb-8">
-            <h3 className="text-xl flex items-center">🔧 Access master list of essential LeetCode problems</h3>
+            <h3 className="text-xl flex items-center">
+              🔧 Access master list of essential LeetCode problems
+            </h3>
           </div>
           <div className="mb-8">
-            <h3 className="text-xl flex items-center">🛠 Create and customize personal problem lists.</h3>
+            <h3 className="text-xl flex items-center">
+              🛠 Create and customize personal problem lists.
+            </h3>
           </div>
           <div className="mb-8">
-            <h3 className="text-xl flex items-center">👍 Track progress on problem-solving.</h3>
+            <h3 className="text-xl flex items-center">
+              👍 Track progress on problem-solving.
+            </h3>
           </div>
           <div>
-            <h3 className="text-xl flex items-center">✨ Share and collaborate on curated lists.</h3>
+            <h3 className="text-xl flex items-center">
+              ✨ Share and collaborate on curated lists.
+            </h3>
           </div>
         </div>
       </div>
 
       {/* Right Section */}
       <div className="flex w-full md:w-1/2 justify-center items-center">
-        <div className="p-10 rounded-lg w-11/12 max-w-lg" style={{ border: '1px solid rgba(51, 60, 77, 0.6)' }}>
+        <div
+          className="p-10 rounded-lg w-11/12 max-w-lg"
+          style={{ border: '1px solid rgba(51, 60, 77, 0.6)' }}
+        >
           <Typography variant="h5" component="h1" className="text-white mb-4">
             Login
           </Typography>
@@ -34,11 +46,7 @@ const Login = () => {
             variant="outlined"
             fullWidth
             margin="normal"
-            slotProps={{
-              input: {
-                style: { color: 'white' }, // Change text color to white
-              },
-            }}
+            sx={defaultStyles.inputStyles}
           />
           <TextField
             label="Password"
@@ -46,13 +54,14 @@ const Login = () => {
             variant="outlined"
             fullWidth
             margin="normal"
-            slotProps={{
-              input: {
-                style: { color: 'white' }, // Change text color to white
-              },
-            }}
+            sx={defaultStyles.inputStyles}
           />
-          <Button fullWidth variant="contained" color="primary" className="mt-4 mb-4">
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            className="mt-4 mb-4"
+          >
             Login
           </Button>
           <div className="mt-4 text-center text-white">or</div>
@@ -67,7 +76,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

@@ -10,7 +10,7 @@ import { store } from './store/index.ts'
 const theme = createTheme({
   // palette: {
   //   primary: {
-  //     main: Colors.PRIMARY,
+  //     main: "#FFFFFF",
   //   },
   // },
 })
@@ -20,7 +20,7 @@ createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         {/* <BrowserRouter> */}
-          <App />
+        <App />
         {/* </BrowserRouter> */}
       </ThemeProvider>
     </Provider>
