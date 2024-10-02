@@ -5,7 +5,7 @@ export const defaultStyles = {
         borderColor: 'white', // Default border color
       },
       '&:hover fieldset': {
-        borderColor: 'white', // Border color when hovered
+        borderColor: '#1976d2', // Border color when hovered
       },
       // '&.Mui-focused fieldset': {
       //   borderColor: 'white', // Border color when focused

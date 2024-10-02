@@ -1,13 +1,15 @@
 import { Button, TextField, Typography } from '@mui/material'
 import { Google } from '@mui/icons-material'
 import { defaultStyles } from '../../constants/defaultStyles'
+import { Link } from 'react-router-dom'
 
 const Signup = () => {
   return (
     <div className="min-h-screen flex px-[10%]">
       {/* Left Section */}
-      <div className="hidden md:flex w-1/2 text-white flex-col justify-center p-10">
-        <div className="ml-10">
+      <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center" >
+      <h1 className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10">KODACK</h1>
+        {/* <div className="ml-10">
           <h1 className="text-4xl mb-10 text-blue-400">KODACK</h1>
           <div className="mb-8">
             <h3 className="text-xl flex items-center">
@@ -29,13 +31,13 @@ const Signup = () => {
               ✨ Share and collaborate on curated lists.
             </h3>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Right Section */}
       <div className="flex w-full md:w-1/2 justify-center items-center">
         <div
-          className="p-10 rounded-lg w-11/12 max-w-lg"
+          className="p-10 rounded-lg w-11/12 max-w-lg flex-col space-y-4"
           style={{ border: '1px solid rgba(51, 60, 77, 0.6)' }}
         >
           <Typography variant="h5" component="h1" className="text-white mb-4">
@@ -45,14 +47,14 @@ const Signup = () => {
             label="Email"
             variant="outlined"
             fullWidth
-            margin="normal"
+            // margin="normal"
             sx={defaultStyles.inputStyles}
           />
           <TextField
             label="Username"
             variant="outlined"
             fullWidth
-            margin="normal"
+            // margin="normal"
             sx={defaultStyles.inputStyles}
           />
           <TextField
@@ -60,7 +62,7 @@ const Signup = () => {
             type="password"
             variant="outlined"
             fullWidth
-            margin="normal"
+            // margin="normal"
             sx={defaultStyles.inputStyles}
           />
           <Button
@@ -83,6 +85,13 @@ const Signup = () => {
           >
             Sign in with Google
           </Button>
+
+          <div className="mt-4 text-center text-white">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-400 hover:underline">
+              Log in
+            </Link>
+          </div>
         </div>
       </div>
     </div>
