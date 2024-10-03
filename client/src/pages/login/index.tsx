@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import __login, { LoginDetailsProps } from './services';
 import QueryKeys from '../../constants/queryKeys';
 import { useDispatch } from 'react-redux';
-import { login, logout } from '../../store/authSlice';
+import { login } from '../../store/authSlice';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -51,7 +51,7 @@ const Login = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(); // Trigger the login mutation
+    onLogin(); 
   };
 
   return (
