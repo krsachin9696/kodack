@@ -37,6 +37,7 @@ const setupPassword = async (req, res) => {
 };
 
 const login = (req, res, next) => {
+  console.log('login request', req.body);
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       return res.status(500).json({ error: 'An error occurred during login.' });
@@ -48,7 +49,14 @@ const login = (req, res, next) => {
       if (err) {
         return res.status(500).json({ error: 'Login failed.' });
       }
-      return res.status(200).json({ message: 'Login successful', user });
+
+      const { userID, name, username, email } = user;
+      return res
+        .status(200)
+        .json({
+          message: 'Login successful',
+          user: { userID, name, username, email },
+        });
     });
   })(req, res, next);
 };

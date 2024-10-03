@@ -4,7 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import { ThemeProvider, createTheme } from '@mui/material'
 import { Provider } from 'react-redux'
-import { store } from './store/index.ts'
+import store from './store/index.ts'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()
