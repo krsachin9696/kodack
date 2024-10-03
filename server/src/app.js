@@ -8,6 +8,7 @@ import './config/passport.js';
 import authRoute from './features/auth/authRoutes.js';
 import listRoute from './features/list/listRoutes.js';
 import isAuthenticated from './middlewares/authMiddleware.js';
+import { loggerMiddleware } from './middlewares/loggerMiddleware.js';
 
 const PgSession = connectPgSimple(session);
 
@@ -47,6 +48,8 @@ app.use(
 // Initialize passport and session handling
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(loggerMiddleware)
 
 app.use('/auth', authRoute);
 app.use('/list', listRoute);
