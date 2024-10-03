@@ -51,12 +51,10 @@ const login = (req, res, next) => {
       }
 
       const { userID, name, username, email } = user;
-      return res
-        .status(200)
-        .json({
-          message: 'Login successful',
-          user: { userID, name, username, email },
-        });
+      return res.status(200).json({
+        message: 'Login successful',
+        user: { userID, name, username, email },
+      });
     });
   })(req, res, next);
 };

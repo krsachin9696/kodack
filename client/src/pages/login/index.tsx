@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import __login, { LoginDetailsProps } from './services';
 import QueryKeys from '../../constants/queryKeys';
 import { useDispatch } from 'react-redux';
-import { login } from '../../store/authSlice';
+import { login, logout } from '../../store/authSlice';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +33,6 @@ const Login = () => {
 
       // Dispatch the login action with user data
       dispatch(login(data.data.user));
-
       navigate('/'); // Navigate to the home page after login
     },
     onError: (error) => {

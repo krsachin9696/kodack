@@ -12,9 +12,11 @@ interface AuthState {
   isAuthenticated: boolean;
 }
 
+// Load user from localStorage if available
+const userFromStorage = localStorage.getItem('user');
 const initialState: AuthState = {
-  user: null,
-  isAuthenticated: false,
+  user: userFromStorage ? JSON.parse(userFromStorage) : null,
+  isAuthenticated: !!userFromStorage,
 };
 
 const authSlice = createSlice({
@@ -24,10 +26,14 @@ const authSlice = createSlice({
     login: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
       state.isAuthenticated = true;
+      // Save the user to localStorage
+      // localStorage.setItem('user', JSON.stringify(action.payload));
     },
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      // Remove user from localStorage
+      // localStorage.removeItem('user');
     },
   },
 });
