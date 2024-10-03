@@ -1,4 +1,7 @@
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from '@mui/material';
+import {
+  Button, FormControl, IconButton, InputAdornment, InputLabel,
+  OutlinedInput, TextField, Typography
+} from '@mui/material';
 import { Google, Visibility, VisibilityOff } from '@mui/icons-material';
 import { defaultStyles } from '../../constants/defaultStyles';
 import { Link } from 'react-router-dom';
@@ -6,11 +9,81 @@ import { useState } from 'react';
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [signupInfo, setSignupInfo] = useState({
+    email: '',
+    username: '',
+    password: ''
+  });
+
+  // State for validation errors
+  const [errors, setErrors] = useState({
+    email: '',
+    username: '',
+    password: ''
+  });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSignupInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // Reset errors when user types again
+    setErrors((prev) => ({
+      ...prev,
+      [name]: '',
+    }));
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    let newErrors = { email: '', username: '', password: '' };
+
+    // Email validation (basic regex)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!signupInfo.email) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!emailRegex.test(signupInfo.email)) {
+      newErrors.email = 'Invalid email format';
+      isValid = false;
+    }
+
+    // Username validation
+    if (!signupInfo.username) {
+      newErrors.username = 'Username is required';
+      isValid = false;
+    }
+
+    // Password validation
+    if (!signupInfo.password) {
+      newErrors.password = 'Password is required';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Run validation before proceeding
+    if (validateForm()) {
+      // Proceed with signup logic (e.g., API call)
+      console.log('Signup form is valid', signupInfo);
+    }
   };
 
   return (
@@ -22,46 +95,72 @@ const Signup = () => {
 
       {/* Right Section */}
       <div className="flex w-full md:w-1/2 justify-center items-center">
-        <div
+        <form
           className="p-10 rounded-lg w-11/12 max-w-lg flex-col space-y-4"
           style={{ border: '1px solid rgba(51, 60, 77, 0.6)' }}
+          onSubmit={handleSubmit}
         >
           <Typography variant="h5" component="h1" className="text-white mb-4">
             Sign up
           </Typography>
+
+          {/* Email field */}
           <TextField
             label="Email"
             variant="outlined"
             fullWidth
+            error={!!errors.email}
+            helperText={errors.email}
+            name="email"
+            value={signupInfo.email}
+            onChange={handleChange}
             sx={defaultStyles.inputStyles}
           />
+
+          {/* Username field */}
           <TextField
             label="Username"
             variant="outlined"
             fullWidth
+            error={!!errors.username}
+            helperText={errors.username}
+            name="username"
+            value={signupInfo.username}
+            onChange={handleChange}
             sx={defaultStyles.inputStyles}
           />
 
-          <FormControl variant="outlined" fullWidth sx={defaultStyles.inputStyles}>
-            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+          {/* Password field */}
+          <FormControl fullWidth variant="outlined" sx={defaultStyles.inputStyles}>
+            <InputLabel htmlFor="outlined-adornment-password" error={!!errors.password}>
+              Password
+            </InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
+              error={!!errors.password}
+              value={signupInfo.password}
+              onChange={handleChange}
+              name="password"
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
                     edge="end"
                     color='primary'
                   >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               }
               label="Password"
             />
+            <Typography variant="caption" color="error">
+              {errors.password}
+            </Typography>
           </FormControl>
 
           <Button
@@ -71,10 +170,13 @@ const Signup = () => {
             color="primary"
             className="mt-4 mb-4"
             sx={{ padding: 2 }}
+            type="submit"
           >
             Sign up
           </Button>
+
           <div className="mt-4 text-center text-white">or</div>
+
           <Button
             fullWidth
             variant="outlined"
@@ -91,7 +193,7 @@ const Signup = () => {
               Log in
             </Link>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
