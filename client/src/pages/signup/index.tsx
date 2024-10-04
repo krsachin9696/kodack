@@ -1,36 +1,43 @@
 import {
-  Button, FormControl, IconButton, InputAdornment, InputLabel,
-  OutlinedInput, TextField, Typography
-} from '@mui/material';
-import { Google, Visibility, VisibilityOff } from '@mui/icons-material';
+  Button, CircularProgress, TextField, Typography } from '@mui/material';
+import { Google } from '@mui/icons-material';
 import { defaultStyles } from '../../constants/defaultStyles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import __signup, { SignupDetailsProps } from './services';
+import QueryKeys from '../../constants/queryKeys';
 
 const Signup = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [signupInfo, setSignupInfo] = useState({
+  
+  const [signupInfo, setSignupInfo] = useState<SignupDetailsProps>({
+    name: '',
     email: '',
     username: '',
-    password: ''
   });
-
-  // State for validation errors
+  
+  // Validation error states
   const [errors, setErrors] = useState({
+    name: '',
     email: '',
-    username: '',
-    password: ''
+    username: ''
   });
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const navigate = useNavigate();
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
+  const { mutate: onSignup, status: signupStatus } = useMutation({
+    mutationFn: () => __signup(signupInfo),
+    mutationKey: [QueryKeys.SIGNUP],
+    onSuccess: (data) => {
+      alert("otp sent to your email");
+      console.log("singup response", data);
 
-  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
+      navigate('/');
+    },
+    onError: (error) => {
+      console.error('Error while signing up', error);
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,7 +46,7 @@ const Signup = () => {
       [name]: value,
     }));
 
-    // Reset errors when user types again
+    // Reset the errors when user types again
     setErrors((prev) => ({
       ...prev,
       [name]: '',
@@ -48,9 +55,15 @@ const Signup = () => {
 
   const validateForm = () => {
     let isValid = true;
-    let newErrors = { email: '', username: '', password: '' };
+    let newErrors = { name: '', email: '', username: '' };
 
-    // Email validation (basic regex)
+    // Name validation
+    if (!signupInfo.name) {
+      newErrors.name = 'Name is required';
+      isValid = false;
+    }
+
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!signupInfo.email) {
       newErrors.email = 'Email is required';
@@ -60,15 +73,9 @@ const Signup = () => {
       isValid = false;
     }
 
-    // Username validation
+    // Name validation
     if (!signupInfo.username) {
-      newErrors.username = 'Username is required';
-      isValid = false;
-    }
-
-    // Password validation
-    if (!signupInfo.password) {
-      newErrors.password = 'Password is required';
+      newErrors.username = 'UserName is required';
       isValid = false;
     }
 
@@ -79,10 +86,10 @@ const Signup = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Run validation before proceeding
+    // Run validation before signup
     if (validateForm()) {
-      // Proceed with signup logic (e.g., API call)
-      console.log('Signup form is valid', signupInfo);
+      console.log(signupInfo);
+      onSignup();
     }
   };
 
@@ -104,64 +111,44 @@ const Signup = () => {
             Sign up
           </Typography>
 
+          {/* Name field */}
+          <TextField
+            label="Full Name"
+            variant="outlined"
+            error={!!errors.name}
+            helperText={errors.name}
+            fullWidth
+            name="name"
+            value={signupInfo.name}
+            onChange={handleChange}
+            sx={defaultStyles.inputStyles}
+          />
+
           {/* Email field */}
           <TextField
             label="Email"
             variant="outlined"
-            fullWidth
             error={!!errors.email}
             helperText={errors.email}
+            fullWidth
             name="email"
             value={signupInfo.email}
             onChange={handleChange}
             sx={defaultStyles.inputStyles}
           />
 
-          {/* Username field */}
+          {/* UserName field */}
           <TextField
             label="Username"
             variant="outlined"
-            fullWidth
             error={!!errors.username}
             helperText={errors.username}
+            fullWidth
             name="username"
             value={signupInfo.username}
             onChange={handleChange}
             sx={defaultStyles.inputStyles}
           />
-
-          {/* Password field */}
-          <FormControl fullWidth variant="outlined" sx={defaultStyles.inputStyles}>
-            <InputLabel htmlFor="outlined-adornment-password" error={!!errors.password}>
-              Password
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
-              type={showPassword ? 'text' : 'password'}
-              error={!!errors.password}
-              value={signupInfo.password}
-              onChange={handleChange}
-              name="password"
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    onMouseUp={handleMouseUpPassword}
-                    edge="end"
-                    color='primary'
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-            <Typography variant="caption" color="error">
-              {errors.password}
-            </Typography>
-          </FormControl>
 
           <Button
             fullWidth
@@ -171,8 +158,13 @@ const Signup = () => {
             className="mt-4 mb-4"
             sx={{ padding: 2 }}
             type="submit"
+            disabled={signupStatus === 'pending'}
           >
-            Sign up
+            {signupStatus === 'pending' ? (
+              <CircularProgress sx={{ color: 'white' }} size={20} />
+            ) : (
+              'Sign Up'
+            )}
           </Button>
 
           <div className="mt-4 text-center text-white">or</div>
@@ -184,7 +176,7 @@ const Signup = () => {
             sx={{ padding: 2 }}
             className="mt-4 text-white border-white"
           >
-            Sign in with Google
+            Sign up with Google
           </Button>
 
           <div className="mt-4 text-center text-white">
