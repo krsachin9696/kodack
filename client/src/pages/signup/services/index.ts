@@ -1,4 +1,3 @@
-
 import axios, { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
 
@@ -23,7 +22,9 @@ interface SignupResponseProps {
 export default async function __signup(
   signupDetails: SignupDetailsProps,
 ): Promise<AxiosResponse<SignupResponseProps>> {
-  const response = await axios.post(apis.user.signup, signupDetails, { withCredentials: true });
+  const response = await axios.post(apis.user.signup, signupDetails, {
+    withCredentials: true,
+  });
   return response;
 }
 
@@ -41,9 +42,9 @@ interface OTPVerificationResponse {
 // Interface for Password setup response
 
 interface PasswordDetailsProps {
-  email: string, 
-  password: string,
-  confirmPassword: string,
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 interface PasswordSetupResponse {
   message: string;
@@ -51,23 +52,21 @@ interface PasswordSetupResponse {
 }
 
 // Function to verify OTP
-export async function verifyOTP(otpInfo: OTPInfoProp): Promise<AxiosResponse<OTPVerificationResponse>> {
-  const response = await axios.post(
-    apis.user.verifyOtp,
-    otpInfo,
-    { withCredentials: true }
-  );
+export async function verifyOTP(
+  otpInfo: OTPInfoProp,
+): Promise<AxiosResponse<OTPVerificationResponse>> {
+  const response = await axios.post(apis.user.verifyOtp, otpInfo, {
+    withCredentials: true,
+  });
   return response;
 }
 
 // Function to set up a password after OTP verification
 export async function setupPassword(
-  passwordDetails: PasswordDetailsProps
+  passwordDetails: PasswordDetailsProps,
 ): Promise<AxiosResponse<PasswordSetupResponse>> {
-  const response = await axios.post(
-    apis.user.setupPassword,
-    passwordDetails,
-    { withCredentials: true }
-  );
+  const response = await axios.post(apis.user.setupPassword, passwordDetails, {
+    withCredentials: true,
+  });
   return response;
 }

@@ -1,6 +1,6 @@
 // import { useEffect } from 'react';
 // import { useDispatch } from 'react-redux';
-// import { login } from './store/authSlice'; 
+// import { login } from './store/authSlice';
 import { RouterProvider } from 'react-router-dom';
 import './App.css';
 import { router } from './routes/routes';

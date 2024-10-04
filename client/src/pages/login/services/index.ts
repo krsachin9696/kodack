@@ -21,6 +21,8 @@ interface LoginResponseProps {
 export default async function __login(
   loginDetails: LoginDetailsProps,
 ): Promise<AxiosResponse<LoginResponseProps>> {
-  const response = await axios.post(apis.user.login, loginDetails, { withCredentials: true });
+  const response = await axios.post(apis.user.login, loginDetails, {
+    withCredentials: true,
+  });
   return response;
 }

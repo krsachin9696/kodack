@@ -9,14 +9,16 @@ import { RootState } from '../../store';
 import { logout } from '../../store/authSlice';
 
 const Dashboard = () => {
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated,
+  );
   const user = useSelector((state: RootState) => state.auth.user);
 
   const dispatch = useDispatch();
 
   const handlelogout = () => {
     dispatch(logout());
-  }
+  };
 
   return (
     <div>

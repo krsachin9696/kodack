@@ -1,6 +1,13 @@
 import {
-  Button, CircularProgress, FormControl, IconButton, InputAdornment,
-  InputLabel, OutlinedInput, TextField, Typography
+  Button,
+  CircularProgress,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+  Typography,
 } from '@mui/material';
 import { Google, VisibilityOff, Visibility } from '@mui/icons-material';
 import { defaultStyles } from '../../constants/defaultStyles';
@@ -18,11 +25,11 @@ const Login = () => {
     email: '',
     password: '',
   });
-  
+
   // Validation error states
   const [errors, setErrors] = useState({
     email: '',
-    password: ''
+    password: '',
   });
 
   const dispatch = useDispatch();
@@ -30,11 +37,15 @@ const Login = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
   };
 
-  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseUpPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
   };
 
@@ -42,7 +53,7 @@ const Login = () => {
     mutationFn: () => __login(loginInfo),
     mutationKey: [QueryKeys.LOGIN],
     onSuccess: (data) => {
-      console.log(data, "this is the data");
+      console.log(data, 'this is the data');
 
       // Dispatch the login action with user data
       dispatch(login(data.data.user));
@@ -105,7 +116,9 @@ const Login = () => {
     <div className="min-h-screen flex px-[10%]">
       {/* Left Section */}
       <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
-        <h1 className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10">KODACK</h1>
+        <h1 className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10">
+          KODACK
+        </h1>
       </div>
 
       {/* Right Section */}
@@ -133,8 +146,15 @@ const Login = () => {
           />
 
           {/* Password field */}
-          <FormControl fullWidth variant="outlined" sx={defaultStyles.inputStyles}>
-            <InputLabel htmlFor="outlined-adornment-password" error={!!errors.password}>
+          <FormControl
+            fullWidth
+            variant="outlined"
+            sx={defaultStyles.inputStyles}
+          >
+            <InputLabel
+              htmlFor="outlined-adornment-password"
+              error={!!errors.password}
+            >
               Password
             </InputLabel>
             <OutlinedInput
@@ -152,7 +172,7 @@ const Login = () => {
                     onMouseDown={handleMouseDownPassword}
                     onMouseUp={handleMouseUpPassword}
                     edge="end"
-                    color='primary'
+                    color="primary"
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -166,7 +186,10 @@ const Login = () => {
           </FormControl>
 
           <div className="text-right">
-            <Link to="/forgot-password" className="text-blue-400 hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-blue-400 hover:underline"
+            >
               Forgot password?
             </Link>
           </div>

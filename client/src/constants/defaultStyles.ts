@@ -24,4 +24,4 @@ export const defaultStyles = {
       color: 'white', // Helper text color (if any)
     },
   },
-}
+};
