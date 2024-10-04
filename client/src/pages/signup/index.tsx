@@ -1,11 +1,11 @@
-import { Button, CircularProgress, TextField, Typography } from '@mui/material';
-import { defaultStyles } from '../../constants/defaultStyles';
+import { Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import __signup, { SignupDetailsProps } from './services';
 import { verifyOTP, setupPassword } from './services';
 import QueryKeys from '../../constants/queryKeys';
+import { SignupFields, OtpVerification, PasswordSetup, SubmitButton } from './components';
 
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState<SignupDetailsProps>({
@@ -32,9 +32,8 @@ const Signup = () => {
   const { mutate: onSignup, status: signupStatus } = useMutation({
     mutationFn: () => __signup(signupInfo),
     mutationKey: [QueryKeys.SIGNUP],
-    onSuccess: (data) => {
+    onSuccess: () => {
       alert('OTP sent to your email');
-      console.log(data);
       setStage('otp'); // Move to OTP verification stage
     },
     onError: () => {
@@ -47,7 +46,7 @@ const Signup = () => {
 
   // OTP verification mutation
   const { mutate: onVerifyOTP, status: otpStatus } = useMutation({
-    mutationFn: () => verifyOTP({ email: signupInfo.email, otp: otp }),
+    mutationFn: () => verifyOTP({ email: signupInfo.email, otp }),
     mutationKey: [QueryKeys.VERIFY_OTP],
     onSuccess: () => {
       alert('OTP verified successfully');
@@ -63,8 +62,8 @@ const Signup = () => {
     mutationFn: () =>
       setupPassword({
         email: signupInfo.email,
-        password: password,
-        confirmPassword: confirmPassword,
+        password,
+        confirmPassword,
       }),
     mutationKey: [QueryKeys.SETUP_PASSWORD],
     onSuccess: () => {
@@ -163,120 +162,42 @@ const Signup = () => {
             {stage === 'signup'
               ? 'Sign up'
               : stage === 'otp'
-                ? 'Verify OTP'
-                : 'Set Up Password'}
+              ? 'Verify OTP'
+              : 'Set Up Password'}
           </Typography>
 
           {stage === 'signup' && (
-            <>
-              <TextField
-                label="Full Name"
-                variant="outlined"
-                name="name"
-                value={signupInfo.name}
-                onChange={handleChange}
-                fullWidth
-                error={!!errors.name}
-                helperText={errors.name}
-                sx={defaultStyles.inputStyles}
-              />
-              <TextField
-                label="Email"
-                variant="outlined"
-                name="email"
-                value={signupInfo.email}
-                onChange={handleChange}
-                fullWidth
-                error={!!errors.email}
-                helperText={errors.email}
-                sx={defaultStyles.inputStyles}
-              />
-              <TextField
-                label="Username"
-                variant="outlined"
-                name="username"
-                value={signupInfo.username}
-                onChange={handleChange}
-                fullWidth
-                error={!!errors.username}
-                helperText={errors.username}
-                sx={defaultStyles.inputStyles}
-              />
-            </>
+            <SignupFields
+              signupInfo={signupInfo}
+              errors={errors}
+              onChange={handleChange}
+            />
           )}
 
           {stage === 'otp' && (
-            <>
-              <Typography variant="body1" className="text-white">
-                Email: {signupInfo.email}
-              </Typography>
-              <TextField
-                label="OTP"
-                variant="outlined"
-                value={otp}
-                onChange={handleOTPChange}
-                fullWidth
-                error={!!errors.otp}
-                helperText={errors.otp}
-                sx={defaultStyles.inputStyles}
-              />
-            </>
+            <OtpVerification
+              email={signupInfo.email}
+              otp={otp}
+              errors={errors}
+              onChange={handleOTPChange}
+            />
           )}
 
           {stage === 'password' && (
-            <>
-              <TextField
-                label="Password"
-                variant="outlined"
-                type="password"
-                name="password"
-                value={password}
-                onChange={handlePasswordChange}
-                fullWidth
-                error={!!errors.password}
-                helperText={errors.password}
-                sx={defaultStyles.inputStyles}
-              />
-              <TextField
-                label="Confirm Password"
-                variant="outlined"
-                type="password"
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={handlePasswordChange}
-                fullWidth
-                error={!!errors.confirmPassword}
-                helperText={errors.confirmPassword}
-                sx={defaultStyles.inputStyles}
-              />
-            </>
+            <PasswordSetup
+              password={password}
+              confirmPassword={confirmPassword}
+              errors={errors}
+              onChange={handlePasswordChange}
+            />
           )}
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            size="small"
-            color="primary"
-            sx={{ padding: 2 }}
-            disabled={
-              signupStatus === 'pending' ||
-              otpStatus === 'pending' ||
-              passwordStatus === 'pending'
-            }
-          >
-            {signupStatus === 'pending' ||
-            otpStatus === 'pending' ||
-            passwordStatus === 'pending' ? (
-              <CircularProgress sx={{ color: 'white' }} size={20} />
-            ) : stage === 'signup' ? (
-              'Sign Up'
-            ) : stage === 'otp' ? (
-              'Verify OTP'
-            ) : (
-              'Set Password'
-            )}
-          </Button>
+          <SubmitButton
+            signupStatus={signupStatus}
+            otpStatus={otpStatus}
+            passwordStatus={passwordStatus}
+            stage={stage}
+          />
 
           {stage === 'signup' && (
             <div className="mt-4 text-center text-white">
