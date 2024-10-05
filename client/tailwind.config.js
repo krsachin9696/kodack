@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         oswald: ['Oswald', 'sans-serif'],
+        protest: ['Protest Strike', 'sans-serif'],
       },
     },
   },

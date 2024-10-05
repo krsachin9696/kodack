@@ -116,7 +116,7 @@ const Login = () => {
     <div className="min-h-screen flex px-[10%]">
       {/* Left Section */}
       <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
-        <h1 className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10">
+        <h1 className=" font-protest font-bold text-6xl mb-10 text-blue-400 p-10">
           KODACK
         </h1>
       </div>
