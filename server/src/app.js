@@ -6,7 +6,7 @@ import passport from 'passport';
 import connectPgSimple from 'connect-pg-simple';
 import './config/passport.js';
 import authRoute from './features/auth/authRoutes.js';
-import listRoute from './features/list/listRoutes.js';
+import contactUsRoute from './features/contactUs/contactUsRoutes.js';
 import isAuthenticated from './middlewares/authMiddleware.js';
 import { loggerMiddleware } from './middlewares/loggerMiddleware.js';
 

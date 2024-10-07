@@ -43,6 +43,7 @@ const login = (req, res, next) => {
       return res.status(500).json({ error: 'An error occurred during login.' });
     }
     if (!user) {
+      console.log(info.message, 'user exist hi nhi krta');
       return res.status(401).json({ error: info.message || 'Login failed.' });
     }
     req.login(user, (err) => {
@@ -51,12 +52,10 @@ const login = (req, res, next) => {
       }
 
       const { userID, name, username, email } = user;
-      return res
-        .status(200)
-        .json({
-          message: 'Login successful',
-          user: { userID, name, username, email },
-        });
+      return res.status(200).json({
+        message: 'Login successful',
+        user: { userID, name, username, email },
+      });
     });
   })(req, res, next);
 };

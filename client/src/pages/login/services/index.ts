@@ -6,13 +6,6 @@ export interface LoginDetailsProps {
   password: string;
 }
 
-interface User {
-  userID: string;
-  name: string;
-  username: string;
-  email: string;
-}
-
 interface LoginResponseProps {
   message: string;
   user: User;
@@ -21,6 +14,8 @@ interface LoginResponseProps {
 export default async function __login(
   loginDetails: LoginDetailsProps,
 ): Promise<AxiosResponse<LoginResponseProps>> {
-  const response = await axios.post(apis.user.login, loginDetails, { withCredentials: true });
+  const response = await axios.post(apis.user.login, loginDetails, {
+    withCredentials: true,
+  });
   return response;
 }

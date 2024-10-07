@@ -4,11 +4,21 @@
 
 // export default Dashboard
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { logout } from '../../store/authSlice';
 
 const Dashboard = () => {
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated,
+  );
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const dispatch = useDispatch();
+
+  const handlelogout = () => {
+    dispatch(logout());
+  };
 
   return (
     <div>
@@ -22,6 +32,7 @@ const Dashboard = () => {
       ) : (
         <h2>Please log in to access your dashboard.</h2>
       )}
+      <p onClick={handlelogout}>Logout</p>
     </div>
   );
 };

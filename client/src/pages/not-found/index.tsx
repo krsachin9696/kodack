@@ -6,7 +6,10 @@ const NotFound = () => {
     <div className="min-h-screen flex px-[10%]">
       {/* Left Section */}
       <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
-        <Link to="/" className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10 hover:underline">
+        <Link
+          to="/"
+          className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10 hover:underline"
+        >
           KODACK
         </Link>
       </div>
