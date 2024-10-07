@@ -6,6 +6,7 @@ import passport from 'passport';
 import connectPgSimple from 'connect-pg-simple';
 import './config/passport.js';
 import authRoute from './features/auth/authRoutes.js';
+import contactUsRoute from './features/contactUs/contactUsRoutes.js';
 import isAuthenticated from './middlewares/authMiddleware.js';
 
 const PgSession = connectPgSimple(session);
@@ -49,6 +50,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/auth', authRoute);
+app.use('/contactUs', contactUsRoute);
 
 app.get('/protected', isAuthenticated, (req, res) => {
   res.json({ message: 'This is a protected route.' });
