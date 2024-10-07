@@ -5,9 +5,9 @@ import Dashboard from '../pages/dashboard'
 import Login from '../pages/login'
 import Signup from '../pages/signup'
 // import AuthLayout from '../layouts/AuthLayout';
-import ProtectedRoute from '../components/base/protectedRoutes'
-import UnprotectedRoute from '../components/base/unprotectRoute'
-import NotFound from '../pages/not-found'
+import ProtectedRoute from '../components/base/protectedRoutes';
+import UnprotectedRoute from '../components/base/unprotectRoute';
+import NotFound from '../pages/not-found';
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +46,6 @@ export const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <NotFound/>
-  }
-])
+    element: <NotFound />,
+  },
+]);

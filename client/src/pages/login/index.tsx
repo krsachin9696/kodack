@@ -1,4 +1,14 @@
-import { Button, CircularProgress, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { Google, VisibilityOff, Visibility } from '@mui/icons-material';
 import { defaultStyles } from '../../constants/defaultStyles';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,10 +18,18 @@ import __login, { LoginDetailsProps } from './services';
 import QueryKeys from '../../constants/queryKeys';
 import { useDispatch } from 'react-redux';
 import { login } from '../../store/authSlice';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginInfo, setLoginInfo] = useState<LoginDetailsProps>({
+    email: '',
+    password: '',
+  });
+
+  // Validation error states
+  const [errors, setErrors] = useState({
     email: '',
     password: '',
   });
@@ -21,7 +39,15 @@ const Login = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
   };
 
@@ -29,16 +55,13 @@ const Login = () => {
     mutationFn: () => __login(loginInfo),
     mutationKey: [QueryKeys.LOGIN],
     onSuccess: (data) => {
-      console.log(data, "this is the data");
+      toast.info("Login Successfull");
 
-      // Dispatch the login action with user data
       dispatch(login(data.data.user));
-
-      navigate('/'); // Navigate to the home page after login
+      navigate('/');
     },
-    onError: (error) => {
-      console.log('Error while logging in', error);
-      // You might want to show an error message here
+    onError: (error: AxiosError<ErrorResponseProps>) => {
+      toast.error(error.response?.data?.error);
     },
   });
 
@@ -48,18 +71,55 @@ const Login = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Reset the errors when user types again
+    setErrors((prev) => ({
+      ...prev,
+      [name]: '',
+    }));
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    let newErrors = { email: '', password: '' };
+
+    // Email validation (basic regex)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!loginInfo.email) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!emailRegex.test(loginInfo.email)) {
+      newErrors.email = 'Invalid email format';
+      isValid = false;
+    }
+
+    // Password validation (can add more conditions)
+    if (!loginInfo.password) {
+      newErrors.password = 'Password is required';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(); // Trigger the login mutation
+
+    // Run validation before login
+    if (validateForm()) {
+      onLogin();
+    }
   };
 
   return (
     <div className="min-h-screen flex px-[10%]">
       {/* Left Section */}
       <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
-        <h1 className="font-oswald font-bold text-6xl mb-10 text-blue-400 p-10">KODACK</h1>
+        <h1 className=" font-protest font-bold text-6xl mb-10 text-blue-400 p-10">
+          KODACK
+        </h1>
+        
       </div>
 
       {/* Right Section */}
@@ -72,9 +132,13 @@ const Login = () => {
           <Typography variant="h5" component="h1" className="text-white mb-4">
             Log in
           </Typography>
+
+          {/* Email field */}
           <TextField
             label="Email"
             variant="outlined"
+            error={!!errors.email}
+            helperText={errors.email}
             fullWidth
             name="email"
             value={loginInfo.email}
@@ -82,36 +146,55 @@ const Login = () => {
             sx={defaultStyles.inputStyles}
           />
 
-          <FormControl variant="outlined" fullWidth sx={defaultStyles.inputStyles}>
-            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+          {/* Password field */}
+          <FormControl
+            fullWidth
+            variant="outlined"
+            sx={defaultStyles.inputStyles}
+          >
+            <InputLabel
+              htmlFor="outlined-adornment-password"
+              error={!!errors.password}
+            >
+              Password
+            </InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
-              name="password"
+              error={!!errors.password}
               value={loginInfo.password}
               onChange={handleChange}
+              name="password"
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
                     edge="end"
-                    color='primary'
+                    color="primary"
                   >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               }
               label="Password"
             />
+            <Typography variant="caption" color="error">
+              {errors.password}
+            </Typography>
           </FormControl>
 
           <div className="text-right">
-            <Link to="/forgot-password" className="text-blue-400 hover:underline">
-              Forgot password ?
+            <Link
+              to="/forgot-password"
+              className="text-blue-400 hover:underline"
+            >
+              Forgot password?
             </Link>
           </div>
+
           <Button
             fullWidth
             variant="contained"
@@ -142,7 +225,7 @@ const Login = () => {
           </Button>
 
           <div className="mt-4 text-center text-white">
-            New user ?{' '}
+            New user?{' '}
             <Link to="/signup" className="text-blue-400 hover:underline">
               Sign up
             </Link>

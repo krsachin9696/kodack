@@ -9,4 +9,4 @@ export const colors = {
   ORANGE: '#ED7A27',
   TEXTBLACK: '',
   TEXTGRAY: '#C5C5C5',
-}
+};
