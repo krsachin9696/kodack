@@ -28,6 +28,8 @@ const Signup = () => {
     confirmPassword: '',
   });
 
+  const [isSignUpDisabled, setIsSignUpDisabled] = useState(false);
+
   const navigate = useNavigate();
 
   // Signup mutation
@@ -44,6 +46,7 @@ const Signup = () => {
         ...prev,
         email: 'Signup failed. Please try again.',
       }));
+      setIsSignUpDisabled(true);
     },
   });
 
@@ -58,6 +61,7 @@ const Signup = () => {
     onError: (error: AxiosError<ErrorResponseProps>) => {
       toast.error(error.response?.data?.error);
       setErrors((prev) => ({ ...prev, otp: 'Invalid OTP. Please try again.' }));
+      setIsSignUpDisabled(true);
     },
   });
 
@@ -80,6 +84,7 @@ const Signup = () => {
         ...prev,
         password: 'Error setting up password. Try again.',
       }));
+      setIsSignUpDisabled(true);
     },
   });
 
@@ -87,6 +92,7 @@ const Signup = () => {
     const { name, value } = e.target;
     setSignupInfo((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: '' }));
+    setIsSignUpDisabled(false);
   };
 
   const handleOTPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -202,6 +208,7 @@ const Signup = () => {
             otpStatus={otpStatus}
             passwordStatus={passwordStatus}
             stage={stage}
+            isDisabled={isSignUpDisabled}
           />
 
           {stage === 'signup' && (

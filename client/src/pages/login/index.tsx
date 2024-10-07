@@ -34,6 +34,8 @@ const Login = () => {
     password: '',
   });
 
+  const [isLoginDisabled, setIsLoginDisabled] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -62,6 +64,7 @@ const Login = () => {
     },
     onError: (error: AxiosError<ErrorResponseProps>) => {
       toast.error(error.response?.data?.error);
+      setIsLoginDisabled(true);
     },
   });
 
@@ -77,6 +80,7 @@ const Login = () => {
       ...prev,
       [name]: '',
     }));
+    setIsLoginDisabled(false);
   };
 
   const validateForm = () => {
@@ -203,7 +207,7 @@ const Login = () => {
             className="mt-4 mb-4"
             sx={{ padding: 2 }}
             type="submit"
-            disabled={loginStatus === 'pending'}
+            disabled={isLoginDisabled || loginStatus === 'pending' }
           >
             {loginStatus === 'pending' ? (
               <CircularProgress sx={{ color: 'white' }} size={20} />

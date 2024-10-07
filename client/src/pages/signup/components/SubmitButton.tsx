@@ -5,6 +5,7 @@ interface SubmitButtonProps {
   otpStatus: string;
   passwordStatus: string;
   stage: string;
+  isDisabled: boolean;
 }
 
 const SubmitButton = ({
@@ -12,6 +13,7 @@ const SubmitButton = ({
   otpStatus,
   passwordStatus,
   stage,
+  isDisabled
 }: SubmitButtonProps) => (
   <Button
     type="submit"
@@ -21,6 +23,7 @@ const SubmitButton = ({
     color="primary"
     sx={{ padding: 2 }}
     disabled={
+      isDisabled ||
       signupStatus === 'pending' ||
       otpStatus === 'pending' ||
       passwordStatus === 'pending'

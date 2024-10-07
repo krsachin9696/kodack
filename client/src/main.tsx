@@ -21,6 +21,19 @@ const theme = createTheme({
   //     main: "#FFFFFF",
   //   },
   // },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          '&.Mui-disabled': {
+            backgroundColor: 'gray',
+            opacity: 0.6,
+            color: 'white', // You can change the text color if needed
+          },
+        },
+      },
+    },
+  },
 });
 {
   /* <Provider store={store}>
@@ -41,7 +54,7 @@ createRoot(document.getElementById('root')!).render(
               position="top-right" 
               richColors 
               duration={3000} 
-              theme='dark'
+              // theme='dark'
               icons={{
                 success: <CheckCircleOutlineIcon />,
                 info: <InfoIcon />,
