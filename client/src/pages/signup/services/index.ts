@@ -7,13 +7,6 @@ export interface SignupDetailsProps {
   username: string;
 }
 
-interface User {
-  userID: string;
-  name: string;
-  username: string;
-  email: string;
-}
-
 interface SignupResponseProps {
   message: string;
   user: User;

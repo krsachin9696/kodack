@@ -6,13 +6,6 @@ export interface LoginDetailsProps {
   password: string;
 }
 
-interface User {
-  userID: string;
-  name: string;
-  username: string;
-  email: string;
-}
-
 interface LoginResponseProps {
   message: string;
   user: User;
