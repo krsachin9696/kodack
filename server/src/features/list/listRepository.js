@@ -7,21 +7,18 @@ export const createList = async (data) => {
     name,
     visibility,
     isDeleted,
-    userID, 
+    userID,
     tags: {
-      create: tags.map(tag => ({ tag: { connect: { id: tag } } }))
+      create: tags.map((tag) => ({ tag: { connect: { id: tag } } })),
     },
     createdById: userID,
-    updatedById: userID 
-  }
-
-  console.log(data, "this is data");
+    updatedById: userID,
+  };
 
   return await prisma.list.create({
-    data: listData
+    data: listData,
   });
 };
-
 
 export const getAllLists = async () => {
   return await prisma.list.findMany({ where: { isDeleted: false } });

@@ -1,3 +1,4 @@
+import prisma from '../../config/prismaClient';
 
 const createContactUS = async (req, res) => {
   const { name, email, subject, message } = req.body;
@@ -18,10 +19,14 @@ const createContactUS = async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: 'Form submitted successfully', data: newContactForm });
+    res
+      .status(200)
+      .json({ message: 'Form submitted successfully', data: newContactForm });
   } catch (error) {
     console.error('Error saving contact form:', error);
-    res.status(500).json({ error: 'Failed to submit the form. Please try again later.' });
+    res
+      .status(500)
+      .json({ error: 'Failed to submit the form. Please try again later.' });
   }
 };
 

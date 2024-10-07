@@ -6,7 +6,7 @@ import passport from 'passport';
 import connectPgSimple from 'connect-pg-simple';
 import './config/passport.js';
 import authRoute from './features/auth/authRoutes.js';
-import contactUsRoute from './features/contactUs/contactUsRoutes.js';
+import listRoute from './features/list/listRoutes.js';
 import isAuthenticated from './middlewares/authMiddleware.js';
 import { loggerMiddleware } from './middlewares/loggerMiddleware.js';
 
@@ -50,7 +50,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(loggerMiddleware)
+app.use(loggerMiddleware);
 
 app.use('/auth', authRoute);
 app.use('/list', listRoute);

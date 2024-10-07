@@ -1,3 +1,4 @@
+import logger from '../../utils/logger.js';
 import * as listService from './listServices.js';
 
 export const createList = async (req, res) => {
@@ -8,7 +9,13 @@ export const createList = async (req, res) => {
       return res.status(400).json({ error: 'userID and name are required' });
     }
 
-    const newList = await listService.createList({ userID, name, visibility, isDeleted, tags });
+    const newList = await listService.createList({
+      userID,
+      name,
+      visibility,
+      isDeleted,
+      tags,
+    });
     res.status(201).json(newList);
   } catch (error) {
     console.error(error);
@@ -16,12 +23,12 @@ export const createList = async (req, res) => {
   }
 };
 
-
 export const getAllLists = async (req, res) => {
   try {
     const lists = await listService.getAllLists();
     res.status(200).json(lists);
   } catch (error) {
+    logger.error(error);
     res.status(500).json({ error: 'Failed to retrieve lists' });
   }
 };
@@ -31,6 +38,7 @@ export const updateList = async (req, res) => {
     const updatedList = await listService.updateList(req.params.id, req.body);
     res.status(200).json(updatedList);
   } catch (error) {
+    logger.error(error);
     res.status(500).json({ error: 'Failed to update list' });
   }
 };
@@ -40,6 +48,7 @@ export const deleteList = async (req, res) => {
     await listService.softDeleteList(req.params.id);
     res.status(204).send();
   } catch (error) {
+    logger.error(error);
     res.status(500).json({ error: 'Failed to delete list' });
   }
 };
@@ -49,7 +58,7 @@ export const getListsByUserId = async (req, res) => {
     const lists = await listService.getListsByUserId(req.params.userID);
     res.status(200).json(lists);
   } catch (error) {
-    console.log(error)
+    logger.error(error);
     res.status(500).json({ error: 'Failed to retrieve lists' });
   }
 };
@@ -75,6 +84,7 @@ export const getListDetails = async (req, res) => {
     );
     res.status(200).json({ listDetails, pagination });
   } catch (error) {
+    logger.error(error);
     res.status(500).json({ error: 'Failed to retrieve list details' });
   }
 };
