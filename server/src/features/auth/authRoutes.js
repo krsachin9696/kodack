@@ -22,12 +22,36 @@ authRoute.get(
   passport.authenticate('google', { scope: ['profile', 'email'] }),
 );
 
+// authRoute.get(
+//   '/google/callback',
+//   passport.authenticate('google', {
+//     successRedirect: 'http://localhost:5173/', // Change this to where you want to redirect after success
+//     failureRedirect: 'http://localhost:5173/login', // Redirect to login page on failure
+//   }),
+// );
+
 authRoute.get(
   '/google/callback',
   passport.authenticate('google', {
-    successRedirect: '/protected', // Change this to where you want to redirect after success
-    failureRedirect: '/login', // Redirect to login page on failure
+    successRedirect: 'http://localhost:5173/',
+    failureRedirect: '/login',
   }),
+  async (req, res) => {
+    const user = req.user; // This will have user information from Google
+    console.log(user, 'user');
+
+    const userData = {
+      userID: user.userID, // Assuming `id` is the user's Google ID
+      name: user.name,
+      username: user.email,
+      email: user.email,
+    };
+
+    res.json({
+      message: 'Login Successful',
+      user: userData, // Return the user data
+    });
+  },
 );
 
 export default authRoute;

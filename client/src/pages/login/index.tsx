@@ -116,6 +116,11 @@ const Login = () => {
     }
   };
 
+  const handleGoogleLogin = () => {
+    // window.location.href = `http://localhost:3000/auth/google`;
+    window.open('http://localhost:3000/auth/google', '_self'); // Adjust URL according to your server 
+  };
+
   return (
     <div className="min-h-screen flex px-[10%]">
       {/* Left Section */}
@@ -224,6 +229,7 @@ const Login = () => {
             startIcon={<Google />}
             sx={{ padding: 2 }}
             className="mt-4 text-white border-white"
+            onClick={handleGoogleLogin}
           >
             Sign in with Google
           </Button>

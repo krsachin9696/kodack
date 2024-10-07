@@ -63,7 +63,12 @@ passport.use(
               googleId: profile.id, // Store Google ID for future reference
             },
           });
-          return done(null, newUser);
+
+          const { userID, name, username, email } = newUser;
+          return done(null, {
+            message: 'Login successful',
+            user: { userID, name, username, email },
+          });
         }
       } catch (err) {
         return done(err, false);
@@ -74,6 +79,7 @@ passport.use(
 
 // Serialize user to store in session
 passport.serializeUser((user, done) => {
+  console.log(user, 'ye console ho rha hai ?');
   done(null, user.userID);
 });
 
