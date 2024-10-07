@@ -3,7 +3,6 @@ import { createContactUS } from './contactUsControllers.js';
 
 const contactUsRoute = Router();
 
-contactUsRoute.post("/", createContactUS)
+contactUsRoute.post('/', createContactUS);
 
-export default contactUsRoute; 
-
+export default contactUsRoute;
