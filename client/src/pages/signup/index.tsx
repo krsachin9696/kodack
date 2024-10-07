@@ -6,6 +6,8 @@ import __signup, { SignupDetailsProps } from './services';
 import { verifyOTP, setupPassword } from './services';
 import QueryKeys from '../../constants/queryKeys';
 import { SignupFields, OtpVerification, PasswordSetup, SubmitButton } from './components';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState<SignupDetailsProps>({
@@ -33,10 +35,11 @@ const Signup = () => {
     mutationFn: () => __signup(signupInfo),
     mutationKey: [QueryKeys.SIGNUP],
     onSuccess: () => {
-      alert('OTP sent to your email');
+      toast.info('OTP sent to your email');
       setStage('otp'); // Move to OTP verification stage
     },
-    onError: () => {
+    onError: (error: AxiosError<ErrorResponseProps>) => {
+      toast.error(error.response?.data?.error);
       setErrors((prev) => ({
         ...prev,
         email: 'Signup failed. Please try again.',
@@ -49,10 +52,11 @@ const Signup = () => {
     mutationFn: () => verifyOTP({ email: signupInfo.email, otp }),
     mutationKey: [QueryKeys.VERIFY_OTP],
     onSuccess: () => {
-      alert('OTP verified successfully');
+      toast.info('Otp verified')
       setStage('password'); // Move to Password setup stage
     },
-    onError: () => {
+    onError: (error: AxiosError<ErrorResponseProps>) => {
+      toast.error(error.response?.data?.error);
       setErrors((prev) => ({ ...prev, otp: 'Invalid OTP. Please try again.' }));
     },
   });
@@ -67,10 +71,11 @@ const Signup = () => {
       }),
     mutationKey: [QueryKeys.SETUP_PASSWORD],
     onSuccess: () => {
-      alert('Password set successfully');
+      toast.success('Password set successfully');
       navigate('/login'); // Navigate to login after password setup
     },
-    onError: () => {
+    onError: (error: AxiosError<ErrorResponseProps>) => {
+      toast.error(error.response?.data?.error);
       setErrors((prev) => ({
         ...prev,
         password: 'Error setting up password. Try again.',

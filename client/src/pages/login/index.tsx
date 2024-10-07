@@ -18,6 +18,8 @@ import __login, { LoginDetailsProps } from './services';
 import QueryKeys from '../../constants/queryKeys';
 import { useDispatch } from 'react-redux';
 import { login } from '../../store/authSlice';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,15 +55,13 @@ const Login = () => {
     mutationFn: () => __login(loginInfo),
     mutationKey: [QueryKeys.LOGIN],
     onSuccess: (data) => {
-      console.log(data, 'this is the data');
+      toast.info("Login Successfull");
 
-      // Dispatch the login action with user data
       dispatch(login(data.data.user));
-      navigate('/'); // Navigate to the home page after login
+      navigate('/');
     },
-    onError: (error) => {
-      console.log('Error while logging in', error);
-      // You might want to show an error message here
+    onError: (error: AxiosError<ErrorResponseProps>) => {
+      toast.error(error.response?.data?.error);
     },
   });
 
@@ -119,6 +119,7 @@ const Login = () => {
         <h1 className=" font-protest font-bold text-6xl mb-10 text-blue-400 p-10">
           KODACK
         </h1>
+        
       </div>
 
       {/* Right Section */}
