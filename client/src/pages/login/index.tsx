@@ -134,7 +134,10 @@ const Login = () => {
       <div className="flex w-full md:w-1/2 justify-center items-center">
         <form
           className="p-10 rounded-lg w-11/12 max-w-lg flex-col space-y-4"
-          style={{ border: '1px solid rgba(51, 60, 77, 0.6)' }}
+          style={{
+            border: '1px solid rgba(51, 60, 77, 0.6)',
+            background: 'rgba(255, 255, 255, 0.02)',
+          }}
           onSubmit={handleSubmit}
         >
           <Typography variant="h5" component="h1" className="text-white mb-4">
@@ -220,7 +223,11 @@ const Login = () => {
             )}
           </Button>
 
-          <div className="mt-4 text-center text-white">or</div>
+          <div className="flex items-center mt-4 text-white">
+            <div className="flex-grow border-t" style={{ border: '1px solid rgba(51, 60, 77, 0.6)' }}></div>
+            <span className="mx-2">or</span>
+            <div className="flex-grow border-t" style={{ border: '1px solid rgba(51, 60, 77, 0.6)' }}></div>
+          </div>
 
           <Button
             fullWidth

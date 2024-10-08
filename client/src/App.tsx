@@ -16,8 +16,10 @@ const App: React.FC = () => {
         const response = await getUser();
         if (response.status === 200) {
           const userData = response.data.user;
-          console.log(userData, "yeaaa !!")
           dispatch(login(userData));
+        }
+        else if (response.status === 401) {
+          
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -26,7 +28,7 @@ const App: React.FC = () => {
 
     // Check if user is not authenticated
     if (!isAuthenticated) {
-      fetchUserData(); // Fetch user data if not authenticated
+      fetchUserData(); 
     }
   }, [dispatch, isAuthenticated]);
 
