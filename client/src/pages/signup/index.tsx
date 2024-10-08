@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
@@ -8,6 +8,7 @@ import QueryKeys from '../../constants/queryKeys';
 import { SignupFields, OtpVerification, PasswordSetup, SubmitButton } from './components';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import { Google } from '@mui/icons-material';
 
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState<SignupDetailsProps>({
@@ -155,6 +156,11 @@ const Signup = () => {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.open('http://localhost:3000/auth/google', '_self'); 
+  };
+
+
   return (
     <div className="min-h-screen flex px-[10%]">
       <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
@@ -212,12 +218,27 @@ const Signup = () => {
           />
 
           {stage === 'signup' && (
-            <div className="mt-4 text-center text-white">
-              Already have an account?{' '}
-              <Link to="/login" className="text-blue-400 hover:underline">
-                Log in
-              </Link>
-            </div>
+            <>
+              <div className="mt-4 text-center text-white">or</div>
+
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<Google />}
+                sx={{ padding: 2 }}
+                className="mt-4 text-white border-white"
+                onClick={handleGoogleLogin}
+              >
+                Sign in with Google
+              </Button>
+              
+              <div className="mt-4 text-center text-white">
+                Already have an account?{' '}
+                <Link to="/login" className="text-blue-400 hover:underline">
+                  Log in
+                </Link>
+              </div>
+            </>
           )}
         </form>
       </div>

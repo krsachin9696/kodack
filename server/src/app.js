@@ -9,6 +9,7 @@ import authRoute from './features/auth/authRoutes.js';
 import listRoute from './features/list/listRoutes.js';
 import isAuthenticated from './middlewares/authMiddleware.js';
 import { loggerMiddleware } from './middlewares/loggerMiddleware.js';
+import userRoute from './features/user/userRoutes.js';
 
 const PgSession = connectPgSimple(session);
 
@@ -53,6 +54,7 @@ app.use(passport.session());
 app.use(loggerMiddleware);
 
 app.use('/auth', authRoute);
+app.use('/user', userRoute);
 app.use('/list', listRoute);
 
 app.get('/protected', isAuthenticated, (req, res) => {
