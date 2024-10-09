@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../store/authSlice';
 import axios from 'axios';
 import apis from '../constants/apis';
+import { toast } from 'sonner';
 
 const logoutUser = async () => {
   const response = await axios.post(apis.user.logout, {}, {
@@ -18,6 +19,7 @@ const useLogout = () => {
   const { mutate: logoutMutate, status, error } = useMutation({
     mutationFn: () => logoutUser(),
     onSuccess: () => {
+      toast.info('Logout Successfull !');
       dispatch(logout());
     },
     onError: () => {

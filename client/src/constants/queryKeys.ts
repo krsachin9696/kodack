@@ -4,6 +4,7 @@ enum queryKeys {
   GET_PROFILE = 'getProfile',
   SETUP_PASSWORD = 'setup-password',
   VERIFY_OTP = 'verify-otp',
+  GET_USER_DATA = 'get-user-data',
 }
 
 export default queryKeys;
