@@ -63,7 +63,12 @@ passport.use(
               googleId: profile.id, // Store Google ID for future reference
             },
           });
-          return done(null, newUser);
+
+          const { userID, name, username, email } = newUser;
+          return done(null, {
+            message: 'Login successful',
+            user: { userID, name, username, email },
+          });
         }
       } catch (err) {
         return done(err, false);

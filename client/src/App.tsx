@@ -1,19 +1,35 @@
-// import { useEffect } from 'react';
-// import { useDispatch } from 'react-redux';
-// import { login } from './store/authSlice';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, logout } from './store/authSlice';
 import { RouterProvider } from 'react-router-dom';
-import './App.css';
+import { RootState } from './store';
+import { getUser } from './services';
 import { router } from './routes/routes';
+import { toast } from 'sonner';
 
 const App: React.FC = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-  // useEffect(() => {
-  //   const storedUser = localStorage.getItem('user');
-  //   if (storedUser) {
-  //     dispatch(login(JSON.parse(storedUser)));
-  //   }
-  // }, [dispatch]);
+  useEffect(() => {
+    const fetchUserData = async () => {
+
+      try {
+        const response = await getUser();
+        if (response.status === 200) {
+          const userData = response.data.user;
+          dispatch(login(userData));
+        }
+      } catch (error) {
+        if(isAuthenticated) {
+          toast.info('You have been logged out, please log in again !');
+          dispatch(logout());
+        }
+      }
+    };
+
+    fetchUserData(); 
+  }, [dispatch, isAuthenticated]);
 
   return (
     <>

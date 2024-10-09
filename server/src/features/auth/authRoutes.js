@@ -25,8 +25,8 @@ authRoute.get(
 authRoute.get(
   '/google/callback',
   passport.authenticate('google', {
-    successRedirect: '/protected', // Change this to where you want to redirect after success
-    failureRedirect: '/login', // Redirect to login page on failure
+    successRedirect: 'http://localhost:5173/',
+    failureRedirect: 'http://localhost:5173/login',
   }),
 );
 

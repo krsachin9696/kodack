@@ -7,5 +7,7 @@ export default {
     login: `${SERVERURL}/auth/login`,
     verifyOtp: `${SERVERURL}/auth/verify-otp`,
     setupPassword: `${SERVERURL}/auth/setup-password`,
+    logout: `${SERVERURL}/auth/logout`,
+    getUser: `${SERVERURL}/user`,
   },
 };
