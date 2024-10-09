@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import {
   findUserByEmailOrUsername,
@@ -7,18 +6,45 @@ import {
   updateUserByEmail,
 } from './authRepository.js';
 import sendEmail from '../../utils/sendEmail.js';
+import { hashPassword } from '../../utils/hashPassword.js';
 
-export const signupUser = async (name, username, email) => {
+export const signupUser = async (
+  name,
+  username,
+  email,
+  password,
+  confirmPassword,
+) => {
   const existingUser = await findUserByEmailOrUsername(username, email);
 
-  if (existingUser) {
+  if (existingUser && existingUser.otpVerified) {
     throw new Error('Username or email already taken');
+  }
+
+  if (password !== confirmPassword) {
+    throw new Error('password & confirm password do not match.');
   }
 
   const otp = crypto.randomInt(100000, 999999).toString();
   const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
-  await createUser({ name, username, email, otp, otpExpiresAt });
+  if (existingUser && !existingUser.otpVerified) {
+    await updateUserByEmail(email, { otp, otpExpiresAt });
+
+    await sendEmail(
+      email,
+      'Your New OTP Code',
+      `Your new OTP code is ${otp}. It is valid for 15 minutes.`,
+    );
+
+    return {
+      message:
+        'A new OTP has been sent. Please verify your email with the OTP.',
+    };
+  }
+
+  const passwordHash = await hashPassword(password);
+  await createUser({ name, username, email, otp, otpExpiresAt, passwordHash });
   await sendEmail(
     email,
     'Your OTP Code',
@@ -65,7 +91,7 @@ export const setupUserPassword = async (email, password, confirmPassword) => {
     throw new Error('Email not verified');
   }
 
-  const passwordHash = await bcrypt.hash(password, 10);
+  const passwordHash = await hashPassword(password);
   await updateUserByEmail(email, { passwordHash });
 
   return { message: 'Password has been set successfully' };

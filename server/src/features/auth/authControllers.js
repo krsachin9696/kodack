@@ -6,9 +6,9 @@ import {
 import passport from 'passport';
 
 const signup = async (req, res) => {
-  const { name, username, email } = req.body;
+  const { name, username, email, password } = req.body;
   try {
-    const result = await signupUser(name, username, email);
+    const result = await signupUser(name, username, email, password);
     res.status(201).json(result);
   } catch (error) {
     console.log(error);

@@ -15,11 +15,14 @@ const Signup = () => {
     name: '',
     email: '',
     username: '',
+    password: '',
+    confirmPassword: '',
   });
-  const [stage, setStage] = useState<'signup' | 'otp' | 'password'>('signup');
+  // const [stage, setStage] = useState<'signup' | 'otp' | 'password'>('signup');
+  const [stage, setStage] = useState<'signup' | 'otp' >('signup');
   const [otp, setOtp] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({
     name: '',
     email: '',
@@ -56,8 +59,8 @@ const Signup = () => {
     mutationFn: () => verifyOTP({ email: signupInfo.email, otp }),
     mutationKey: [QueryKeys.VERIFY_OTP],
     onSuccess: () => {
-      toast.info('Otp verified')
-      setStage('password'); // Move to Password setup stage
+      toast.success('Otp verified');
+      navigate('/login');
     },
     onError: (error: AxiosError<ErrorResponseProps>) => {
       toast.error(error.response?.data?.error);
@@ -67,27 +70,27 @@ const Signup = () => {
   });
 
   // Password setup mutation
-  const { mutate: onSetupPassword, status: passwordStatus } = useMutation({
-    mutationFn: () =>
-      setupPassword({
-        email: signupInfo.email,
-        password,
-        confirmPassword,
-      }),
-    mutationKey: [QueryKeys.SETUP_PASSWORD],
-    onSuccess: () => {
-      toast.success('Password set successfully');
-      navigate('/login'); // Navigate to login after password setup
-    },
-    onError: (error: AxiosError<ErrorResponseProps>) => {
-      toast.error(error.response?.data?.error);
-      setErrors((prev) => ({
-        ...prev,
-        password: 'Error setting up password. Try again.',
-      }));
-      setIsSignUpDisabled(true);
-    },
-  });
+  // const { mutate: onSetupPassword, status: passwordStatus } = useMutation({
+  //   mutationFn: () =>
+  //     setupPassword({
+  //       email: signupInfo.email,
+  //       password,
+  //       confirmPassword,
+  //     }),
+  //   mutationKey: [QueryKeys.SETUP_PASSWORD],
+  //   onSuccess: () => {
+  //     toast.success('Password set successfully');
+  //     navigate('/login'); // Navigate to login after password setup
+  //   },
+  //   onError: (error: AxiosError<ErrorResponseProps>) => {
+  //     toast.error(error.response?.data?.error);
+  //     setErrors((prev) => ({
+  //       ...prev,
+  //       password: 'Error setting up password. Try again.',
+  //     }));
+  //     setIsSignUpDisabled(true);
+  //   },
+  // });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -101,11 +104,11 @@ const Signup = () => {
     setErrors((prev) => ({ ...prev, otp: '' }));
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    name === 'password' ? setPassword(value) : setConfirmPassword(value);
-    setErrors((prev) => ({ ...prev, [name]: '' }));
-  };
+  // const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   name === 'password' ? setPassword(value) : setConfirmPassword(value);
+  //   setErrors((prev) => ({ ...prev, [name]: '' }));
+  // };
 
   const validateSignupForm = () => {
     let isValid = true;
@@ -137,23 +140,24 @@ const Signup = () => {
       onSignup();
     } else if (stage === 'otp') {
       onVerifyOTP();
-    } else if (
-      stage === 'password' &&
-      password === confirmPassword &&
-      password.length >= 6
-    ) {
-      onSetupPassword();
-    } else if (password !== confirmPassword) {
-      setErrors((prev) => ({
-        ...prev,
-        confirmPassword: 'Passwords do not match',
-      }));
-    } else if (password.length < 6) {
-      setErrors((prev) => ({
-        ...prev,
-        password: 'Password must be at least 6 characters',
-      }));
-    }
+    } 
+    // else if (
+    //   stage === 'password' &&
+    //   password === confirmPassword &&
+    //   password.length >= 6
+    // ) {
+    //   onSetupPassword();
+    // } else if (password !== confirmPassword) {
+    //   setErrors((prev) => ({
+    //     ...prev,
+    //     confirmPassword: 'Passwords do not match',
+    //   }));
+    // } else if (password.length < 6) {
+    //   setErrors((prev) => ({
+    //     ...prev,
+    //     password: 'Password must be at least 6 characters',
+    //   }));
+    // }
   };
 
   const handleGoogleLogin = () => {
@@ -187,11 +191,20 @@ const Signup = () => {
           </Typography>
 
           {stage === 'signup' && (
-            <SignupFields
-              signupInfo={signupInfo}
-              errors={errors}
-              onChange={handleChange}
-            />
+            <>
+              <SignupFields
+                signupInfo={signupInfo}
+                errors={errors}
+                onChange={handleChange}
+              />
+              <PasswordSetup
+                password={signupInfo.password}
+                confirmPassword={signupInfo.confirmPassword}
+                errors={errors}
+                // onChange={handlePasswordChange}
+                onChange={handleChange}
+              />
+            </>
           )}
 
           {stage === 'otp' && (
@@ -203,19 +216,19 @@ const Signup = () => {
             />
           )}
 
-          {stage === 'password' && (
+          {/* {stage === 'password' && (
             <PasswordSetup
               password={password}
               confirmPassword={confirmPassword}
               errors={errors}
               onChange={handlePasswordChange}
             />
-          )}
+          )} */}
 
           <SubmitButton
             signupStatus={signupStatus}
             otpStatus={otpStatus}
-            passwordStatus={passwordStatus}
+            passwordStatus={signupStatus}
             stage={stage}
             isDisabled={isSignUpDisabled}
           />
