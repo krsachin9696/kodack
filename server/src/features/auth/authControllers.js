@@ -42,30 +42,6 @@ const setupPassword = async (req, res) => {
   }
 };
 
-// const login = (req, res, next) => {
-//   console.log('login request', req.body);
-//   passport.authenticate('local', (err, user, info) => {
-//     if (err) {
-//       return res.status(500).json({ error: 'An error occurred during login.' });
-//     }
-//     if (!user) {
-//       console.log(info.message, 'user exist hi nhi krta');
-//       return res.status(401).json({ error: info.message || 'Login failed.' });
-//     }
-//     req.login(user, (err) => {
-//       if (err) {
-//         return res.status(500).json({ error: 'Login failed.' });
-//       }
-
-//       const { userID, name, username, email } = user;
-//       return res.status(200).json({
-//         message: 'Login successful',
-//         user: { userID, name, username, email },
-//       });
-//     });
-//   })(req, res, next);
-// };
-
 import { findUserByEmail } from './authRepository.js';
 
 const login = async (req, res, next) => {
