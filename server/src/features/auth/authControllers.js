@@ -6,9 +6,15 @@ import {
 import passport from 'passport';
 
 const signup = async (req, res) => {
-  const { name, username, email, password } = req.body;
+  const { name, username, email, password, confirmPassword } = req.body;
   try {
-    const result = await signupUser(name, username, email, password);
+    const result = await signupUser(
+      name,
+      username,
+      email,
+      password,
+      confirmPassword,
+    );
     res.status(201).json(result);
   } catch (error) {
     console.log(error);
@@ -36,28 +42,76 @@ const setupPassword = async (req, res) => {
   }
 };
 
-const login = (req, res, next) => {
-  console.log('login request', req.body);
-  passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      return res.status(500).json({ error: 'An error occurred during login.' });
-    }
-    if (!user) {
-      console.log(info.message, 'user exist hi nhi krta');
-      return res.status(401).json({ error: info.message || 'Login failed.' });
-    }
-    req.login(user, (err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Login failed.' });
-      }
+// const login = (req, res, next) => {
+//   console.log('login request', req.body);
+//   passport.authenticate('local', (err, user, info) => {
+//     if (err) {
+//       return res.status(500).json({ error: 'An error occurred during login.' });
+//     }
+//     if (!user) {
+//       console.log(info.message, 'user exist hi nhi krta');
+//       return res.status(401).json({ error: info.message || 'Login failed.' });
+//     }
+//     req.login(user, (err) => {
+//       if (err) {
+//         return res.status(500).json({ error: 'Login failed.' });
+//       }
 
-      const { userID, name, username, email } = user;
-      return res.status(200).json({
-        message: 'Login successful',
-        user: { userID, name, username, email },
+//       const { userID, name, username, email } = user;
+//       return res.status(200).json({
+//         message: 'Login successful',
+//         user: { userID, name, username, email },
+//       });
+//     });
+//   })(req, res, next);
+// };
+
+import { findUserByEmail } from './authRepository.js';
+
+const login = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    // Fetch the user to check OTP verification
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+      return res.status(401).json({ error: 'User not found.' });
+    }
+
+    // Check if the OTP is verified
+    if (!user.otpVerified) {
+      return res
+        .status(403)
+        .json({ error: 'Email not verified. Please signup again!' });
+    }
+
+    // Proceed with passport authentication if OTP is verified
+    passport.authenticate('local', (err, user, info) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: 'An error occurred during login.' });
+      }
+      if (!user) {
+        return res.status(401).json({ error: info.message || 'Login failed.' });
+      }
+      req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({ error: 'Login failed.' });
+        }
+
+        const { userID, name, username, email } = user;
+        return res.status(200).json({
+          message: 'Login successful',
+          user: { userID, name, username, email },
+        });
       });
-    });
-  })(req, res, next);
+    })(req, res, next);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: 'An error occurred during login.' });
+  }
 };
 
 const logout = (req, res) => {

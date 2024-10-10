@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import __signup, { SignupDetailsProps } from './services';
-import { verifyOTP, setupPassword } from './services';
+import { verifyOTP, } from './services';
 import QueryKeys from '../../constants/queryKeys';
 import { SignupFields, OtpVerification, PasswordSetup, SubmitButton } from './components';
 import { toast } from 'sonner';
@@ -18,11 +18,8 @@ const Signup = () => {
     password: '',
     confirmPassword: '',
   });
-  // const [stage, setStage] = useState<'signup' | 'otp' | 'password'>('signup');
   const [stage, setStage] = useState<'signup' | 'otp' >('signup');
   const [otp, setOtp] = useState('');
-  // const [password, setPassword] = useState('');
-  // const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({
     name: '',
     email: '',
@@ -69,29 +66,6 @@ const Signup = () => {
     },
   });
 
-  // Password setup mutation
-  // const { mutate: onSetupPassword, status: passwordStatus } = useMutation({
-  //   mutationFn: () =>
-  //     setupPassword({
-  //       email: signupInfo.email,
-  //       password,
-  //       confirmPassword,
-  //     }),
-  //   mutationKey: [QueryKeys.SETUP_PASSWORD],
-  //   onSuccess: () => {
-  //     toast.success('Password set successfully');
-  //     navigate('/login'); // Navigate to login after password setup
-  //   },
-  //   onError: (error: AxiosError<ErrorResponseProps>) => {
-  //     toast.error(error.response?.data?.error);
-  //     setErrors((prev) => ({
-  //       ...prev,
-  //       password: 'Error setting up password. Try again.',
-  //     }));
-  //     setIsSignUpDisabled(true);
-  //   },
-  // });
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSignupInfo((prev) => ({ ...prev, [name]: value }));
@@ -100,24 +74,33 @@ const Signup = () => {
   };
 
   const handleOTPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOtp(e.target.value);
-    setErrors((prev) => ({ ...prev, otp: '' }));
+    const value = e.target.value;
+  
+    // Allow only digits and limit to 6 characters
+    if (/^\d{0,6}$/.test(value)) {
+      setOtp(value);
+      setErrors((prev) => ({ ...prev, otp: '' }));
+  
+      if (value.length === 6) {
+        setIsSignUpDisabled(false);
+      } else {
+        setIsSignUpDisabled(true);
+      }
+    }
   };
-
-  // const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   name === 'password' ? setPassword(value) : setConfirmPassword(value);
-  //   setErrors((prev) => ({ ...prev, [name]: '' }));
-  // };
+  
 
   const validateSignupForm = () => {
     let isValid = true;
-    const newErrors = { name: '', email: '', username: '' };
-
+    const newErrors = { name: '', email: '', username: '', password: '', confirmPassword: '' };
+  
+    // Name validation
     if (!signupInfo.name) {
       newErrors.name = 'Name is required';
       isValid = false;
     }
+  
+    // Email validation
     if (
       !signupInfo.email ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signupInfo.email)
@@ -125,39 +108,52 @@ const Signup = () => {
       newErrors.email = 'Valid email is required';
       isValid = false;
     }
+  
+    // Username validation
     if (!signupInfo.username) {
       newErrors.username = 'Username is required';
       isValid = false;
     }
-
+  
+    // Password validation
+    if (!signupInfo.password) {
+      newErrors.password = 'Password is required';
+      isValid = false;
+    } else if (signupInfo.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+      isValid = false;
+    } else if (!/[A-Z]/.test(signupInfo.password)) {
+      newErrors.password = 'Password must contain at least one uppercase letter';
+      isValid = false;
+    } else if (!/[a-z]/.test(signupInfo.password)) {
+      newErrors.password = 'Password must contain at least one lowercase letter';
+      isValid = false;
+    } else if (!/[0-9]/.test(signupInfo.password)) {
+      newErrors.password = 'Password must contain at least one number';
+      isValid = false;
+    }
+  
+    // Confirm Password validation
+    if (signupInfo.password !== signupInfo.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+      isValid = false;
+    }
+  
     setErrors((prev) => ({ ...prev, ...newErrors }));
     return isValid;
-  };
+  };  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (stage === 'signup' && validateSignupForm()) {
       onSignup();
     } else if (stage === 'otp') {
+      if (otp.length === 6) { 
       onVerifyOTP();
+    } else {
+      setErrors((prev) => ({ ...prev, otp: 'OTP must be 6 digits.' }));
+    }
     } 
-    // else if (
-    //   stage === 'password' &&
-    //   password === confirmPassword &&
-    //   password.length >= 6
-    // ) {
-    //   onSetupPassword();
-    // } else if (password !== confirmPassword) {
-    //   setErrors((prev) => ({
-    //     ...prev,
-    //     confirmPassword: 'Passwords do not match',
-    //   }));
-    // } else if (password.length < 6) {
-    //   setErrors((prev) => ({
-    //     ...prev,
-    //     password: 'Password must be at least 6 characters',
-    //   }));
-    // }
   };
 
   const handleGoogleLogin = () => {
@@ -201,7 +197,6 @@ const Signup = () => {
                 password={signupInfo.password}
                 confirmPassword={signupInfo.confirmPassword}
                 errors={errors}
-                // onChange={handlePasswordChange}
                 onChange={handleChange}
               />
             </>
@@ -215,15 +210,6 @@ const Signup = () => {
               onChange={handleOTPChange}
             />
           )}
-
-          {/* {stage === 'password' && (
-            <PasswordSetup
-              password={password}
-              confirmPassword={confirmPassword}
-              errors={errors}
-              onChange={handlePasswordChange}
-            />
-          )} */}
 
           <SubmitButton
             signupStatus={signupStatus}

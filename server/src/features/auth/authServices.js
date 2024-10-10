@@ -22,6 +22,7 @@ export const signupUser = async (
   }
 
   if (password !== confirmPassword) {
+    console.log(password, confirmPassword);
     throw new Error('password & confirm password do not match.');
   }
 
@@ -72,7 +73,8 @@ export const verifyUserOtp = async (email, otp) => {
     });
     return { message: 'OTP verified successfully' };
   } else {
-    throw new Error('Invalid or expired OTP');
+    if (user.otp !== otp) throw new Error('Invalid OTP');
+    else throw new Error('OTP expired');
   }
 };
 
