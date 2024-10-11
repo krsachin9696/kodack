@@ -65,10 +65,7 @@ passport.use(
           });
 
           const { userID, name, username, email } = newUser;
-          return done(null, {
-            message: 'Login successful',
-            user: { userID, name, username, email },
-          });
+          return done(null, { userID, name, username, email });
         }
       } catch (err) {
         return done(err, false);
@@ -79,6 +76,7 @@ passport.use(
 
 // Serialize user to store in session
 passport.serializeUser((user, done) => {
+  console.log(user, 'this is user');
   done(null, user.userID);
 });
 
