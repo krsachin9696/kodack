@@ -63,7 +63,7 @@ const Login = () => {
       navigate('/');
     },
     onError: (error: AxiosError<ErrorResponseProps>) => {
-      toast.error(error.response?.data?.error);
+      toast.error(error.response?.data?.error || 'Login Error');
       setIsLoginDisabled(true);
     },
   });
