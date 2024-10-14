@@ -1,4 +1,4 @@
-import prisma from '../../config/prismaClient';
+import prisma from '../../config/prismaClient.js';
 
 const createContactUS = async (req, res) => {
   const { name, email, subject, message } = req.body;
@@ -10,7 +10,7 @@ const createContactUS = async (req, res) => {
 
   try {
     // Store the form submission in the database
-    const newContactForm = await prisma.contactForm.create({
+    const newContactForm = await prisma.contactUs.create({
       data: {
         name,
         email,
@@ -21,7 +21,7 @@ const createContactUS = async (req, res) => {
 
     res
       .status(200)
-      .json({ message: 'Form submitted successfully', data: newContactForm });
+      .json({ message: 'Form submitted successfully'});
   } catch (error) {
     console.error('Error saving contact form:', error);
     res

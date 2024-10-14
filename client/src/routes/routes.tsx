@@ -23,10 +23,6 @@ export const router = createBrowserRouter([
         path: 'about',
         element: <AboutUs />,
       },
-      {
-        path: 'contactus',
-        element: <ContactUs />,
-      }
     ],
   },
   {
@@ -42,6 +38,10 @@ export const router = createBrowserRouter([
         path: 'signup',
         element: <Signup />,
       },
+      {
+        path: 'contactus',
+        element: <ContactUs />,
+      }
     ],
   },
   {
