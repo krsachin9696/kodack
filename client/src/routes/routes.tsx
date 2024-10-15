@@ -8,6 +8,7 @@ import Signup from '../pages/signup'
 import ProtectedRoute from '../components/base/protectedRoutes';
 import UnprotectedRoute from '../components/base/unprotectRoute';
 import NotFound from '../pages/not-found';
+import Home from '../pages/home'
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
         path: 'signup',
         element: <Signup />,
       },
+      {
+        path: 'home',
+        element: <Home />
+      }
     ],
   },
   {
