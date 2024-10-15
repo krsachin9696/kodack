@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import Navbar from '../shared/navbar';
@@ -9,9 +9,7 @@ const ProtectedRoute = () => {
   );
 
   return isAuthenticated ? (
-    <Navbar>
-      <Outlet />
-    </Navbar>
+    <Navbar/>
   ) : (
     <Navigate to="/login" />
   );

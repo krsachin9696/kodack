@@ -14,16 +14,19 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { Outlet } from 'react-router-dom';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 interface Props {
   window?: () => Window;
-  children: React.ReactNode;
+  // children: React.ReactNode;
 }
 
 export default function Navbar(props: Props) {
-  const { window, children } = props;
+  // const { window, children } = props;
+  const { window } = props;
+
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
@@ -44,9 +47,24 @@ export default function Navbar(props: Props) {
 
   const drawer = (
     <div className=' bg-transparent'>
-      {/* <Toolbar />
-      <Divider /> */}
-      <List>
+      {/* <Toolbar /> */}
+      <Toolbar sx={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', }}>
+        <Typography
+          variant='h4'
+          noWrap
+          component='a'
+          color='primary'
+          sx={{
+            ml: 2,
+            fontFamily: 'Protest Strike, sans-serif',
+            fontWeight: 'semi-bold',
+          }}
+        >
+          KODACK
+        </Typography>
+      </Toolbar>
+      <Divider />
+      {/* <List>
         {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
@@ -70,7 +88,7 @@ export default function Navbar(props: Props) {
             </ListItemButton>
           </ListItem>
         ))}
-      </List>
+      </List> */}
     </div>
   );
 
@@ -92,25 +110,27 @@ export default function Navbar(props: Props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ display: { sm: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant='h4'
-            noWrap
-            component='a'
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'Protest Strike, sans-serif',
-              fontWeight: 'semi-bold',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            KODACK
-          </Typography>
+
+          <Box sx={{ flexGrow: 1, justifyContent: 'center', display: { xs: 'flex', sm: 'none' }, }}>
+            <Typography
+              variant='h4'
+              noWrap
+              component='a'
+              color='primary'
+              sx={{
+                fontFamily: 'Protest Strike, sans-serif',
+                fontWeight: 'semi-bold',
+              }}
+            >
+              KODACK
+            </Typography>
+
+          </Box>
+
         </Toolbar>
       </AppBar>
       <Box
@@ -132,7 +152,7 @@ export default function Navbar(props: Props) {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
-              backgroundColor: 'rgba(255, 255, 255, 0.02)',
+              backgroundColor: 'rgba(255, 255, 255, 0.0)',
             },
           }}
         >
@@ -145,7 +165,7 @@ export default function Navbar(props: Props) {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
-              backgroundColor: 'rgba(255, 255, 255, 0.02)',
+              backgroundColor: 'rgba(255, 255, 255, 0.0)',
             },
           }}
           open
@@ -158,7 +178,8 @@ export default function Navbar(props: Props) {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
-        {children}
+        {/* {children} */}
+        <Outlet/>
       </Box>
     </Box>
   );
