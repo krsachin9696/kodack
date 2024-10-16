@@ -13,7 +13,6 @@ import {
   InputLabel,
   OutlinedInput,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { defaultStyles } from '../../constants/defaultStyles';
 
 export default function ContactUs() {
@@ -32,7 +31,6 @@ export default function ContactUs() {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const navigate = useNavigate();
 
   const { mutate: contactUs, status: contactUsStatus } = useMutation({
     mutationFn: () => __contactUs(formData),
