@@ -4,31 +4,23 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Outlet } from 'react-router-dom';
+import { Avatar, Menu, MenuItem } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const drawerWidth = 280;
 
 interface Props {
   window?: () => Window;
-  // children: React.ReactNode;
 }
 
 export default function Navbar(props: Props) {
-  // const { window, children } = props;
   const { window } = props;
-
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -45,10 +37,17 @@ export default function Navbar(props: Props) {
     }
   };
 
+  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
   const drawer = (
-    <div className=' bg-transparent'>
-      {/* <Toolbar /> */}
-      <Toolbar sx={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', }}>
+    <div className='bg-transparent'>
+      <Toolbar sx={{ backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
         <Typography
           variant='h4'
           noWrap
@@ -64,31 +63,6 @@ export default function Navbar(props: Props) {
         </Typography>
       </Toolbar>
       <Divider />
-      {/* <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List> */}
     </div>
   );
 
@@ -104,7 +78,7 @@ export default function Navbar(props: Props) {
           background: 'rgba(255, 255, 255, 0.02)'
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -115,7 +89,7 @@ export default function Navbar(props: Props) {
             <MenuIcon />
           </IconButton>
 
-          <Box sx={{ flexGrow: 1, justifyContent: 'center', display: { xs: 'flex', sm: 'none' }, }}>
+          <Box sx={{ flexGrow: 1, justifyContent: 'center', display: { xs: 'flex', sm: 'none' } }}>
             <Typography
               variant='h4'
               noWrap
@@ -128,11 +102,32 @@ export default function Navbar(props: Props) {
             >
               KODACK
             </Typography>
-
           </Box>
-
+          <Avatar 
+            alt="S" 
+            src="/path/to/profile-pic.jpg" 
+            onClick={handleAvatarClick} 
+            sx={{ cursor: 'pointer' }} 
+          />
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleCloseMenu}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
+            <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
+      
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -173,13 +168,13 @@ export default function Navbar(props: Props) {
           {drawer}
         </Drawer>
       </Box>
+      
       <Box
         component="main"
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
-        {/* {children} */}
-        <Outlet/>
+        <Outlet />
       </Box>
     </Box>
   );
