@@ -1,16 +1,21 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import { Outlet } from 'react-router-dom';
-import { Avatar, Menu, MenuItem } from '@mui/material';
+import {
+  Box,
+  Avatar,
+  Menu,
+  MenuItem,
+  Paper,
+  AppBar,
+  Divider,
+  Drawer,
+  IconButton,
+  Toolbar,
+  Typography,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
-const drawerWidth = 280;
+const drawerWidth = 240;
 
 interface Props {
   window?: () => Window;
@@ -45,14 +50,42 @@ export default function Navbar(props: Props) {
     setAnchorEl(null);
   };
 
+  // const drawer = (
+  //   <div className='bg-transparent text-white'>
+  //     <Toolbar sx={{ backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
+  //       <Typography
+  //         variant='h4'
+  //         noWrap
+  //         component='a'
+  //         color='primary'
+  //         sx={{
+  //           ml: 2,
+  //           fontFamily: 'Protest Strike, sans-serif',
+  //           fontWeight: 'semi-bold',
+  //         }}
+  //       >
+  //         KODACK
+  //       </Typography>
+  //     </Toolbar>
+  //     <Divider />
+
+  //   </div>
+  // );
+
   const drawer = (
-    <div className='bg-transparent'>
-      <Toolbar sx={{ backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
+    <Box>
+      <Toolbar
+        sx={{
+          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+          borderRadius: '6px',
+          backdropFilter: 'blur(10px)',
+        }}
+      >
         <Typography
-          variant='h4'
+          variant="h4"
           noWrap
-          component='a'
-          color='primary'
+          component="a"
+          color="primary"
           sx={{
             ml: 2,
             fontFamily: 'Protest Strike, sans-serif',
@@ -63,10 +96,37 @@ export default function Navbar(props: Props) {
         </Typography>
       </Toolbar>
       <Divider />
-    </div>
+
+      <Paper
+        elevation={3}
+        variant='elevation'
+        sx={{
+          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+          borderRadius: '6px',
+          backdropFilter: 'blur(10px)',
+          color: 'white',
+        }}
+      >
+        <Typography variant="body1">Content for the first div</Typography>
+      </Paper>
+
+      <Paper
+        elevation={3}
+        variant='outlined'
+        sx={{
+          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+          borderRadius: '6px',
+          backdropFilter: 'blur(10px)',
+          color: 'white',
+        }}
+      >
+        <Typography variant="body1">Content for the second div</Typography>
+      </Paper>
+    </Box>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -75,7 +135,7 @@ export default function Navbar(props: Props) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          background: 'rgba(255, 255, 255, 0.02)'
+          background: 'rgba(255, 255, 255, 0.02)',
         }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -89,12 +149,18 @@ export default function Navbar(props: Props) {
             <MenuIcon />
           </IconButton>
 
-          <Box sx={{ flexGrow: 1, justifyContent: 'center', display: { xs: 'flex', sm: 'none' } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              justifyContent: 'center',
+              display: { xs: 'flex', sm: 'none' },
+            }}
+          >
             <Typography
-              variant='h4'
+              variant="h4"
               noWrap
-              component='a'
-              color='primary'
+              component="a"
+              color="primary"
               sx={{
                 fontFamily: 'Protest Strike, sans-serif',
                 fontWeight: 'semi-bold',
@@ -103,11 +169,11 @@ export default function Navbar(props: Props) {
               KODACK
             </Typography>
           </Box>
-          <Avatar 
-            alt="S" 
-            src="/path/to/profile-pic.jpg" 
-            onClick={handleAvatarClick} 
-            sx={{ cursor: 'pointer' }} 
+          <Avatar
+            alt="S"
+            src="/path/to/profile-pic.jpg"
+            onClick={handleAvatarClick}
+            sx={{ cursor: 'pointer' }}
           />
           <Menu
             anchorEl={anchorEl}
@@ -127,7 +193,7 @@ export default function Navbar(props: Props) {
           </Menu>
         </Toolbar>
       </AppBar>
-      
+
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -168,10 +234,14 @@ export default function Navbar(props: Props) {
           {drawer}
         </Drawer>
       </Box>
-      
+
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
       >
         <Toolbar />
         <Outlet />
