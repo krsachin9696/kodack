@@ -1,33 +1,28 @@
-import prisma from '../../config/prismaClient.js';
+import { contactUsSchema } from './contactUsValidation.js';
+import * as contactUsService from './contactUsServices.js';
+import logger from '../../utils/logger.js';
 
-const createContactUS = async (req, res) => {
-  const { name, email, subject, message } = req.body;
-
-  // Input validation (simple validation)
-  if (!name || !email || !subject || !message) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
-
+export const createContactUs = async (req, res) => {
   try {
-    // Store the form submission in the database
-    const newContactForm = await prisma.contactUs.create({
-      data: {
-        name,
-        email,
-        subject,
-        message,
-      },
+    // Validate request body
+    const { error } = contactUsSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    const { name, email, subject, message } = req.body;
+
+    // Call service layer to handle creation logic
+    const newContactForm = await contactUsService.createContactUsService({
+      name,
+      email,
+      subject,
+      message,
     });
 
-    res
-      .status(200)
-      .json({ message: 'Form submitted successfully'});
+    res.status(201).json({ message: 'Form submitted successfully', newContactForm });
   } catch (error) {
-    console.error('Error saving contact form:', error);
-    res
-      .status(500)
-      .json({ error: 'Failed to submit the form. Please try again later.' });
+    logger.error('Error creating contact form:', error);
+    res.status(500).json({ error: 'Failed to submit form' });
   }
 };
-
-export { createContactUS };

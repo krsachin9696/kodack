@@ -4,6 +4,17 @@ import QueryKeys from '../../constants/queryKeys';
 import __contactUs from './services';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import {
+  CircularProgress,
+  TextField,
+  Button,
+  Typography,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { defaultStyles } from '../../constants/defaultStyles';
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -13,79 +24,189 @@ export default function ContactUs() {
     message: ''
   });
 
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const navigate = useNavigate();
+
   const { mutate: contactUs, status: contactUsStatus } = useMutation({
     mutationFn: () => __contactUs(formData),
     mutationKey: [QueryKeys.CONTACT_US],
     onSuccess: () => {
       toast.info("Form submitted successfully");
       setFormData({ name: '', email: '', subject: '', message: '' });
+      setIsSubmitted(true);
+
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 3000);
     },
     onError: (error: AxiosError<ErrorResponseProps>) => {
       toast.error(error.response?.data?.error || 'Submission Error');
     },
   });
 
+  // Validate form fields before submission
+  const validateForm = () => {
+    let isValid = true;
+    let newErrors = { name: '', email: '', subject: '', message: '' };
+
+    if (!formData.name) {
+      newErrors.name = 'Full Name is required';
+      isValid = false;
+    }
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else {
+      // Basic email validation regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = 'Invalid email format';
+        isValid = false;
+      }
+    }
+    if (!formData.subject) {
+      newErrors.subject = 'Subject is required';
+      isValid = false;
+    }
+    if (!formData.message) {
+      newErrors.message = 'Message is required';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+    // Reset error for the field when the user starts typing again
+    setErrors({ ...errors, [e.target.id]: '' });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    contactUs();
+    // Validate form before calling mutation
+    if (validateForm()) {
+      contactUs();
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center text-white">
-      <div className="w-full max-w-md shadow-lg bg-gray-900 border border-gray-700 rounded-lg p-8 space-y-6">
-        <h1 className="text-3xl font-bold text-center text-blue-400 mb-6">Contact Us</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block font-medium mb-2">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:border-blue-500 text-white"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter your name"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block font-medium mb-2">Email</label>
-            <input
-              type="email"
-              id="email"
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:border-blue-500 text-white"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="subject" className="block font-medium mb-2">Subject</label>
-            <input
-              type="text"
-              id="subject"
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:border-blue-500 text-white"
-              value={formData.subject}
-              onChange={handleChange}
-              placeholder="Enter the subject"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="message" className="block font-medium mb-2">Message</label>
-            <textarea
-              id="message"
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:border-blue-500 text-white"
-              value={formData.message}
-              onChange={handleChange}
-              placeholder="Enter your message"
-              rows={5}
-            ></textarea>
-          </div>
-          <button type="submit" className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-semibold">
-            Send Message
-          </button>
+    <div className="min-h-screen flex px-[10%]">
+      <div className="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
+        <h1 className="font-protest font-bold text-6xl mb-10 text-blue-400 p-10">
+          KODACK
+        </h1>
+      </div>
+
+      <div className="flex w-full md:w-1/2 justify-center items-center">
+        <form
+          className="p-10 rounded-lg w-11/12 max-w-lg flex-col space-y-4"
+          style={{
+            border: '1px solid rgba(51, 60, 77, 0.6)',
+            background: 'rgba(255, 255, 255, 0.02)',
+          }}
+          onSubmit={handleSubmit}
+        >
+          <h1 className="text-3xl font-bold text-center text-blue-400 mb-6">
+            Contact Us
+          </h1>
+
+          {isSubmitted ? (
+            <div className="text-center">
+              <Typography variant="h6" className="text-blue-400 mb-4">
+                Thank you for contacting us!
+              </Typography>
+            </div>
+          ) : contactUsStatus === 'pending' ? (
+            <div className="text-center">
+              <CircularProgress color="primary" />
+              <Typography variant="body1" className="mt-4">Submitting...</Typography>
+            </div>
+          ) : (
+            <>
+              <TextField
+                label="Full Name"
+                variant="outlined"
+                fullWidth
+                id="name"
+                value={formData.name}
+                onChange={handleChange}
+                error={!!errors.name}
+                helperText={errors.name}
+                sx={defaultStyles.inputStyles}
+              />
+
+              <TextField
+                label="Email"
+                variant="outlined"
+                fullWidth
+                id="email"
+                value={formData.email}
+                onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                sx={defaultStyles.inputStyles}
+              />
+
+              <TextField
+                label="Subject"
+                variant="outlined"
+                fullWidth
+                id="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                error={!!errors.subject}
+                helperText={errors.subject}
+                sx={defaultStyles.inputStyles}
+              />
+
+              <FormControl fullWidth variant="outlined" sx={defaultStyles.inputStyles}>
+              <InputLabel
+               htmlFor="outlined-adornment-message"
+               error={!!errors.message}
+               sx={{
+               color: errors.message ? 'error.main' : 'white', // White text by default, error color if there's an error
+               }}
+               >
+               Message
+               </InputLabel>
+               <OutlinedInput
+               id="message"
+               value={formData.message}
+               onChange={handleChange}
+               multiline
+               rows={5}
+               error={!!errors.message}
+               label="Message"
+               sx={{ color: 'white' }} // This makes the text inside the input white
+               />
+              {errors.message && (
+             <Typography variant="caption" color="error">
+              {errors.message}
+             </Typography>
+            )}
+          </FormControl>
+              <Button
+                fullWidth
+                variant="contained"
+                size="small"
+                color="primary"
+                className="mt-4 mb-4"
+                sx={{ padding: 2 }}
+                type="submit"
+              >
+                Send Message
+              </Button>
+            </>
+          )}
         </form>
       </div>
     </div>
