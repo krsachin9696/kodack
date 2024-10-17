@@ -13,6 +13,15 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LaunchIcon from '@mui/icons-material/Launch';
 import LeetcodeInfo from './components/LeetcodeInfo';
+import { Chart } from "react-google-charts";
+
+interface LeetcodeInfoProps {
+  avatar: string;
+  totalSolved: number;
+  easySolved: number;
+  mediumSolved: number;
+  hardSolved: number;
+}
 
 const Dashboard = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -42,12 +51,12 @@ const Dashboard = () => {
           columns={{ xs: 1, sm: 8, md: 12 }}
           sx={{ display: 'flex' }}
         >
-          <Grid2 size={{ xs: 1, sm: 8, md: 4 }}>
+          <Grid2 size={{ xs: 1, sm: 8, md: 4 }} gridRow={{}}>
             <Paper
               variant="outlined"
               sx={{
                 p: 2,
-                paddingTop: 4,
+                paddingTop: 2,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -115,6 +124,7 @@ const Dashboard = () => {
             <Paper
               variant="outlined"
               sx={{
+                height: '100%',
                 backgroundColor: 'rgba(255, 255, 255, 0.06)',
                 borderRadius: '5px',
                 backdropFilter: 'blur(10px)',

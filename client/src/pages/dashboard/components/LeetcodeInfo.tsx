@@ -5,8 +5,23 @@ import {
   CircularProgress,
   Avatar,
 } from '@mui/material';
+import { Chart } from "react-google-charts";
 
 const LeetcodeInfo = () => {
+
+  const leetcodeQuestions = [
+    ["questions", "solved"],
+    ["solvedProblem", 803],
+    ["easySolved", 276],
+    ["mediumSolved", 439],
+    ["hardSolved", 88],
+  ]
+
+  const options = {
+    title: "My Daily Activities",
+    pieHole: 0.4,
+    is3D: false,
+  };
 
   return (
     <>
@@ -29,8 +44,13 @@ const LeetcodeInfo = () => {
                 justifyContent: 'center',
               }}
             >
-
-              dfgsf
+              {/* <Chart
+                chartType="PieChart"
+                width="100%"
+                // height="400px"
+                data={leetcodeQuestions}
+                options={options}
+              /> */}
             </Box>
           </Grid2>
 
