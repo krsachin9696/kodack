@@ -1,14 +1,13 @@
-import { createBrowserRouter } from 'react-router-dom'
-import AboutUs from '../pages/about-us'
-import ContactUs from '../pages/contact-us'
-import Dashboard from '../pages/dashboard'
-import Login from '../pages/login'
-import Signup from '../pages/signup'
-// import AuthLayout from '../layouts/AuthLayout';
+import { createBrowserRouter } from 'react-router-dom';
+import AboutUs from '../pages/about-us';
+import ContactUs from '../pages/contact-us';
+import Dashboard from '../pages/dashboard';
+import Login from '../pages/login';
+import Signup from '../pages/signup';
 import ProtectedRoute from '../components/base/protectedRoutes';
 import UnprotectedRoute from '../components/base/unprotectRoute';
 import NotFound from '../pages/not-found';
-import Home from '../pages/home'
+import Home from '../pages/home';
 
 export const router = createBrowserRouter([
   {
@@ -17,12 +16,8 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        // path: "dashboard",
+        // path: 'profile/:username',
         element: <Dashboard />,
-      },
-      {
-        path: 'about',
-        element: <AboutUs />,
       },
     ],
   },
@@ -41,13 +36,17 @@ export const router = createBrowserRouter([
       },
       {
         path: 'home',
-        element: <Home />
+        element: <Home />,
       },
-      {
-        path: 'contactus',
-        element: <ContactUs />,
-      }
     ],
+  },
+  {
+    path: 'contactus',
+    element: <ContactUs />,
+  },
+  {
+    path: 'about',
+    element: <AboutUs />,
   },
   {
     path: '*',
