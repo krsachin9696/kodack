@@ -12,6 +12,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LaunchIcon from '@mui/icons-material/Launch';
+import LeetcodeInfo from './components/LeetcodeInfo';
 
 const Dashboard = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -39,6 +40,7 @@ const Dashboard = () => {
           container
           spacing={{ xs: 1, md: 1 }}
           columns={{ xs: 1, sm: 8, md: 12 }}
+          sx={{ display: 'flex' }}
         >
           <Grid2 size={{ xs: 1, sm: 8, md: 4 }}>
             <Paper
@@ -55,6 +57,7 @@ const Dashboard = () => {
                 backdropFilter: 'blur(10px)',
                 color: 'white',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
+                flex: 1,
               }}
             >
               <Avatar
@@ -113,13 +116,15 @@ const Dashboard = () => {
               variant="outlined"
               sx={{
                 backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                borderRadius: '6px',
+                borderRadius: '5px',
                 backdropFilter: 'blur(10px)',
                 color: 'white',
-                // border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                flex: 1,
               }}
             >
-              section 2
+              {/* section 2 */}
+              <LeetcodeInfo/>
             </Paper>
           </Grid2>
         </Grid2>
