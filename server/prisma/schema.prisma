@@ -152,7 +152,7 @@ model ListTag {
 model ContactUs {
   id           String    @id @default(uuid()) @db.Uuid
   name         String    @db.VarChar(100)
-  email        String    @unique @db.VarChar(100)
+  email        String    @db.VarChar(100)
   subject      String    @db.VarChar(200)
   message      String    @db.VarChar(500)
   createdAt    DateTime  @default(now()) @db.Timestamp(6)
