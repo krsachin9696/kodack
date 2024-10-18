@@ -135,6 +135,72 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
             }}
           >
             <ProblemSolvedChart solved={solved} />
+            <Box
+              // width='100%'
+              gap={2}
+              sx={{
+                mb: 2,
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                color: 'white',
+              }}
+            >
+              <Box
+                sx={{
+                  p: 0.2,
+                  pl: 2,
+                  pr: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  borderRadius: '5px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: 'white',
+                }}
+              >
+                <div className="text-label-3 text-sm text-green-400 font-bold">Easy</div>
+                <div className="text-label-3 text-sm">{solved.easySolved}</div>
+              </Box>
+              <Box
+                sx={{
+                  p: 0.2,
+                  pl: 2,
+                  pr: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  borderRadius: '5px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: 'white',
+                }}
+              >
+                <div className="text-label-3 text-sm text-yellow-600 font-bold">Med.</div>
+                <div className="text-label-3 text-sm">{solved.mediumSolved}</div>
+              </Box>
+              <Box
+                sx={{
+                  p: 0.2,
+                  pl: 2,
+                  pr: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  borderRadius: '5px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: 'white',
+                }}
+              >
+                <div className="text-label-3 text-sm text-red-500 font-bold">Hard</div>
+                <div className="text-label-3 text-sm">{solved.hardSolved}</div>
+              </Box>
+            </Box>
           </Box>
         </Grid2>
 
@@ -155,7 +221,7 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
             }}
           >
             <div className="flex items-start flex-col w-full">
-              <div className="text-label-3  text-xs">Badges</div>
+              <div className="text-label-3 text-xs text-gray-300">Badges</div>
               <Typography variant="h6" sx={{ marginTop: '0px' }}>
                 ({badges.badgesCount})
               </Typography>
@@ -170,7 +236,7 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
                 height: '100%',
               }}
             >
-              {badges.badges.map((badge: Badge) => (
+              {badges.badges.map((badge: Badge, index: number) => (
                 <Box
                   key={badge.id}
                   sx={{
@@ -182,12 +248,21 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
                   <Avatar
                     src={badge.icon}
                     alt='B'
-                    sx={{ width: 56, height: 56 }}
+                    sx={{
+                      mb: 2,
+                      width: index === 1 ? 95 : 70,
+                      height: index === 1 ? 95 : 70,
+                    }}
                   />
-                  <Typography>{badge.displayName}</Typography>
                 </Box>
               ))}
             </Box>
+            <div className="flex items-start flex-col w-full">
+              <div className="text-label-3 text-xs text-gray-300">Most Recent Badge</div>
+              <Typography variant="h6" sx={{ marginTop: '0px' }}>
+                ({badges.badges[0].displayName})
+              </Typography>
+            </div>
           </Box>
         </Grid2>
       </Grid2>
