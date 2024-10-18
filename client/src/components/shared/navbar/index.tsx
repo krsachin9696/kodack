@@ -141,6 +141,7 @@ export default function Navbar(props: Props) {
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
           background: 'rgba(255, 255, 255, 0.02)',
+          backdropFilter: 'blur(10px)',
         }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'flex-end' }}>

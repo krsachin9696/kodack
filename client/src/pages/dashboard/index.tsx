@@ -14,14 +14,6 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import LaunchIcon from '@mui/icons-material/Launch';
 import LeetcodeInfo from './components/LeetcodeInfo';
 
-interface LeetcodeInfoProps {
-  avatar: string;
-  totalSolved: number;
-  easySolved: number;
-  mediumSolved: number;
-  hardSolved: number;
-}
-
 const Dashboard = () => {
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -54,8 +46,9 @@ const Dashboard = () => {
             <Paper
               variant="outlined"
               sx={{
+                height: '100%',
                 p: 2,
-                paddingTop: 2,
+                // paddingTop: 2,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -124,16 +117,16 @@ const Dashboard = () => {
               variant="outlined"
               sx={{
                 height: '100%',
-                backgroundColor: 'rgba(255, 255, 255, 0.06)',
                 borderRadius: '5px',
                 backdropFilter: 'blur(10px)',
                 color: 'white',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'rgba(255, 255, 255, 0.0)',
+                // border: '1px solid rgba(255, 255, 255, 0.1)',
                 flex: 1,
               }}
             >
               {/* section 2 */}
-              <LeetcodeInfo/>
+              <LeetcodeInfo username={user?.username || ""}/>
             </Paper>
           </Grid2>
         </Grid2>
