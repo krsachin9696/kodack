@@ -13,7 +13,6 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LaunchIcon from '@mui/icons-material/Launch';
 import LeetcodeInfo from './components/LeetcodeInfo';
-import { Chart } from "react-google-charts";
 
 interface LeetcodeInfoProps {
   avatar: string;
