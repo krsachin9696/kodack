@@ -1,10 +1,4 @@
-import {
-  Box,
-  Typography,
-  Grid2,
-  Avatar,
-  CircularProgress,
-} from '@mui/material';
+import { Box, Typography, Grid2, Avatar, Skeleton } from '@mui/material';
 import ProblemSolvedChart from './Chart';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
@@ -103,7 +97,138 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
     queryFn: () => fetchLeetcodeData(username),
   });
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading)
+    return (
+      <>
+        <Grid2
+          container
+          height="100%"
+          spacing={{ xs: 1, md: 1 }}
+          columns={{ xs: 1, sm: 8, md: 12, lg: 12 }}
+          sx={{ display: 'flex' }}
+        >
+          {/* Chart Section */}
+          <Grid2 size={{ xs: 1, sm: 8, md: 12, lg: 5 }}>
+            <Box
+              height="100%"
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                borderRadius: '5px',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: 'white',
+                justifyContent: 'space-around',
+              }}
+            >
+              <Skeleton
+                variant="circular"
+                width={100}
+                height={100}
+                sx={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+              />
+              <Box
+                // width='100%'
+                gap={2}
+                sx={{
+                  mb: 2,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  color: 'white',
+                }}
+              >
+                <Skeleton
+                  variant="rounded"
+                  width={100}
+                  height={50}
+                  sx={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  width={100}
+                  height={50}
+                  sx={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  width={100}
+                  height={50}
+                  sx={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+                />
+              </Box>
+            </Box>
+          </Grid2>
+
+          {/* Badges Section */}
+          <Grid2 size={{ xs: 1, sm: 8, md: 12, lg: 7 }}>
+            <Box
+              sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                borderRadius: '5px',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: 'white',
+                justifyContent: 'center',
+                height: '100%',
+              }}
+            >
+              <div className="flex items-start flex-col w-full">
+                <Skeleton
+                  variant="text"
+                  sx={{
+                    fontSize: '1rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  }}
+                  width="100%"
+                />
+              </div>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 2,
+                  height: '100%',
+                }}
+              >
+                <Skeleton
+                  variant="circular"
+                  width={100}
+                  height={100}
+                  sx={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+                />
+                <Skeleton
+                  variant="circular"
+                  width={100}
+                  height={100}
+                  sx={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+                />
+                <Skeleton
+                  variant="circular"
+                  width={100}
+                  height={100}
+                  sx={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+                />
+              </Box>
+              <div className="flex items-start flex-col w-full">
+                <Skeleton
+                  variant="rounded"
+                  width="100%"
+                  height={50}
+                  sx={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+                />
+              </div>
+            </Box>
+          </Grid2>
+        </Grid2>
+      </>
+    );
   if (isError) return <Typography>Error fetching Leetcode data</Typography>;
 
   console.log(data, 'this is data');
@@ -161,7 +286,9 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
                   color: 'white',
                 }}
               >
-                <div className="text-label-3 text-sm text-green-400 font-bold">Easy</div>
+                <div className="text-label-3 text-sm text-green-400 font-bold">
+                  Easy
+                </div>
                 <div className="text-label-3 text-sm">{solved.easySolved}</div>
               </Box>
               <Box
@@ -179,8 +306,12 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
                   color: 'white',
                 }}
               >
-                <div className="text-label-3 text-sm text-yellow-600 font-bold">Med.</div>
-                <div className="text-label-3 text-sm">{solved.mediumSolved}</div>
+                <div className="text-label-3 text-sm text-yellow-600 font-bold">
+                  Med.
+                </div>
+                <div className="text-label-3 text-sm">
+                  {solved.mediumSolved}
+                </div>
               </Box>
               <Box
                 sx={{
@@ -197,7 +328,9 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
                   color: 'white',
                 }}
               >
-                <div className="text-label-3 text-sm text-red-500 font-bold">Hard</div>
+                <div className="text-label-3 text-sm text-red-500 font-bold">
+                  Hard
+                </div>
                 <div className="text-label-3 text-sm">{solved.hardSolved}</div>
               </Box>
             </Box>
@@ -247,7 +380,7 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
                 >
                   <Avatar
                     src={badge.icon}
-                    alt='B'
+                    alt="B"
                     sx={{
                       mb: 2,
                       width: index === 1 ? 95 : 70,
@@ -258,7 +391,9 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
               ))}
             </Box>
             <div className="flex items-start flex-col w-full">
-              <div className="text-label-3 text-xs text-gray-300">Most Recent Badge</div>
+              <div className="text-label-3 text-xs text-gray-300">
+                Most Recent Badge
+              </div>
               <Typography variant="h6" sx={{ marginTop: '0px' }}>
                 ({badges.badges[0].displayName})
               </Typography>
