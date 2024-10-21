@@ -62,7 +62,7 @@ export const forgotPasswordUser = async (email) => {
     const user = await findUserByEmail(email);
 
     if (!user) {
-      throw new Error('Email does not exist');
+      return ('Email does not exist');
     }
 
     const otp = crypto.randomInt(100000, 999999).toString();
@@ -86,7 +86,7 @@ export const verifyUserOtp = async (email, otp) => {
   const user = await findUserByEmail(email);
 
   if (!user) {
-    throw new Error('User not found');
+    throw new Error('Invalid OTP');
   }
 
   if (user.otp === otp && user.otpExpiresAt > new Date()) {
