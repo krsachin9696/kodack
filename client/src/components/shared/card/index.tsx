@@ -16,7 +16,7 @@ const CardWrapper: React.FC<CardWrapperProps> = ({ children, sx }) => {
         color: 'white',
         display: 'flex',
         height: '100%',
-        borderRadius: '5px',
+        borderRadius: '6px',
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',

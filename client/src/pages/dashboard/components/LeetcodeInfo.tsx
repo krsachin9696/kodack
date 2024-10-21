@@ -74,7 +74,7 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
       <Grid2
         container
         height="100%"
-        spacing={{ xs: 1, md: 1 }}
+        spacing={{ xs: 1, md: 2 }}
         columns={{ xs: 1, sm: 8, md: 12, lg: 12 }}
         sx={{ display: 'flex' }}
       >
@@ -183,7 +183,7 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
     <Grid2
       container
       height="100%"
-      spacing={{ xs: 1, md: 1 }}
+      spacing={{ xs: 1, md: 2 }}
       columns={{ xs: 1, sm: 8, md: 12, lg: 12 }}
       sx={{ display: 'flex' }}
     >

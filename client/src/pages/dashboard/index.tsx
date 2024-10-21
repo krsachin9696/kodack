@@ -33,7 +33,7 @@ const Dashboard = () => {
       >
         <Grid2
           container
-          spacing={{ xs: 1, md: 1 }}
+          spacing={{ xs: 1, md: 2 }}
           columns={{ xs: 1, sm: 8, md: 12 }}
           sx={{ display: 'flex' }}
         >
@@ -94,7 +94,7 @@ const Dashboard = () => {
           container
           width="100%"
           minHeight="50vh"
-          spacing={{ xs: 1, md: 1 }}
+          spacing={{ xs: 1, md: 2 }}
           columns={{ xs: 1, sm: 8, md: 6, lg: 12 }}
           sx={{ display: 'flex' }}
         >
