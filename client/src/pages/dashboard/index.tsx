@@ -1,12 +1,23 @@
-
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { Box, Grid2, Typography, Avatar, IconButton } from '@mui/material';
+import {
+  Box,
+  Grid2,
+  Typography,
+  Avatar,
+  IconButton,
+  Chip,
+} from '@mui/material';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LaunchIcon from '@mui/icons-material/Launch';
 import LeetcodeInfo from './components/LeetcodeInfo';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import Divider from '@mui/material/Divider';
+
 import CardWrapper from '../../components/shared/card';
 
 const Dashboard = () => {
@@ -90,6 +101,8 @@ const Dashboard = () => {
             <LeetcodeInfo username={user?.username || ''} />
           </Grid2>
         </Grid2>
+
+        {/* List */}
         <Grid2
           container
           width="100%"
@@ -99,15 +112,315 @@ const Dashboard = () => {
           sx={{ display: 'flex' }}
         >
           <Grid2 size={{ xs: 12, sm: 8, md: 6 }}>
-            <CardWrapper>
-              {/* Content for the first card */}
-              Some content here
+            <CardWrapper
+              sx={{
+                p: 0,
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start',
+              }}
+            >
+              <Box marginBottom={1} width="100%">
+                <Box
+                  padding={2}
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent="space-between"
+                  paddingBottom={1}
+                >
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    // justifyContent="space-between"
+                    gap={1}
+                  >
+                    <ListAltIcon />
+                    <Typography sx={{ fontWeight: 600 }}>
+                      Personal Lists
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <AddCircleOutlinedIcon />
+                  </Box>
+                </Box>
+                <Box width="100%">
+                  <Divider
+                    variant="fullWidth"
+                    sx={{ border: '0.01px solid', borderColor: 'gray' }}
+                  />
+                </Box>
+              </Box>
+
+              <Box width="100%" padding={1} gap={2}>
+                {/* private lists over here */}
+                <Box
+                  width="100%"
+                  padding={2}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
+                  <Box>
+                    <Chip
+                      label="array"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="recursion"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="dp"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                  </Box>
+                </Box>
+                <Box
+                  width="100%"
+                  padding={2}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
+                  <Box>
+                    <Chip
+                      label="array"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="recursion"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="dp"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                  </Box>
+                </Box>
+                <Box
+                  width="100%"
+                  padding={2}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
+                  <Box>
+                    <Chip
+                      label="array"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="recursion"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="dp"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                  </Box>
+                </Box>
+                <Box
+                  width="100%"
+                  padding={2}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
+                  <Box>
+                    <Chip
+                      label="array"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="recursion"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="dp"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                  </Box>
+                </Box>
+                <Box
+                  width="100%"
+                  padding={2}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
+                  <Box>
+                    <Chip
+                      label="array"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="recursion"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="dp"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                  </Box>
+                </Box>
+                <Box
+                  width="100%"
+                  padding={2}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
+                  <Box>
+                    <Chip
+                      label="array"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="recursion"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="dp"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                  </Box>
+                </Box>
+                <Box
+                  width="100%"
+                  padding={2}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
+                  <Box>
+                    <Chip
+                      label="array"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="recursion"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="dp"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                  </Box>
+                </Box>
+                <Box
+                  width="100%"
+                  padding={2}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
+                  <Box>
+                    <Chip
+                      label="array"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="recursion"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                    <Chip
+                      label="dp"
+                      size="small"
+                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
+                    />
+                  </Box>
+                </Box>
+              </Box>
             </CardWrapper>
           </Grid2>
           <Grid2 size={{ xs: 12, sm: 8, md: 6 }}>
-            <CardWrapper>
-              {/* Content for the second card */}
-              Another piece of content
+            <CardWrapper
+              sx={{
+                p: 0,
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start',
+              }}
+            >
+              <Box marginBottom={1} width="100%">
+                <Box
+                  padding={2}
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent="space-between"
+                  paddingBottom={1}
+                >
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    // justifyContent="space-between"
+                    gap={1}
+                  >
+                    <ListAltIcon />
+                    <Typography sx={{ fontWeight: 600 }}>
+                      Public Lists
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <AddCircleOutlineOutlinedIcon />
+                  </Box>
+                </Box>
+                <Box width="100%">
+                  <Divider
+                    variant="fullWidth"
+                    sx={{ border: '0.01px solid', borderColor: 'gray' }}
+                  />
+                </Box>
+              </Box>
+
+              <Box padding={2}>public lists over here</Box>
             </CardWrapper>
           </Grid2>
         </Grid2>
