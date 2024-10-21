@@ -48,6 +48,7 @@ const ForgotPassword = () => {
   // Step 2: Verify OTP
   const { mutate: verifyOtp, status: verifyOtpStatus } = useMutation({
     mutationFn: () => __verifyOtp({ email, otp }),
+    mutationKey: [queryKeys.VERIFY_OTP],
     onSuccess: () => {
       toast.info('OTP verified');
       setStep('enterNewPassword');
@@ -61,6 +62,7 @@ const ForgotPassword = () => {
   // Step 3: Reset Password
   const { mutate: resetPassword, status: resetPasswordStatus } = useMutation({
     mutationFn: () => __resetPassword({ email, password: passwords.newPassword, confirmPassword: passwords.confirmPassword }),
+    mutationKey: [queryKeys.SETUP_PASSWORD],
     onSuccess: () => {
       toast.info('Password reset successfully');
       navigate('/login');
