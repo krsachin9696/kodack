@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 
 interface CardWrapperProps {
   children: React.ReactNode;
@@ -7,7 +7,9 @@ interface CardWrapperProps {
 
 const CardWrapper: React.FC<CardWrapperProps> = ({ children, sx }) => {
   return (
-    <Box
+    <Paper
+      variant='elevation'
+      elevation={8}
       sx={{
         p: 2,
         flex: 1,
@@ -19,12 +21,12 @@ const CardWrapper: React.FC<CardWrapperProps> = ({ children, sx }) => {
         flexDirection: 'column',
         justifyContent: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.06)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        // border: '1px solid rgba(255, 255, 255, 0.1)',
         ...sx, // Merge additional styles
       }}
     >
       {children}
-    </Box>
+    </Paper>
   );
 };
 
