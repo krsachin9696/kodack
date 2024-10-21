@@ -28,7 +28,7 @@ const Dashboard = () => {
           p: 1,
           display: 'flex',
           flexDirection: 'column',
-          gap: 1,
+          gap: 2,
         }}
       >
         <Grid2

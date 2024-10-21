@@ -1,8 +1,8 @@
 import { Box, Typography, Grid2, Avatar, Skeleton } from '@mui/material';
 import ProblemSolvedChart from './Chart';
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import CardWrapper from '../../../components/shared/card';
+import { fetchLeetcodeData } from '../services/fetchLeetcodeData';
 
 interface Badge {
   id: string;
@@ -25,7 +25,7 @@ export interface SolvedData {
 
 type SolvedKeys = keyof SolvedData;
 
-interface LeetcodeData {
+export interface LeetcodeData {
   solved: SolvedData;
   badges: BadgesData;
 }
@@ -62,37 +62,6 @@ interface LeetcodeData {
 //     ],
 //   },
 // };
-
-// Fetching only the relevant data from the APIs
-const fetchLeetcodeData = async (username: string): Promise<LeetcodeData> => {
-  console.log('ye function call ho rha hai', username);
-  const baseUrl = `https://alfa-leetcode-api.onrender.com/${username}`;
-
-  // Fetching the solved and badges data
-  const [solvedResponse, badgesResponse] = await Promise.all([
-    axios.get(`${baseUrl}/solved`),
-    axios.get(`${baseUrl}/badges`),
-  ]);
-
-  // Destructuring only the necessary data
-  const { solvedProblem, easySolved, mediumSolved, hardSolved } =
-    solvedResponse.data;
-  const { badgesCount, badges } = badgesResponse.data;
-
-  // Returning the required data
-  return {
-    solved: {
-      solvedProblem,
-      easySolved,
-      mediumSolved,
-      hardSolved,
-    },
-    badges: {
-      badgesCount,
-      badges: badges.slice(0, 3),
-    },
-  };
-};
 
 const LeetcodeInfo = ({ username }: { username: string }) => {
   const { isLoading, isError, data } = useQuery({
