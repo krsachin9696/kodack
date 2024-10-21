@@ -97,7 +97,7 @@ const LeetcodeInfo = ({ username }: { username: string }) => {
     queryFn: () => fetchLeetcodeData(username),
   });
 
-  if (isLoading)
+  if (isLoading || isError)
     return (
       <>
         <Grid2

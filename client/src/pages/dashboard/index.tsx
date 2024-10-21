@@ -35,14 +35,22 @@ const Dashboard = () => {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1, p: 1 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+        }}
+      >
         <Grid2
           container
           spacing={{ xs: 1, md: 1 }}
           columns={{ xs: 1, sm: 8, md: 12 }}
           sx={{ display: 'flex' }}
         >
-          <Grid2 size={{ xs: 1, sm: 8, md: 4 }} gridRow={{}}>
+          <Grid2 size={{ xs: 1, sm: 8, md: 4 }}>
             <Paper
               variant="outlined"
               sx={{
@@ -64,12 +72,10 @@ const Dashboard = () => {
               <Avatar
                 // alt={name}
                 // src={profilePhoto}
-                src='https://assets.leetcode.com/users/avatars/avatar_1666705889.png'
+                src="https://assets.leetcode.com/users/avatars/avatar_1666705889.png"
                 sx={{ width: 100, height: 100 }}
               />
-              <Typography variant="h6">
-                {user?.name}
-              </Typography>
+              <Typography variant="h6">{user?.name}</Typography>
               <Typography variant="body1" sx={{ mb: 1 }}>
                 @{user?.username}
               </Typography>
@@ -113,7 +119,7 @@ const Dashboard = () => {
             </Paper>
           </Grid2>
           <Grid2 size={{ xs: 2, sm: 8, md: 8 }}>
-            <Paper
+            {/* <Paper
               variant="outlined"
               sx={{
                 height: '100%',
@@ -124,10 +130,54 @@ const Dashboard = () => {
                 // border: '1px solid rgba(255, 255, 255, 0.1)',
                 flex: 1,
               }}
-            >
-              {/* section 2 */}
-              <LeetcodeInfo username={user?.username || ""}/>
-            </Paper>
+            > */}
+            {/* section 2 */}
+            <LeetcodeInfo username={user?.username || ''} />
+            {/* </Paper> */}
+          </Grid2>
+        </Grid2>
+        <Grid2
+          container
+          width="100%"
+          spacing={{ xs: 1, md: 1 }}
+          columns={{ xs: 1, sm: 8, md: 6, lg: 12 }}
+          sx={{ display: 'flex' }}
+        >
+          <Grid2
+            size={{ xs: 1, sm: 8, md: 6, lg: 6 }}
+            sx={{
+              p: 2,
+              flex: 1,
+              color: 'white',
+              height: '100%',
+              display: 'flex',
+              borderRadius: '5px',
+              alignItems: 'center',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(255, 255, 255, 0.06)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            somethiing
+          </Grid2>
+          <Grid2
+            size={{ xs: 1, sm: 8, md: 6, lg: 6 }}
+            sx={{
+              p: 2,
+              flex: 1,
+              color: 'white',
+              height: '100%',
+              display: 'flex',
+              borderRadius: '5px',
+              alignItems: 'center',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(255, 255, 255, 0.06)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            
           </Grid2>
         </Grid2>
       </Box>
