@@ -2,6 +2,7 @@ import {
   signupUser,
   verifyUserOtp,
   setupUserPassword,
+  forgotPasswordUser,
 } from './authServices.js';
 import passport from 'passport';
 
@@ -21,6 +22,16 @@ const signup = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+const forgotPassword = async (req, res) => {
+  const {email} = req.body;
+  try {
+    const result = await forgotPasswordUser(email)
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({error:error.message});
+  }
+}
 
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
@@ -105,4 +116,4 @@ const logout = (req, res) => {
   });
 };
 
-export { signup, verifyOtp, setupPassword, login, logout };
+export { signup, verifyOtp, setupPassword, login, logout, forgotPassword };
