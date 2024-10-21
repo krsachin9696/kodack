@@ -1,18 +1,13 @@
+
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import {
-  Box,
-  Grid2,
-  Paper,
-  Typography,
-  Avatar,
-  IconButton,
-} from '@mui/material';
+import { Box, Grid2, Typography, Avatar, IconButton } from '@mui/material';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LaunchIcon from '@mui/icons-material/Launch';
 import LeetcodeInfo from './components/LeetcodeInfo';
+import CardWrapper from '../../components/shared/card';
 
 const Dashboard = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -24,14 +19,6 @@ const Dashboard = () => {
     portfolio: 'k',
     leetcode: null,
   };
-
-  // if(isLoading) {
-  //   return (<>fetching user data...</>)
-  // }
-
-  // if (isError) {
-  //   return <>Error fetching User Data... </>
-  // };
 
   return (
     <>
@@ -50,28 +37,9 @@ const Dashboard = () => {
           columns={{ xs: 1, sm: 8, md: 12 }}
           sx={{ display: 'flex' }}
         >
-          <Grid2 size={{ xs: 1, sm: 8, md: 4 }}>
-            <Paper
-              variant="outlined"
-              sx={{
-                height: '100%',
-                p: 2,
-                // paddingTop: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                borderRadius: '5px',
-                backdropFilter: 'blur(10px)',
-                color: 'white',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                flex: 1,
-              }}
-            >
+          <Grid2 size={{ xs: 12, sm: 8, md: 4 }}>
+            <CardWrapper>
               <Avatar
-                // alt={name}
-                // src={profilePhoto}
                 src="https://assets.leetcode.com/users/avatars/avatar_1666705889.png"
                 sx={{ width: 100, height: 100 }}
               />
@@ -116,68 +84,31 @@ const Dashboard = () => {
                   <LaunchIcon sx={{ fontSize: '2rem' }} />
                 </IconButton>
               </Box>
-            </Paper>
+            </CardWrapper>
           </Grid2>
-          <Grid2 size={{ xs: 2, sm: 8, md: 8 }}>
-            {/* <Paper
-              variant="outlined"
-              sx={{
-                height: '100%',
-                borderRadius: '5px',
-                backdropFilter: 'blur(10px)',
-                color: 'white',
-                backgroundColor: 'rgba(255, 255, 255, 0.0)',
-                // border: '1px solid rgba(255, 255, 255, 0.1)',
-                flex: 1,
-              }}
-            > */}
-            {/* section 2 */}
+          <Grid2 size={{ xs: 12, sm: 8, md: 8 }}>
             <LeetcodeInfo username={user?.username || ''} />
-            {/* </Paper> */}
           </Grid2>
         </Grid2>
         <Grid2
           container
           width="100%"
+          minHeight="50vh"
           spacing={{ xs: 1, md: 1 }}
           columns={{ xs: 1, sm: 8, md: 6, lg: 12 }}
           sx={{ display: 'flex' }}
         >
-          <Grid2
-            size={{ xs: 1, sm: 8, md: 6, lg: 6 }}
-            sx={{
-              p: 2,
-              flex: 1,
-              color: 'white',
-              height: '100%',
-              display: 'flex',
-              borderRadius: '5px',
-              alignItems: 'center',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-            }}
-          >
-            somethiing
+          <Grid2 size={{ xs: 12, sm: 8, md: 6 }}>
+            <CardWrapper>
+              {/* Content for the first card */}
+              Some content here
+            </CardWrapper>
           </Grid2>
-          <Grid2
-            size={{ xs: 1, sm: 8, md: 6, lg: 6 }}
-            sx={{
-              p: 2,
-              flex: 1,
-              color: 'white',
-              height: '100%',
-              display: 'flex',
-              borderRadius: '5px',
-              alignItems: 'center',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-            }}
-          >
-            
+          <Grid2 size={{ xs: 12, sm: 8, md: 6 }}>
+            <CardWrapper>
+              {/* Content for the second card */}
+              Another piece of content
+            </CardWrapper>
           </Grid2>
         </Grid2>
       </Box>
