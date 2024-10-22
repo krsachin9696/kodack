@@ -14,11 +14,49 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import LaunchIcon from '@mui/icons-material/Launch';
 import LeetcodeInfo from './components/LeetcodeInfo';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
+import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
+import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
+import VpnLockTwoToneIcon from '@mui/icons-material/VpnLockTwoTone';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import Divider from '@mui/material/Divider';
 
 import CardWrapper from '../../components/shared/card';
+
+const personalLists = [
+  {
+    name: 'A2Z DSA Sheet',
+    tags: ['array', 'recursion', 'dp'],
+    isPublic: false,
+  },
+  {
+    name: 'Algorithm Study Plan',
+    tags: ['dynamic programming', 'greedy'],
+    isPublic: true,
+  },
+  {
+    name: 'A2Z DSA Sheet',
+    tags: ['array', 'recursion', 'dp'],
+    isPublic: false,
+  },
+  {
+    name: 'Algorithm Study Plan',
+    tags: ['dynamic programming', 'greedy'],
+    isPublic: true,
+  },
+];
+
+const publicLists = [
+  {
+    name: 'Interview Preparation',
+    tags: ['array', 'strings', 'searching'],
+    isPublic: true,
+  },
+  {
+    name: 'Competitive Programming',
+    tags: ['graphs', 'trees', 'backtracking'],
+    isPublic: true,
+  },
+];
 
 const Dashboard = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -120,18 +158,18 @@ const Dashboard = () => {
               }}
             >
               <Box marginBottom={1} width="100%">
-                <Box
-                  padding={2}
-                  display="flex"
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  paddingBottom={1}
+                <CardWrapper
+                  sx={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingBottom: 1,
+                  }}
                 >
                   <Box
                     display="flex"
                     flexDirection="row"
                     alignItems="center"
-                    // justifyContent="space-between"
                     gap={1}
                   >
                     <ListAltIcon />
@@ -140,9 +178,9 @@ const Dashboard = () => {
                     </Typography>
                   </Box>
                   <Box>
-                    <AddCircleOutlinedIcon />
+                    <AddCircleTwoToneIcon />
                   </Box>
-                </Box>
+                </CardWrapper>
                 <Box width="100%">
                   <Divider
                     variant="fullWidth"
@@ -151,232 +189,61 @@ const Dashboard = () => {
                 </Box>
               </Box>
 
-              <Box width="100%" padding={1} gap={2}>
-                {/* private lists over here */}
-                <Box
-                  width="100%"
-                  padding={2}
-                  borderLeft={4}
-                  borderColor="skyblue"
-                  borderRadius={2}
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
-                  <Box>
-                    <Chip
-                      label="array"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="recursion"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="dp"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
+              <Box
+                width="100%"
+                padding={1}
+                gap={1}
+                display="flex"
+                flexDirection="column"
+              >
+                {personalLists.map((list, index) => (
+                  <Box
+                    key={index}
+                    width="100%"
+                    padding={1}
+                    borderLeft={4}
+                    borderColor="skyblue"
+                    borderRadius={2}
+                    display="flex"
+                    flexDirection="column"
+                    sx={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                      },
+                    }}
+                  >
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      paddingBottom={1}
+                    >
+                      <Typography
+                        sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
+                      >
+                        {list.name}
+                      </Typography>
+                      {list.isPublic ? (
+                        <PublicOutlinedIcon fontSize="small" />
+                      ) : (
+                        <VpnLockTwoToneIcon fontSize="small" />
+                      )}
+                    </Box>
+                    <Box display="flex" justifyContent="flex-start" gap={1}>
+                      {list.tags.map((tag, tagIndex) => (
+                        <Chip
+                          key={tagIndex}
+                          label={tag}
+                          size="small"
+                          sx={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                            color: 'white',
+                          }}
+                        />
+                      ))}
+                    </Box>
                   </Box>
-                </Box>
-                <Box
-                  width="100%"
-                  padding={2}
-                  borderLeft={4}
-                  borderColor="skyblue"
-                  borderRadius={2}
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
-                  <Box>
-                    <Chip
-                      label="array"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="recursion"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="dp"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  width="100%"
-                  padding={2}
-                  borderLeft={4}
-                  borderColor="skyblue"
-                  borderRadius={2}
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
-                  <Box>
-                    <Chip
-                      label="array"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="recursion"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="dp"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  width="100%"
-                  padding={2}
-                  borderLeft={4}
-                  borderColor="skyblue"
-                  borderRadius={2}
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
-                  <Box>
-                    <Chip
-                      label="array"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="recursion"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="dp"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  width="100%"
-                  padding={2}
-                  borderLeft={4}
-                  borderColor="skyblue"
-                  borderRadius={2}
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
-                  <Box>
-                    <Chip
-                      label="array"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="recursion"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="dp"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  width="100%"
-                  padding={2}
-                  borderLeft={4}
-                  borderColor="skyblue"
-                  borderRadius={2}
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
-                  <Box>
-                    <Chip
-                      label="array"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="recursion"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="dp"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  width="100%"
-                  padding={2}
-                  borderLeft={4}
-                  borderColor="skyblue"
-                  borderRadius={2}
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
-                  <Box>
-                    <Chip
-                      label="array"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="recursion"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="dp"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  width="100%"
-                  padding={2}
-                  borderLeft={4}
-                  borderColor="skyblue"
-                  borderRadius={2}
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Typography sx={{ fontFamily: 'sans-serif'}}>A2Z DSA Sheet.</Typography>
-                  <Box>
-                    <Chip
-                      label="array"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="recursion"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                    <Chip
-                      label="dp"
-                      size="small"
-                      sx={{ backgroundColor: 'yourColor', color: 'white' }}
-                    />
-                  </Box>
-                </Box>
+                ))}
               </Box>
             </CardWrapper>
           </Grid2>
@@ -389,18 +256,18 @@ const Dashboard = () => {
               }}
             >
               <Box marginBottom={1} width="100%">
-                <Box
-                  padding={2}
-                  display="flex"
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  paddingBottom={1}
+                <CardWrapper
+                  sx={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingBottom: 1,
+                  }}
                 >
                   <Box
                     display="flex"
                     flexDirection="row"
                     alignItems="center"
-                    // justifyContent="space-between"
                     gap={1}
                   >
                     <ListAltIcon />
@@ -411,7 +278,7 @@ const Dashboard = () => {
                   <Box>
                     <AddCircleOutlineOutlinedIcon />
                   </Box>
-                </Box>
+                </CardWrapper>
                 <Box width="100%">
                   <Divider
                     variant="fullWidth"
@@ -420,7 +287,62 @@ const Dashboard = () => {
                 </Box>
               </Box>
 
-              <Box padding={2}>public lists over here</Box>
+              <Box
+                width="100%"
+                padding={1}
+                gap={1}
+                display="flex"
+                flexDirection="column"
+              >
+                {publicLists.map((list, index) => (
+                  <Box
+                    key={index}
+                    width="100%"
+                    padding={1}
+                    borderLeft={4}
+                    borderColor="skyblue"
+                    borderRadius={2}
+                    display="flex"
+                    flexDirection="column"
+                    sx={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                      },
+                    }}
+                  >
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      paddingBottom={1}
+                    >
+                      <Typography
+                        sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
+                      >
+                        {list.name}
+                      </Typography>
+                      {list.isPublic ? (
+                        <PublicOutlinedIcon fontSize="small" />
+                      ) : (
+                        <VpnLockTwoToneIcon fontSize="small" />
+                      )}
+                    </Box>
+                    <Box display="flex" justifyContent="flex-start" gap={1}>
+                      {list.tags.map((tag, tagIndex) => (
+                        <Chip
+                          key={tagIndex}
+                          label={tag}
+                          size="small"
+                          sx={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                            color: 'white',
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
             </CardWrapper>
           </Grid2>
         </Grid2>
