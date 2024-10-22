@@ -3,8 +3,8 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import { ReactNode } from 'react';
-import { IconButton } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { Divider, IconButton, Typography } from '@mui/material';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CardWrapper from '../shared/card';
 
 interface CustomModalProps {
@@ -12,9 +12,11 @@ interface CustomModalProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   width?: number;
+  name: string;
 }
 
 const style = {
+  padding: 0,
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -28,7 +30,7 @@ const style = {
 };
 
 export default function CustomModal({ children, ...props }: CustomModalProps) {
-  const { open, setOpen, width } = props;
+  const { open, setOpen, name, width } = props;
 
   const handleClose = (): void => setOpen(false);
 
@@ -55,11 +57,24 @@ export default function CustomModal({ children, ...props }: CustomModalProps) {
               sx={{
                 backgroundColor: 'rgba(255, 255, 255, 0.04)',
                 backdropFilter: 'blur(10px)',
+                p: 0,
               }}
             >
-              <IconButton onClick={handleClose}>
-                <Close sx={{ color: 'white' }} />
-              </IconButton>
+              <Box
+                padding={1}
+                width="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+              >
+                
+                <Typography sx={{ fontWeight: '600' }}>{name}</Typography>
+                <IconButton onClick={handleClose}>
+                  <HighlightOffIcon sx={{ color: 'white' }} />
+                </IconButton>
+              </Box>
+
               {children}
             </CardWrapper>
           </Box>

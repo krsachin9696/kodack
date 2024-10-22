@@ -46,7 +46,10 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
               <Typography sx={{ fontWeight: 600 }}>{title}</Typography>
             </Box>
             <Box>
-              <AddCircleTwoToneIcon onClick={() => setModalOpen(true)} style={{ cursor: 'pointer' }} />
+              <AddCircleTwoToneIcon
+                onClick={() => setModalOpen(true)}
+                style={{ cursor: 'pointer' }}
+              />
             </Box>
           </CardWrapper>
           <Divider
@@ -55,7 +58,13 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
           />
         </Box>
 
-        <Box width="100%" padding={1} gap={1} display="flex" flexDirection="column">
+        <Box
+          width="100%"
+          padding={1}
+          gap={1}
+          display="flex"
+          flexDirection="column"
+        >
           {lists.map((list, index) => (
             <Box
               key={index}
@@ -73,8 +82,14 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
                 },
               }}
             >
-              <Box display="flex" justifyContent="space-between" paddingBottom={1}>
-                <Typography sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                paddingBottom={1}
+              >
+                <Typography
+                  sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
+                >
                   {list.name}
                 </Typography>
                 {list.isPublic ? (
@@ -101,10 +116,7 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
         </Box>
       </CardWrapper>
 
-      <CustomModal
-        open={modalOpen}
-        setOpen={setModalOpen}
-      >
+      <CustomModal open={modalOpen} setOpen={setModalOpen} name='Create List'>
         <CreateList />
       </CustomModal>
     </>
