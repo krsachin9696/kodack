@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { Box, Typography, Chip, Divider } from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
-import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
-import VpnLockTwoToneIcon from '@mui/icons-material/VpnLockTwoTone';
 import CardWrapper from '../../../components/shared/card';
 import CustomModal from '../../../components/base/customModal';
 import CreateList from './CreateList';
@@ -93,9 +91,19 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
                   {list.name}
                 </Typography>
                 {list.isPublic ? (
-                  <PublicOutlinedIcon fontSize="small" />
+                  <Chip
+                    label="public"
+                    color="warning"
+                    variant="outlined"
+                    size="small"
+                  />
                 ) : (
-                  <VpnLockTwoToneIcon fontSize="small" />
+                  <Chip
+                    label="private"
+                    color="primary"
+                    variant="outlined"
+                    size="small"
+                  />
                 )}
               </Box>
               <Box display="flex" justifyContent="flex-start" gap={1}>
@@ -116,7 +124,7 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
         </Box>
       </CardWrapper>
 
-      <CustomModal open={modalOpen} setOpen={setModalOpen} name='Create List'>
+      <CustomModal open={modalOpen} setOpen={setModalOpen} name="Create List">
         <CreateList />
       </CustomModal>
     </>
