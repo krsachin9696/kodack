@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-const contactUsSchema = Joi.object({
+const contactUsSchemaValidation = Joi.object({
   name: Joi.string().trim().min(2).max(50).required().messages({
     'string.empty': 'Name is required.',
     'string.min': 'Name must be at least 2 characters long.',
@@ -25,4 +25,4 @@ const contactUsSchema = Joi.object({
   }),
 });
 
-export { contactUsSchema };
+export { contactUsSchemaValidation };
