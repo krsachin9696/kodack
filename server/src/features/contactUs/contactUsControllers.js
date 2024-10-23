@@ -1,19 +1,10 @@
-import { contactUsSchema } from './contactUsValidation.js';
-import * as contactUsService from './contactUsServices.js';
+import * as createContactUsService from './contactUsServices.js';
 import logger from '../../utils/logger.js';
 
 export const createContactUs = async (req, res) => {
+  const { name, email, subject, message } = req.body;
   try {
-    // Validate request body
-    const { error } = contactUsSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ error: error.details[0].message });
-    }
-
-    const { name, email, subject, message } = req.body;
-
-    // Call service layer to handle creation logic
-    const newContactForm = await contactUsService.createContactUsService({
+    const newContactForm = await createContactUsService({
       name,
       email,
       subject,

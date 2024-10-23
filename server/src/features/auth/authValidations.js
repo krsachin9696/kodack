@@ -39,6 +39,13 @@ const loginSchema = Joi.object({
   }),
 });
 
+const forgotPasswordSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    'string.empty': 'Email is required.',
+    'string.email': 'Invalid email format.'
+  })
+})
+
 const otpSchema = Joi.object({
   email: Joi.string().email().required().messages({
     'string.empty': 'Email is required.',
@@ -64,4 +71,4 @@ const passwordSetupSchema = Joi.object({
   }),
 });
 
-export { signupSchema, loginSchema, otpSchema, passwordSetupSchema };
+export { signupSchema, loginSchema, otpSchema, passwordSetupSchema, forgotPasswordSchema };

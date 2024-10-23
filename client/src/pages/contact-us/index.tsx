@@ -106,7 +106,7 @@ export default function ContactUs() {
 
       <div className="flex w-full md:w-1/2 justify-center items-center">
         <form
-          className="p-10 rounded-lg w-11/12 max-w-lg flex-col space-y-4"
+          className="p-10 rounded-lg w-11/12 max-w-lg flex-col space-y-1"
           style={{
             border: '1px solid rgba(51, 60, 77, 0.6)',
             background: 'rgba(255, 255, 255, 0.02)',
