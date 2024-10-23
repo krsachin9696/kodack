@@ -63,7 +63,7 @@ const passwordSetupSchema = Joi.object({
   }),
   password: Joi.string().min(8).required().messages({
     'string.empty': 'Password is required.',
-    'string.min': 'Password must be at least 6 characters long.',
+    'string.min': 'Password must be at least 8 characters long.',
   }),
   confirmPassword: Joi.string().required().valid(Joi.ref('password')).messages({
     'any.only': 'Passwords must match.',
