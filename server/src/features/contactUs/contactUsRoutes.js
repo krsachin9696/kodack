@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { createContactUS } from './contactUsControllers.js';
+import { createContactUs } from './contactUsControllers.js';
 
 const contactUsRoute = Router();
 
-contactUsRoute.post('/', createContactUS);
+contactUsRoute.post('/', createContactUs);
 
 export default contactUsRoute;

@@ -10,4 +10,7 @@ export default {
     logout: `${SERVERURL}/auth/logout`,
     getUser: `${SERVERURL}/user`,
   },
+  public: {
+    contactUs: `${SERVERURL}/contact-us`,
+  }
 };
