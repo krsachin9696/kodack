@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import useLogout from '../../../hooks/logout';
 
 const drawerWidth = 240;
 
@@ -26,6 +27,7 @@ export default function Navbar(props: Props) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { handleLogout } = useLogout();
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -47,6 +49,11 @@ export default function Navbar(props: Props) {
   };
 
   const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+  
+  const handleLogoutButton = () => {
+    handleLogout();
     setAnchorEl(null);
   };
 
@@ -98,7 +105,6 @@ export default function Navbar(props: Props) {
       <Divider />
 
       <Paper
-        elevation={3}
         variant='elevation'
         sx={{
           backgroundColor: 'rgba(255, 255, 255, 0.08)',
@@ -111,7 +117,6 @@ export default function Navbar(props: Props) {
       </Paper>
 
       <Paper
-        elevation={3}
         variant='outlined'
         sx={{
           backgroundColor: 'rgba(255, 255, 255, 0.08)',
@@ -136,6 +141,7 @@ export default function Navbar(props: Props) {
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
           background: 'rgba(255, 255, 255, 0.02)',
+          backdropFilter: 'blur(10px)',
         }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -189,7 +195,7 @@ export default function Navbar(props: Props) {
             }}
           >
             <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
-            <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+            <MenuItem onClick={handleLogoutButton}>Logout</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
@@ -239,7 +245,6 @@ export default function Navbar(props: Props) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >
