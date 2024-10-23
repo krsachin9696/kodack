@@ -1,13 +1,14 @@
 import * as listRepository from './listRepository.js'
 
-export const createListService = async (userID, name, isPublic, isDeleted, tags) => {
+export const createListService = async (userID, name, description, isPublic, tags) => {
 
   const existingList = await listRepository.findListByNameAndUser(userID, name);
+  // console.log(existingList, "this is existing list");
   if (existingList) {
     throw new Error('List name already exists for this user.');
   }
-
-  return await listRepository.createList(userID, name, isPublic, tags, isDeleted);
+  // console.log("debugger")
+  return await listRepository.createList(userID, name, description, isPublic, tags);
 };
 
 

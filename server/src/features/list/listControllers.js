@@ -3,13 +3,15 @@ import * as listServices from './listServices.js';
 
 export const createList = async (req, res) => {
   try {
-    const { name, isPublic, isDeleted, tags} = req.body;
+    const { name, isPublic, description, tags} = req.body;
+    const userID = req.user.userID;
 
     const newList = await listServices.createListService(
+      userID,
       name,
+      description,
       isPublic,
       tags,
-      description
     );
     //201 is used because request was a success and a new resource is created as a result
     res.status(201).json(newList);
