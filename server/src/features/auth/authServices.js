@@ -58,11 +58,35 @@ export const signupUser = async (
   };
 };
 
+export const forgotPasswordUser = async (email) => {
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+      return ('Email does not exist');
+    }
+
+    const otp = crypto.randomInt(100000, 999999).toString();
+    const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    await sendEmail(
+      email,
+      'Your New OTP Code',
+      `Your new OTP code is ${otp}. It is valid for 15 minutes.`
+    );
+
+    await updateUserByEmail(email, { otp, otpExpiresAt });
+
+    return {
+      message: 'A new OTP has been sent. Please verify your email with the OTP.',
+    };
+  };
+
+
 export const verifyUserOtp = async (email, otp) => {
   const user = await findUserByEmail(email);
 
   if (!user) {
-    throw new Error('User not found');
+    throw new Error('Invalid OTP');
   }
 
   if (user.otp === otp && user.otpExpiresAt > new Date()) {

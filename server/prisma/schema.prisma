@@ -63,7 +63,7 @@ model List {
   UserQuestionStatus UserQuestionStatus[]
 
   // Many-to-many relation with Tag model
-  tags ListTag[]
+  tags Tag[]
 }
 
 model Question {
@@ -133,20 +133,7 @@ model Tag {
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
 
   // Many-to-many relation with List model
-  lists ListTag[]
-}
-
-model ListTag {
-  id       String @id @default(uuid()) @db.Uuid
-  listID   String @db.Uuid
-  tagID    String @db.Uuid
-
-  // Relations
-  list List @relation(fields: [listID], references: [listID])
-  tag  Tag  @relation(fields: [tagID], references: [id])
-
-  // Composite unique constraint
-  @@unique([listID, tagID])
+  lists List[]
 }
 
 model ContactUs {

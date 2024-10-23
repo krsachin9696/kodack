@@ -3,7 +3,7 @@ import * as listService from './listServices.js';
 
 export const createList = async (req, res) => {
   try {
-    const { userID, name, visibility, isDeleted, tags } = req.body;
+    const { userID, name, visibility, tags, isDeleted } = req.body;
 
     if (!userID || !name) {
       return res.status(400).json({ error: 'userID and name are required' });
