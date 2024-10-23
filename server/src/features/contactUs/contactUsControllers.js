@@ -4,12 +4,12 @@ import logger from '../../utils/logger.js';
 export const createContactUs = async (req, res) => {
   const { name, email, subject, message } = req.body;
   try {
-    const newContactForm = await contactUsServices.createContactUsService({
+    const newContactForm = await contactUsServices.createContactUsService(
       name,
       email,
       subject,
-      message,
-    });
+      message
+    );
 
     //201 used because request succeded and new resource was created as a result, generally used in post and put.
     res.status(201).json({ message: 'Form submitted successfully', newContactForm });

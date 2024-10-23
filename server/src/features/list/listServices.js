@@ -1,8 +1,15 @@
-import * as listRepository from './listRepository.js';
+import * as listRepository from './listRepository.js'
 
-export const createList = async (data) => {
-  return await listRepository.createList(data);
+export const createListService = async (userID, name, isPublic, isDeleted, tags) => {
+
+  const existingList = await listRepository.findListByNameAndUser(userID, name);
+  if (existingList) {
+    throw new Error('List name already exists for this user.');
+  }
+
+  return await listRepository.createList(userID, name, isPublic, tags, isDeleted);
 };
+
 
 export const getAllLists = async () => {
   return await listRepository.getAllLists();

@@ -2,9 +2,7 @@ import * as contactUsRepository from './contactUsRepository.js';
 import sendEmail from '../../utils/sendEmail.js';
 import logger from '../../utils/logger.js';
 
-export const createContactUsService = async (data) => {
-  const { name, email, subject, message } = data;
-
+export const createContactUsService = async (name, email, subject, message) => {
   //form entry in database
   const contactUsEntry = await contactUsRepository.createContactUs({
     name,

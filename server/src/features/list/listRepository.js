@@ -64,8 +64,44 @@
 //   }
 // };
 
-import prisma from '../../config/prismaClient.js';
+// import prisma from '../../config/prismaClient.js';
+// import { validate as validateUUID } from 'uuid';
+
+// export const findListByNameAndUser = async (name, userID) => {
+//   return await prisma.list.findFirst({
+//     where: {
+//       name,
+//       userID,
+//       isDeleted: false, // Ensure not deleted
+//     },
+//   });
+// };
+
 import { validate as validateUUID } from 'uuid';
+
+export const findListByNameAndUser = async (name, userID) => {
+  // Validate UUID for userID
+  if (!validateUUID(userID)) {
+    throw new Error(`Invalid UUID for userID: ${userID}`);
+  }
+
+  // Validate name
+  if (typeof name !== 'string' || name.trim().length === 0) {
+    throw new Error(`Invalid name provided: ${name}`);
+  }
+
+  // Log the values before the database query
+  console.log('Finding list with name:', name, 'and userID:', userID);
+
+  return await prisma.list.findFirst({
+    where: {
+      name,
+      userID,
+      isDeleted: false, // Ensure not deleted
+    },
+  });
+};
+
 
 export const createList = async (data) => {
   const { userID, name, visibility = 1, isDeleted = false, tags = [] } = data;
@@ -75,9 +111,14 @@ export const createList = async (data) => {
     throw new Error("Invalid UUID for userID");
   }
 
+  // Validate name (you might want to check its type or length, depending on your requirements)
+  if (typeof name !== 'string' || name.trim().length === 0) {
+    throw new Error("Invalid name provided");
+  }
+
   // Separate tags based on whether they are new or existing UUIDs
   const existingTags = tags.filter(tag => validateUUID(tag));
-  const newTags = tags.filter(tag => !validateUUID(tag)); // assuming non-UUID means it's a new tag name
+  const newTags = tags.filter(tag => !validateUUID(tag)); // Assuming non-UUID means it's a new tag name
 
   const listData = {
     name,
@@ -97,6 +138,7 @@ export const createList = async (data) => {
   };
 
   try {
+    console.log('Creating list with data:', listData); // Debugging log
     const createdList = await prisma.list.create({
       data: listData,
       include: {
@@ -113,6 +155,54 @@ export const createList = async (data) => {
     throw new Error("Failed to create the list. Please try again.");
   }
 };
+
+
+// export const createList = async (data) => {
+//   const { userID, name, visibility = 1, isDeleted = false, tags = [] } = data;
+
+//   // Validate UUID for userID
+//   if (!validateUUID(userID)) {
+//     throw new Error("Invalid UUID for userID");
+//   }
+
+//   // Separate tags based on whether they are new or existing UUIDs
+//   const existingTags = tags.filter(tag => validateUUID(tag));
+//   const newTags = tags.filter(tag => !validateUUID(tag)); // assuming non-UUID means it's a new tag name
+
+//   const listData = {
+//     name,
+//     visibility,
+//     isDeleted,
+//     userID,
+//     createdById: userID,
+//     updatedById: userID,
+//     tags: {
+//       create: newTags.map(tagName => ({
+//         tag: {
+//           create: { name: tagName }, // Create new tags
+//         }
+//       })),
+//       connect: existingTags.map(tagID => ({ tagID })), // Connect existing tags by ID
+//     },
+//   };
+
+//   try {
+//     const createdList = await prisma.list.create({
+//       data: listData,
+//       include: {
+//         tags: {
+//           include: {
+//             tag: true, // Include tag details in the result
+//           },
+//         },
+//       },
+//     });
+//     return createdList;
+//   } catch (error) {
+//     console.error("Error creating list:", error);
+//     throw new Error("Failed to create the list. Please try again.");
+//   }
+// };
 
 
 

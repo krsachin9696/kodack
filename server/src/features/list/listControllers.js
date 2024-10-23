@@ -1,24 +1,21 @@
 import logger from '../../utils/logger.js';
-import * as listService from './listServices.js';
+import * as listServices from './listServices.js';
 
 export const createList = async (req, res) => {
   try {
-    const { userID, name, visibility, tags, isDeleted } = req.body;
+    const { name, isPublic, isDeleted, tags} = req.body;
 
-    if (!userID || !name) {
-      return res.status(400).json({ error: 'userID and name are required' });
-    }
-
-    const newList = await listService.createList({
-      userID,
+    const newList = await listServices.createListService(
       name,
-      visibility,
-      isDeleted,
+      isPublic,
       tags,
-    });
+      description
+    );
+    //201 is used because request was a success and a new resource is created as a result
     res.status(201).json(newList);
   } catch (error) {
-    console.error(error);
+    logger.error("error creating list", error);
+    //500 is used because of internal server error that server cant handle
     res.status(500).json({ error: 'Failed to create list' });
   }
 };
