@@ -57,7 +57,7 @@ app.use(loggerMiddleware);
 
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
-app.use('/list', listRoute);
+app.use('/list', isAuthenticated, listRoute);
 app.use('/contact-us', contactUsRoute);
 app.use('/question', questionRoute);
 

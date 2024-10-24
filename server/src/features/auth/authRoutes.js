@@ -14,7 +14,7 @@ import {
   otpSchema,
   passwordSetupSchema,
   forgotPasswordSchema,
-} from './authValidations.js';
+} from './authSchema.js'
 import validate from '../../middlewares/validationMiddleware.js';
 
 const authRoute = Router();

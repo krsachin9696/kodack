@@ -1,119 +1,74 @@
-// import prisma from '../../config/prismaClient.js';
-
-// export const createList = async (data) => {
-//   const { userID, name, visibility = 1, isDeleted = false, tags = [] } = data;
-
-//   const listData = {
-//     name,
-//     visibility,
-//     isDeleted,
-//     userID,
-//     tags: {
-//       create: tags.map((tag) => ({ tag: { connect: { id: tag } } })),
-//     },
-//     createdById: userID,
-//     updatedById: userID,
-//   };
-
-//   return await prisma.list.create({
-//     data: listData,
-//   });
-// };
-
-// import { v4 as uuidv4, validate as validateUUID } from 'uuid';
-// import prisma from '../../config/prismaClient.js';
-
-// export const createList = async (data) => {
-//   const { userID, name, visibility = 1, isDeleted = false, tags = [] } = data;
-
-//   // Validate UUID for userID
-//   if (!validateUUID(userID)) {
-//     throw new Error("Invalid UUID for userID");
-//   }
-
-//   // Filter valid UUIDs for tags
-//   const validTags = tags.filter(tag => validateUUID(tag));
-//   if (validTags.length !== tags.length) {
-//     console.warn("Some tags have invalid UUIDs and were filtered out.");
-//   }
-
-//   const listData = {
-//     name,
-//     visibility,
-//     isDeleted,
-//     userID,
-//     tags: {
-//       create: validTags.map((tag) => ({ tag: { connect: { id: tag } } })),
-//     },
-//     createdById: userID,
-//     updatedById: userID,
-//   };
-
-//   try {
-//     // Create the list and return the result
-//     const createdList = await prisma.list.create({
-//       data: listData,
-//       include: {
-//         tags: true,  // Optionally include tags in the response
-//       },
-//     });
-//     return createdList;
-//   } catch (error) {
-//     console.error("Error creating list:", error);
-//     throw new Error("Failed to create the list. Please try again.");
-//   }
-// };
-
 import prisma from '../../config/prismaClient.js';
-import { validate as validateUUID } from 'uuid';
 
-export const createList = async (data) => {
-  const { userID, name, visibility = 1, isDeleted = false, tags = [] } = data;
-
-  // Validate UUID for userID
-  if (!validateUUID(userID)) {
-    throw new Error("Invalid UUID for userID");
-  }
-
-  // Separate tags based on whether they are new or existing UUIDs
-  const existingTags = tags.filter(tag => validateUUID(tag));
-  const newTags = tags.filter(tag => !validateUUID(tag)); // assuming non-UUID means it's a new tag name
-
-  const listData = {
-    name,
-    visibility,
-    isDeleted,
-    userID,
-    createdById: userID,
-    updatedById: userID,
-    tags: {
-      create: newTags.map(tagName => ({
-        tag: {
-          create: { name: tagName }, // Create new tags
-        }
-      })),
-      connect: existingTags.map(tagID => ({ tagID })), // Connect existing tags by ID
+export const findListByNameAndUser = async (userID, name) => {
+  return await prisma.list.findFirst({
+    where: { 
+      AND: [
+        { name }, 
+        { userID }
+      ] 
     },
-  };
-
-  try {
-    const createdList = await prisma.list.create({
-      data: listData,
-      include: {
-        tags: {
-          include: {
-            tag: true, // Include tag details in the result
-          },
-        },
-      },
-    });
-    return createdList;
-  } catch (error) {
-    console.error("Error creating list:", error);
-    throw new Error("Failed to create the list. Please try again.");
-  }
+  });
 };
 
+export const createList = async (userID, name, description, isPublic, tags) => {
+  // Split tags into newTags and existingTags
+  const existingTags = await prisma.tag.findMany({
+    where: { name: { in: tags } },
+  });
+
+  const existingTagNames = existingTags.map(tag => tag.name);
+  const newTagNames = tags.filter(tag => !existingTagNames.includes(tag));
+
+  // Create new tags
+  const newTags = await Promise.all(
+    newTagNames.map(tagName =>
+      prisma.tag.create({
+        data: { name: tagName },
+      })
+    )
+  );
+
+  // Combine existing tags and newly created tags
+  const allTags = [...existingTags, ...newTags];
+
+  // Create the list and connect the tags
+  const newList = await prisma.list.create({
+    data: {
+      name,
+      description,
+      isPublic,
+      isDeleted: false,
+      user: {
+        connect: { userID: userID },
+      },
+      createdBy: {
+        connect: { userID: userID },
+      },
+      updatedBy: {
+        connect: { userID: userID },
+      },
+      tags: {
+        connect: allTags.map(tag => ({ id: tag.id })),
+      },
+    },
+  });
+
+  return newList;
+};
+
+export const getListsByUserId = async (userId) => {
+  return await prisma.list.findMany({
+    where: {
+      userID: userId,
+      isDeleted: false,
+    },
+    select: {
+      listID: true,
+      name: true,
+    },
+  });
+};
 
 
 export const getAllLists = async () => {
@@ -133,19 +88,6 @@ export const softDeleteList = async (id) => {
   return await prisma.list.update({
     where: { listID: id },
     data: { isDeleted: true },
-  });
-};
-
-export const getListsByUserId = async (userId) => {
-  return await prisma.list.findMany({
-    where: {
-      userID: userId,
-      isDeleted: false,
-    },
-    select: {
-      listID: true,
-      name: true,
-    },
   });
 };
 
