@@ -18,11 +18,13 @@ const Dashboard: React.FC = () => {
 
   const personalLists = [
     {
+      listID: 'akkdjf',
       name: 'A2Z DSA Sheet',
       tags: ['array', 'recursion', 'dp'],
       isPublic: false,
     },
     {
+      listID: 'adf',
       name: 'Algorithm Study Plan',
       tags: ['dynamic programming', 'greedy'],
       isPublic: true,
@@ -31,11 +33,13 @@ const Dashboard: React.FC = () => {
 
   const publicLists = [
     {
+      listID: 'dfe',
       name: 'Interview Preparation',
       tags: ['array', 'strings', 'searching'],
       isPublic: true,
     },
     {
+      listID: 'dvdg',
       name: 'Competitive Programming',
       tags: ['graphs', 'trees', 'backtracking'],
       isPublic: true,
