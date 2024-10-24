@@ -53,6 +53,7 @@ const LandingPage: React.FC = () => {
             </div>
             <div className="bg-gray-800 p-6 rounded-lg shadow-md">
               <h3 className="text-2xl font-bold mb-4">✨ Share and collaborate on curated lists.</h3>
+              {/* <p>Understand system design concepts crucial for interviews and scalable systems.</p> */}
             </div>
           </div>
         </section>

@@ -6,9 +6,9 @@ import validate from '../../middlewares/validationMiddleware.js';
 const listRoute = express.Router();
 
 listRoute.post('/', validate(listSchema.listSchemaValidation), listController.createList);
+listRoute.get('/user/:userID', validate(listSchema.listSchemaValidation), listController.getPersonalListsByUserId);
 listRoute.get('/', listController.getAllLists);
 listRoute.put('/:id', listController.updateList);
-listRoute.get('/user/:userID', listController.getListsByUserId);
 listRoute.delete('/:id', listController.deleteList);
 listRoute.get('/:listID', listController.getListDetails);
 

@@ -6,8 +6,14 @@ export const createListService = async (userID, name, description, isPublic, tag
   if (existingList) {
     throw new Error('List name already exists for this user.');
   }
+  
   return await listRepository.createList(userID, name, description, isPublic, tags);
 };
+
+export const getPersonalListsByUserIdService = async (userId) => {
+  return await listRepository.getListsByUserId(userId);
+};
+
 
 
 export const getAllLists = async () => {
@@ -22,9 +28,6 @@ export const softDeleteList = async (id) => {
   return await listRepository.softDeleteList(id);
 };
 
-export const getListsByUserId = async (userId) => {
-  return await listRepository.getListsByUserId(userId);
-};
 
 export const getListDetails = async (listID, userID, { page, limit }) => {
   return await listRepository.getListDetailsRepository(listID, userID, {
