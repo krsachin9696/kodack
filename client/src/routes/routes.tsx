@@ -27,7 +27,8 @@ export const router = createBrowserRouter([
     element: <UnprotectedRoute />,
     children: [
       { 
-        index: true,
+        // index: true,
+        path: 'landing',
         element: <LandingPage />
       },
       {

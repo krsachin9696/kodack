@@ -37,19 +37,22 @@ const LandingPage: React.FC = () => {
         </button>
 
         <section className="mt-16">
-          <h2 className="text-3xl font-bold mb-8 text-indigo-400">Essential Coding Challenges</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <h2 className="text-3xl font-bold mb-8 text-indigo-400">Our Top Features</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-              <h3 className="text-2xl font-bold mb-4">Data Structures</h3>
-              <p>Master core concepts of data structures to strengthen your problem-solving skills.</p>
+              <h3 className="text-2xl font-bold mb-4">🔧 Access master list of essential LeetCode problems</h3>
+              {/* <p>Master core concepts of data structures to strengthen your problem-solving skills.</p> */}
             </div>
             <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-              <h3 className="text-2xl font-bold mb-4">Dynamic Programming</h3>
-              <p>Learn dynamic programming techniques with curated problems and solutions.</p>
+              <h3 className="text-2xl font-bold mb-4">🛠 Create and customize personal problem lists.</h3>
+              {/* <p>Learn dynamic programming techniques with curated problems and solutions.</p> */}
             </div>
             <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-              <h3 className="text-2xl font-bold mb-4">System Design</h3>
-              <p>Understand system design concepts crucial for interviews and scalable systems.</p>
+              <h3 className="text-2xl font-bold mb-4">👍 Track progress on problem-solving.</h3>
+              {/* <p>Understand system design concepts crucial for interviews and scalable systems.</p> */}
+            </div>
+            <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+              <h3 className="text-2xl font-bold mb-4">✨ Share and collaborate on curated lists.</h3>
             </div>
           </div>
         </section>
@@ -71,9 +74,9 @@ const LandingPage: React.FC = () => {
           <div className="flex flex-col items-center mb-4 md:mb-0 text-center md:text-left">
             <h1 className="text-4xl font-bold text-blue-400 mb-2">KODACK</h1>
             <div className="flex space-x-4 mb-4">
-              <a href="#" className="hover:underline">LinkedIn</a>
-              <a href="#" className="hover:underline">GitHub</a>
-              <a href="#" className="hover:underline">YouTube</a>
+              <a href="https://www.linkedin.com/" className="hover:underline">LinkedIn</a>
+              <a href="https://github.com/krsachin9696/kodack.git" className="hover:underline">GitHub</a>
+              <a href="https://www.youtube.com/" className="hover:underline">YouTube</a>
             </div>
             <p className="text-gray-400 mb-2">Your all-in-one solution for mastering coding challenges.</p>
             <p className="text-gray-400 mb-2">Join us and enhance your skills with curated lists!</p>
@@ -81,24 +84,24 @@ const LandingPage: React.FC = () => {
           </div>
 
           {/* Right Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-center">
             <div>
               <h3 className="text-blue-400 font-bold mb-4">Quick Access</h3>
               <ul>
-                <li><a href="#" className="hover:underline">Striver's DSA Sheet</a></li>
-                <li><a href="#" className="hover:underline">Striver's DSA Playlist</a></li>
+                <li><a href="#" className="hover:underline">Master List</a></li>
+                <li><a href="#" className="hover:underline">SDE lists</a></li>
                 <li><a href="#" className="hover:underline">CS Subjects</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="text-blue-400 font-bold mb-4">DSA Sheets</h3>
+              <h3 className="text-blue-400 font-bold mb-4">DSA Lists</h3>
               <ul>
-                <li><a href="#" className="hover:underline">Striver's SDE Sheet</a></li>
-                <li><a href="#" className="hover:underline">Striver's A2Z DSA Playlist</a></li>
+                <li><a href="#" className="hover:underline">List 1</a></li>
+                <li><a href="#" className="hover:underline">List 2</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="text-blue-400 font-bold mb-4">DSA Playlist</h3>
+              <h3 className="text-blue-400 font-bold mb-4">Array Lists</h3>
               <ul>
                 <li><a href="#" className="hover:underline">Array Series</a></li>
                 <li><a href="#" className="hover:underline">Graph Series</a></li>
