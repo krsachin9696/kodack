@@ -16,19 +16,23 @@ export const createList = async (req, res) => {
     //201 is used because request was a success and a new resource is created as a result
     res.status(201).json(newList);
   } catch (error) {
-    logger.error(error);
+    logger.error('error',error);
     //500 is used because of internal server error that server cant handle
     res.status(500).json({ error: 'Failed to create list' });
   }
 };
 
-export const getPersonalListsByUserId = async (req, res) => {
+export const getPersonalLists = async (req, res) => {
   try {
-    const lists = await listServices.getPersonalListsByUserIdService(req.user.userID);
+    const userID = req.user.userID;
+    const page = parseInt(req.query.page) || 1;  // Default to page 1 if not provided
+    const limit = parseInt(req.query.limit) || 10;  // Default to limit 10 if not provided
+    const result = await listServices.getPersonalListsService(userID, page, limit);
+    
     //200 is used for transmitting result of action to message body
-    res.status(200).json(lists);
+    res.status(200).json(result);
   } catch (error) {
-    logger.error(error);
+    logger.error('error', error);
     res.status(500).json({ error: 'Failed to retrieve lists' });
   }
 };

@@ -11,28 +11,21 @@ export const findListByNameAndUser = async (userID, name) => {
   });
 };
 
-export const createList = async (userID, name, description, isPublic, tags) => {
-  // Split tags into newTags and existingTags
-  const existingTags = await prisma.tag.findMany({
+export const findExistingTags = async (tags) => {
+  return await prisma.tag.findMany({
     where: { name: { in: tags } },
   });
+}
 
-  const existingTagNames = existingTags.map(tag => tag.name);
-  const newTagNames = tags.filter(tag => !existingTagNames.includes(tag));
+export const createNewTag = async (tagName) => {
+  return await prisma.tag.create({
+    data: { name: tagName },
+  })
+}
 
-  // Create new tags
-  const newTags = await Promise.all(
-    newTagNames.map(tagName =>
-      prisma.tag.create({
-        data: { name: tagName },
-      })
-    )
-  );
 
-  // Combine existing tags and newly created tags
-  const allTags = [...existingTags, ...newTags];
+export const createList = async (userID, name, description, isPublic, allTags) => {
 
-  // Create the list and connect the tags
   const newList = await prisma.list.create({
     data: {
       name,
@@ -57,8 +50,11 @@ export const createList = async (userID, name, description, isPublic, tags) => {
   return newList;
 };
 
-export const getListsByUserId = async (userId) => {
-  return await prisma.list.findMany({
+export const getListsByUserId = async (userId, page = 1, limit = 10) => {
+
+  const skip = (page-1) * limit;
+
+  const lists = await prisma.list.findMany({
     where: {
       userID: userId,
       isDeleted: false,
@@ -66,8 +62,25 @@ export const getListsByUserId = async (userId) => {
     select: {
       listID: true,
       name: true,
+      tags: {
+        select: {
+          name: true
+        }
+      },
+      isPublic: true
     },
+    skip,
+    take: limit,
   });
+
+  const totalItems = await prisma.list.count({
+    where: {
+      userID: userId,
+      isDeleted: false,
+    }
+  });
+
+  return { lists, totalItems };
 };
 
 
