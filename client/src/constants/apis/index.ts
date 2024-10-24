@@ -13,6 +13,9 @@ export default {
     logout: `${SERVERURL}/auth/logout`,
     getUser: `${SERVERURL}/user`,
   },
+  list: {
+    getPersonalLists: `${SERVERURL}/lists/personal-lists`,
+  },
   public: {
     contactUs: `${SERVERURL}/contact-us`,
   }

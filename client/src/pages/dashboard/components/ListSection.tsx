@@ -1,24 +1,31 @@
 import { useState } from 'react';
-import { Box, Typography, Chip, Divider } from '@mui/material';
+import { Box, Typography, Chip, Divider, CircularProgress } from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import CardWrapper from '../../../components/shared/card';
 import CustomModal from '../../../components/base/customModal';
 import CreateList from './CreateList';
-
-interface ListItem {
-  name: string;
-  tags: string[];
-  isPublic: boolean;
-}
+import fetchPaginatedLists, { ListItemProps } from '../services/getPaginatedLists';
+import { useQuery } from '@tanstack/react-query';
 
 interface ListSectionProps {
   title: string;
-  lists: ListItem[];
+  lists: ListItemProps[];
 }
 
 const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['lists', page, limit],
+    queryFn: () => fetchPaginatedLists(page, limit),
+    // keepPreviousData: true,
+  });
+
+  if (isLoading) return <CircularProgress />;
+  if (isError) return <p>Error loading lists...</p>;
 
   return (
     <>
