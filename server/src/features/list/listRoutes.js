@@ -1,15 +1,16 @@
 import express from 'express';
-import * as listController from './listControllers.js';
+import * as listControllers from './listControllers.js';
 import * as listSchema from './listSchema.js'
 import validate from '../../middlewares/validationMiddleware.js';
 
 const listRoute = express.Router();
 
-listRoute.post('/', validate(listSchema.listSchemaValidation), listController.createList);
-listRoute.get('/personal-lists', listController.getPersonalLists);
-listRoute.get('/', listController.getAllLists);
-listRoute.put('/:id', listController.updateList);
-listRoute.delete('/:id', listController.deleteList);
-listRoute.get('/:listID', listController.getListDetails);
+listRoute.post('/', validate(listSchema.createListSchema), listControllers.createList);
+listRoute.get('/personal-lists', listControllers.getPersonalLists);
+listRoute.get('/public-lists', listControllers.getPublicLists);
+listRoute.post('/request-access', validate(listSchema.requestAccessSchema), listControllers.requestAccess);
+listRoute.get('/access-requests', listControllers.viewAllAccessRequests);
+listRoute.put('/grant-access', validate(listSchema.grantAccessSchema), listControllers.grantAccess);
+listRoute.get('/accessible-public-lists', listControllers.getAccessiblePublicLists);
 
 export default listRoute;

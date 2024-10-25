@@ -16,8 +16,8 @@ export const createListService = async (userID, name, description, isPublic, tag
   return await listRepository.createList(userID, name, description, isPublic, allTags);
 };
 
-export const getPersonalListsService = async (userId, page = 1, limit = 10) => {
-  const { lists, totalItems } = await listRepository.getListsByUserId(userId, page, limit);
+export const getPersonalListsService = async (userID, page = 1, limit = 10) => {
+  const { lists, totalItems } = await listRepository.getListsByUserId(userID, page, limit);
 
   const totalPages = Math.ceil(totalItems / limit); //roundooff
 
@@ -34,22 +34,89 @@ export const getPersonalListsService = async (userId, page = 1, limit = 10) => {
   };
 };
 
-export const getAllLists = async () => {
-  return await listRepository.getAllLists();
+export const getAllPublicListsService = async (userID, searchTerm, page = 1, limit = 10) => {
+  const { lists, totalItems } = await listRepository.getAllPublicLists(userID, searchTerm, page, limit);
+  
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return {
+    lists: lists.map(list => ({
+      listID: list.listID,
+      name: list.name,
+      tags: list.tags.map(tag => tag.name),
+      isPublic: list.isPublic,
+    })),
+    totalItems,
+    totalPages,
+    currentPage: page,
+  };
 };
 
-export const updateList = async (id, data) => {
-  return await listRepository.updateList(id, data);
+export const requestAccessService = async (userID, listID) => {
+  const existingAccess = await listRepository.findExistingRequest(userID, listID);
+  if (existingAccess) {
+    throw new Error('Access already requested');
+  }
+  
+  return await listRepository.createNewAccessRequest(userID, listID);
 };
 
-export const softDeleteList = async (id) => {
-  return await listRepository.softDeleteList(id);
+export const viewAllAccessRequestsService = async (userID) => {
+
+  const lists = await listRepository.getListsByOwnerID(userID);
+  const listIDs = lists.map(list => list.listID);
+
+  return await listRepository.getPendingRequestsForLists(listIDs);
 };
 
+export const grantAccessService = async (userID, listID) => {
+  const existingAccess = await listRepository.findAlreadyGrantedRequest(userID, listID);
+  if (existingAccess) {
+    throw new Error('Access already granted to this user.');
+  }
 
-export const getListDetails = async (listID, userID, { page, limit }) => {
-  return await listRepository.getListDetailsRepository(listID, userID, {
-    page,
-    limit,
-  });
+  const grantedAccess = await listRepository.createGrantedAccess(userID, listID);
+
+  await listRepository.updateAccessRequestStatus(userID, listID);
+
+  return grantedAccess;
 };
+
+// Fetch public lists the user has access to
+export const getAccessiblePublicListsService = async (userID, searchTerm, page = 1, limit = 10) => {
+  const { lists, totalItems } = await listRepository.getAccessiblePublicLists(userID, searchTerm, page, limit);
+  
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return {
+    lists: lists.map(list => ({
+      listID: list.listID,
+      name: list.name,
+      tags: list.tags.map(tag => tag.name),
+      isPublic: list.isPublic,
+    })),
+    totalItems,
+    totalPages,
+    currentPage: page,
+  };
+};
+
+// const { PrismaClient } = require('@prisma/client');
+// const prisma = new PrismaClient();
+
+// prisma.$use(async (params, next) => {
+//   // Check if the update action is on the Access model
+//   if (params.model === 'Access' && params.action === 'update') {
+//     const { where, data } = params.args;
+
+//     // If `hasAccess` is being set to false, delete the record
+//     if (data.hasAccess === false) {
+//       return await prisma.access.delete({
+//         where,
+//       });
+//     }
+//   }
+
+//   // Proceed with the original action if hasAccess remains true
+//   return next(params);
+// });

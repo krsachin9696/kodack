@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-const listSchemaValidation = Joi.object({
+export const createListSchema = Joi.object({
   name: Joi.string().trim().max(150).required().messages({
     'string.empty': 'List name is required.',
     'string.max': 'List name must be less than or equal to 150 characters.',
@@ -19,4 +19,20 @@ const listSchemaValidation = Joi.object({
   }),
 });
 
-export { listSchemaValidation };
+export const requestAccessSchema = Joi.object({
+  listID: Joi.string().trim().max(200).required().messages({
+    'string.empty': 'List ID is required.',
+    'strinf.max': 'List ID must be less than or equal to 200 characters.'
+  })
+})
+
+export const grantAccessSchema = Joi.object({
+  userID: Joi.string().trim().max(200).required().messages({
+    'string.empty': 'User ID is required.',
+    'strinf.max': 'USer ID must be less than or equal to 200 characters.'
+  }),
+  listID: Joi.string().trim().max(200).required().messages({
+    'string.empty': 'List ID is required.',
+    'strinf.max': 'List ID must be less than or equal to 200 characters.'
+  })
+})

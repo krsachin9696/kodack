@@ -23,7 +23,6 @@ export const createNewTag = async (tagName) => {
   })
 }
 
-
 export const createList = async (userID, name, description, isPublic, allTags) => {
 
   const newList = await prisma.list.create({
@@ -50,13 +49,13 @@ export const createList = async (userID, name, description, isPublic, allTags) =
   return newList;
 };
 
-export const getListsByUserId = async (userId, page = 1, limit = 10) => {
+export const getListsByUserId = async (userID, page = 1, limit = 10) => {
 
   const skip = (page-1) * limit;
 
   const lists = await prisma.list.findMany({
     where: {
-      userID: userId,
+      userID: userID,
       isDeleted: false,
     },
     select: {
@@ -78,7 +77,7 @@ export const getListsByUserId = async (userId, page = 1, limit = 10) => {
 
   const totalItems = await prisma.list.count({
     where: {
-      userID: userId,
+      userID: userID,
       isDeleted: false,
     }
   });
@@ -86,86 +85,166 @@ export const getListsByUserId = async (userId, page = 1, limit = 10) => {
   return { lists, totalItems };
 };
 
-
-export const getAllLists = async () => {
-  return await prisma.list.findMany({ where: { isDeleted: false } });
-};
-
-export const updateList = async (id, data) => {
-  return await prisma.list.update({
-    where: {
-      listID: id,
-    },
-    data,
+export const getListsByOwnerID = async (userID) => {
+  return await prisma.list.findMany({
+    where: { userID: userID },
+    select: { listID: true },
   });
 };
 
-export const softDeleteList = async (id) => {
-  return await prisma.list.update({
-    where: { listID: id },
-    data: { isDeleted: true },
-  });
-};
-
-export const getListDetailsRepository = async (
-  listID,
-  userID,
-  { page, limit },
-) => {
+export const getAllPublicLists = async (userID, searchTerm, page = 1, limit = 10) => {
   const skip = (page - 1) * limit;
 
-  const listDetails = await prisma.list.findUnique({
-    where: { listID },
-    include: {
-      user: {
-        select: {
-          userID: true,
-          name: true,
-        },
-      },
-      createdBy: {
-        select: {
-          userID: true,
-          name: true,
-        },
-      },
-      updatedBy: {
-        select: {
-          userID: true,
-          name: true,
-        },
-      },
-      questions: {
-        skip,
-        take: limit,
-        where: { isDeleted: false },
-        include: {
-          question: true,
-          userQuestionStatuses: {
-            where: { userID },
-          },
-        },
-      },
-      UserQuestionStatus: {
-        where: { userID },
-      },
-    },
-  });
-
-  const totalQuestionsCount = await prisma.listQuestion.count({
+  const lists = await prisma.list.findMany({
     where: {
-      listID,
-      isDeleted: false,
+      isPublic: true,
+      userID: { not: userID },
+      name: {
+        contains: searchTerm,
+        mode: 'insensitive',
+      },
+    },
+    select: {
+      listID: true,
+      name: true,
+      tags: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    skip,
+    take: limit,
+    orderBy: {
+      createdAt: 'desc',
     },
   });
 
-  return {
-    listDetails,
-    pagination: {
-      currentPage: page,
-      pageSize: limit,
-      totalItems: totalQuestionsCount,
-      totalPages: Math.ceil(totalQuestionsCount / limit),
+  const totalItems = await prisma.list.count({
+    where: {
+      isPublic: true,
+      userID: { not: userID },
+      name: {
+        contains: searchTerm,
+        mode: 'insensitive',
+      },
     },
-  };
+  });
+
+  return { lists, totalItems };
 };
+
+export const findExistingRequest = async (userID, listID) => {
+ return await prisma.accessRequest.findFirst({
+  where: {
+      userID,
+      listID
+  },
+});
+};
+
+export const createNewAccessRequest = async (userID, listID) => {
+  return await prisma.accessRequest.create({
+    data: {
+      userID,
+      listID,
+      status: "PENDING",
+    },
+  });
+};
+
+export const getPendingRequestsForLists = async (listIDs) => {
+  return await prisma.accessRequest.findMany({
+    where: {
+      listID: { in: listIDs },
+      status: "PENDING"
+    },
+    select: {
+      userID: true,    // ID of the user who requested access
+      listID: true,    // ID of the list for which access is requested
+      createdAt: true, // Timestamp for when the request was made
+    },
+  });
+};
+
+export const findAlreadyGrantedRequest = async (userID, listID) => {
+  return await prisma.listAccess.findFirst({
+    where: {
+      userID,
+      listID,
+      hasAccess: true
+    },
+  });
+}
+
+export const createGrantedAccess = async (userID, listID) => {
+  return await prisma.listAccess.create({
+    data: {
+      userID,
+      listID,
+      hasAccess: true,
+    },
+  });
+}
+
+export const updateAccessRequestStatus = async (userID, listID) => {
+  return await prisma.accessRequest.update({
+    where: {userID, listID },
+    data: { status: "GRANTED" },
+  });
+}
+
+// Fetch public lists user has access to
+export const getAccessiblePublicLists = async (userID, searchTerm, page = 1, limit = 10) => {
+  const skip = (page - 1) * limit;
+
+  const lists = await prisma.list.findMany({
+    where: {
+      isPublic: true,
+      listAccess: {
+        some: {
+          userID: userID,
+          hasAccess: true,
+        },
+      },
+      name: {
+        contains: searchTerm,
+        mode: 'insensitive',
+      },
+    },
+    select: {
+      listID: true,
+      name: true,
+      tags: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    skip,
+    take: limit,
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  const totalItems = await prisma.list.count({
+    where: {
+      isPublic: true,
+      listAccess: {
+        some: {
+          userID: userID,
+          hasAccess: true,
+        },
+      },
+      name: {
+        contains: searchTerm,
+        mode: 'insensitive',
+      },
+    },
+  });
+
+  return { lists, totalItems };
+};
+
+
