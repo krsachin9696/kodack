@@ -9,73 +9,135 @@ import {
   Button,
   TextareaAutosize,
   Chip,
+  Typography,
+  CircularProgress,
 } from '@mui/material';
 import { defaultStyles } from '../../../constants/defaultStyles';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { Cancel } from '@mui/icons-material';
+import { useMutation } from '@tanstack/react-query';
+import createList, { CreateListInputProps } from '../services/createList';
+import { toast } from 'sonner';
 
 interface CreateListProps {
-  name: string;
-  visibility: string;
-  tags: string[];
-  description: string;
+  onClose: () => void; // Add this line
 }
 
-const CreateList: React.FC = () => {
-  const [formData, setFormData] = useState<CreateListProps>({
+const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
+  const [formData, setFormData] = useState<CreateListInputProps>({
     name: '',
-    visibility: '',
+    isPublic: true,
     tags: [],
     description: '',
   });
 
   const [tagInput, setTagInput] = useState<string>('');
+  const [errors, setErrors] = useState({
+    name: '',
+    description: '',
+    tags: '',
+  });
+
+  const { mutate, status } = useMutation({
+    mutationFn: () => createList(formData),
+    onSuccess: () => {
+      toast.info('New list created successfully.');
+      setFormData({
+        name: '',
+        isPublic: true,
+        tags: [],
+        description: '',
+      });
+      setTagInput('');
+      onClose(); 
+      setErrors({
+        name: '',
+        description: '',
+        tags: '',
+      });
+    },
+    onError: () => {
+      toast.error('Error creating new list.');
+      onClose(); 
+    },
+  });
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
+
     if (name === 'tags') {
-      setTagInput(value); // Update tag input state
+      setTagInput(value);
     } else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
     }
+
+    // Reset the error message for the relevant field
+    if (name === 'name') {
+      setErrors((prev) => ({ ...prev, name: '' }));
+    } else if (name === 'description') {
+      setErrors((prev) => ({ ...prev, description: '' }));
+    }
   };
 
   const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value;
     setFormData((prev) => ({
       ...prev,
-      visibility: event.target.value,
+      isPublic: value === 'public',
     }));
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === ' ') {
-      event.preventDefault(); // Prevent the default space behavior
+      event.preventDefault();
       const trimmedTag = tagInput.trim();
       if (trimmedTag && formData.tags.length < 5) {
         setFormData((prev) => ({
           ...prev,
           tags: [...prev.tags, trimmedTag],
         }));
-        setTagInput(''); // Clear the input field
+        setTagInput('');
+        setErrors((prev) => ({ ...prev, tags: '' }));
       }
     }
   };
 
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { name: '', description: '', tags: '' };
+
+    if (!formData.name) {
+      newErrors.name = 'Name is required';
+      isValid = false;
+    } else if (formData.name.length > 50) {
+      newErrors.name = 'Name cannot exceed 50 characters';
+      isValid = false;
+    }
+
+    if (!formData.description) {
+      newErrors.description = 'Description is required';
+      isValid = false;
+    }
+
+    if (formData.tags.length === 0) {
+      newErrors.tags = 'At least one tag is required';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formData);
-    setFormData({
-      name: '',
-      visibility: '',
-      tags: [],
-      description: '',
-    });
-    setTagInput(''); // Reset tag input after submission
+    if (validateForm()) {
+      mutate();
+    }
   };
 
   const handleDeleteTag = (tagToDelete: string) => {
@@ -84,6 +146,10 @@ const CreateList: React.FC = () => {
       tags: prev.tags.filter((tag) => tag !== tagToDelete),
     }));
   };
+
+  if (status == 'pending') {
+    return <CircularProgress />;
+  }
 
   return (
     <Box width="100%" height="100%" minHeight={300}>
@@ -109,6 +175,8 @@ const CreateList: React.FC = () => {
               value={formData.name}
               onChange={handleChange}
               fullWidth
+              error={!!errors.name}
+              helperText={errors.name}
               sx={defaultStyles.inputStyles}
             />
 
@@ -116,7 +184,7 @@ const CreateList: React.FC = () => {
               <InputLabel sx={{ color: 'white' }}>Visibility</InputLabel>
               <Select
                 name="visibility"
-                value={formData.visibility}
+                value={formData.isPublic ? 'public' : 'private'}
                 onChange={handleSelectChange}
                 label="Visibility"
                 variant="filled"
@@ -132,7 +200,6 @@ const CreateList: React.FC = () => {
             </FormControl>
           </Box>
 
-          {/* Tag input with chips displayed together */}
           <Box display="flex" flexDirection="row" alignItems="flex-end" gap={1}>
             <Box
               maxWidth="50%"
@@ -151,9 +218,7 @@ const CreateList: React.FC = () => {
                   key={index}
                   label={tag}
                   onDelete={() => handleDeleteTag(tag)}
-                  deleteIcon={
-                    <Cancel sx={{ color: 'white' }} />
-                  }
+                  deleteIcon={<Cancel sx={{ color: 'white' }} />}
                   variant="outlined"
                   size="small"
                   sx={{
@@ -186,6 +251,9 @@ const CreateList: React.FC = () => {
                 },
               }}
             />
+            <Typography variant="caption" color="error">
+              {errors.tags}
+            </Typography>
           </Box>
 
           <TextareaAutosize
@@ -195,6 +263,7 @@ const CreateList: React.FC = () => {
             name="description"
             value={formData.description}
             onChange={handleChange}
+            maxLength={150}
             style={{
               padding: '8px',
               color: 'white',
@@ -203,6 +272,14 @@ const CreateList: React.FC = () => {
               borderRadius: '5px',
             }}
           />
+          <Box width="100%" display="flex" justifyContent="flex-end">
+            <Typography variant="caption" color="white">
+              {formData.description.length}/150
+            </Typography>
+          </Box>
+          <Typography variant="caption" color="error">
+            {errors.description}
+          </Typography>
 
           <Box display="flex" justifyContent="flex-end">
             <Button type="submit" variant="contained" sx={{ width: '30%' }}>
@@ -216,4 +293,3 @@ const CreateList: React.FC = () => {
 };
 
 export default CreateList;
-

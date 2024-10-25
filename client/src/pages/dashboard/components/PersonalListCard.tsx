@@ -260,7 +260,7 @@ const PersonalListCard: React.FC = () => {
       </CardWrapper>
 
       <CustomModal open={modalOpen} setOpen={setModalOpen} name="Create List">
-        <CreateList />
+      <CreateList onClose={() => setModalOpen(false)} />
       </CustomModal>
     </>
   );
