@@ -14,9 +14,10 @@ export default {
     getUser: `${SERVERURL}/user`,
   },
   list: {
-    getPersonalLists: `${SERVERURL}/lists/personal-lists`,
+    getPersonalLists: `${SERVERURL}/list/personal-lists`,
+    getPublicLists: `${SERVERURL}/list/public-lists`,
   },
   public: {
     contactUs: `${SERVERURL}/contact-us`,
-  }
+  },
 };

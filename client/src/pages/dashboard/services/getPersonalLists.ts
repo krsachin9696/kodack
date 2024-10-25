@@ -8,17 +8,17 @@ export interface ListItemProps {
   isPublic: boolean;
 }
 
-interface PaginatedListsResponse {
-  data: ListItemProps[];
+interface PersonalListsResponse {
+  lists: ListItemProps[];
   totalPages: number;
   currentPage: number;
   totalItems: number;
 }
 
-export default async function fetchPaginatedLists(
+export default async function fetchPersonalLists(
   page: number, 
   limit: number
-): Promise<AxiosResponse<PaginatedListsResponse>> {
+): Promise<AxiosResponse<PersonalListsResponse>> {
   const response = await axios.get(apis.list.getPersonalLists, {
     params: {
       page,

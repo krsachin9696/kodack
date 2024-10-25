@@ -1,31 +1,47 @@
-import { useState } from 'react';
-import { Box, Typography, Chip, Divider, CircularProgress } from '@mui/material';
+import React from 'react';
+import {
+  Box,
+  Typography,
+  Chip,
+  Divider,
+  CircularProgress,
+  Pagination,
+} from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import CardWrapper from '../../../components/shared/card';
-import CustomModal from '../../../components/base/customModal';
-import CreateList from './CreateList';
-import fetchPaginatedLists, { ListItemProps } from '../services/getPaginatedLists';
 import { useQuery } from '@tanstack/react-query';
+import fetchPersonalLists from '../services/getPersonalLists';
+// import fetchPublicLists from '../services/getPublicLists';
 
-interface ListSectionProps {
+interface ListCardProps {
   title: string;
-  lists: ListItemProps[];
+  queryKey: string;
+  onAdd: () => void; // Prop for handling add action
 }
 
-const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [page, setPage] = useState(1);
-  const limit = 10;
+const ListCard: React.FC<ListCardProps> = ({ title, queryKey, onAdd }) => {
+  const [page, setPage] = React.useState(1);
+  const limit = 5;
+
+  // Determine the appropriate fetch function based on the title
+  // const fetchLists = title === "Public Lists" ? fetchPublicLists : fetchPersonalLists;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['lists', page, limit],
-    queryFn: () => fetchPaginatedLists(page, limit),
-    // keepPreviousData: true,
+    queryKey: [queryKey, page, limit],
+    queryFn: () => fetchPersonalLists(page, limit),
   });
 
   if (isLoading) return <CircularProgress />;
   if (isError) return <p>Error loading lists...</p>;
+
+  const lists = data?.data.lists || [];
+  const totalPages = data?.data.totalPages;
+
+  // Handle page change
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   return (
     <>
@@ -52,24 +68,15 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
             </Box>
             <Box>
               <AddCircleTwoToneIcon
-                onClick={() => setModalOpen(true)}
+                onClick={onAdd} // Call onAdd when clicked
                 style={{ cursor: 'pointer' }}
               />
             </Box>
           </CardWrapper>
-          <Divider
-            variant="fullWidth"
-            sx={{ border: '0.01px solid', borderColor: 'gray' }}
-          />
+          <Divider variant="fullWidth" sx={{ border: '0.01px solid', borderColor: 'gray' }} />
         </Box>
 
-        <Box
-          width="100%"
-          padding={1}
-          gap={1}
-          display="flex"
-          flexDirection="column"
-        >
+        <Box width="100%" padding={1} gap={1} display="flex" flexDirection="column">
           {lists.map((list, index) => (
             <Box
               key={index}
@@ -87,27 +94,21 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
                 },
               }}
             >
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                paddingBottom={1}
-              >
-                <Typography
-                  sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
-                >
+              <Box display="flex" justifyContent="space-between" paddingBottom={1}>
+                <Typography sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}>
                   {list.name}
                 </Typography>
-                {list.isPublic ? (
+                {title === "Public Lists" ? (
                   <Chip
-                    label="public"
-                    color="warning"
+                    label={list.access ? "granted" : "pending"}
+                    color={list.access ? "warning" : "primary"}
                     variant="outlined"
                     size="small"
                   />
                 ) : (
                   <Chip
-                    label="private"
-                    color="primary"
+                    label={list.isPublic ? "public" : "private"}
+                    color={list.isPublic ? "warning" : "primary"}
                     variant="outlined"
                     size="small"
                   />
@@ -129,13 +130,32 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists }) => {
             </Box>
           ))}
         </Box>
-      </CardWrapper>
 
-      <CustomModal open={modalOpen} setOpen={setModalOpen} name="Create List">
-        <CreateList />
-      </CustomModal>
+        {totalPages && totalPages > 1 && (
+          <Box width="100%" mt={2} display="flex" justifyContent="center">
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  color: 'white',
+                  '&.Mui-selected': {
+                    backgroundColor: 'skyblue',
+                    color: 'black',
+                  },
+                },
+                '& .MuiPaginationItem-icon': {
+                  color: 'white',
+                },
+              }}
+            />
+          </Box>
+        )}
+      </CardWrapper>
     </>
   );
 };
 
-export default ListSection;
+export default ListCard;
