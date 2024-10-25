@@ -71,6 +71,9 @@ export const getListsByUserId = async (userId, page = 1, limit = 10) => {
     },
     skip,
     take: limit,
+    orderBy: {
+      createdAt: 'desc'
+    }
   });
 
   const totalItems = await prisma.list.count({
