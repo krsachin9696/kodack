@@ -49,7 +49,7 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
         description: '',
       });
       setTagInput('');
-      onClose(); 
+      onClose();
       setErrors({
         name: '',
         description: '',
@@ -58,7 +58,7 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
     },
     onError: () => {
       toast.error('Error creating new list.');
-      onClose(); 
+      onClose();
     },
   });
 
@@ -272,14 +272,14 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
               borderRadius: '5px',
             }}
           />
-          <Box width="100%" display="flex" justifyContent="flex-end">
+          <Box width="100%" display="flex" justifyContent="space-between">
+            <Typography variant="caption" color="error">
+              {errors.description}
+            </Typography>
             <Typography variant="caption" color="white">
               {formData.description.length}/150
             </Typography>
           </Box>
-          <Typography variant="caption" color="error">
-            {errors.description}
-          </Typography>
 
           <Box display="flex" justifyContent="flex-end">
             <Button type="submit" variant="contained" sx={{ width: '30%' }}>
