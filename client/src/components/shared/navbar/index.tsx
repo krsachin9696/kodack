@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import {
   Box,
   Avatar,
@@ -51,7 +51,7 @@ export default function Navbar(props: Props) {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-  
+
   const handleLogoutButton = () => {
     handleLogout();
     setAnchorEl(null);
@@ -91,7 +91,8 @@ export default function Navbar(props: Props) {
         <Typography
           variant="h4"
           noWrap
-          component="a"
+          component={Link}
+          to="/"
           color="primary"
           sx={{
             ml: 2,
@@ -105,7 +106,7 @@ export default function Navbar(props: Props) {
       <Divider />
 
       <Paper
-        variant='elevation'
+        variant="elevation"
         sx={{
           backgroundColor: 'rgba(255, 255, 255, 0.08)',
           borderRadius: '6px',
@@ -117,7 +118,7 @@ export default function Navbar(props: Props) {
       </Paper>
 
       <Paper
-        variant='outlined'
+        variant="outlined"
         sx={{
           backgroundColor: 'rgba(255, 255, 255, 0.08)',
           borderRadius: '6px',
@@ -165,7 +166,8 @@ export default function Navbar(props: Props) {
             <Typography
               variant="h4"
               noWrap
-              component="a"
+              component={Link}
+              to="/"
               color="primary"
               sx={{
                 fontFamily: 'Protest Strike, sans-serif',

@@ -1,11 +1,18 @@
 import axios, { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
 
+export enum AccessStatus {
+  PENDING,
+  APPROVED,
+  REJECTED
+}
+
 export interface ListItemProps {
   listID: string;
   name: string;
   tags: string[];
-  status: string;
+  accessStatus: AccessStatus | null;
+  owner: string;
 }
 
 export interface PublicListsResponse {
@@ -31,7 +38,7 @@ export default async function fetchPublicLists(
     },
     withCredentials: true,
   });
-
+  
   const { totalPages, currentPage, totalItems, lists } = response.data;
 
   return {

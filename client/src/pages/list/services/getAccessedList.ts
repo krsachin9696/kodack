@@ -1,11 +1,17 @@
 import axios, { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
 
+export enum AccessStatus {
+  PENDING,
+  APPROVED,
+  REJECTED
+}
+
 export interface ListItemProps {
   listID: string;
   name: string;
   tags: string[];
-  status: string;
+  status: AccessStatus;
 }
 
 export interface PublicListsResponse {
@@ -24,7 +30,7 @@ export default async function fetchPublicLists(
   totalTags: number; 
   lists: ListItemProps[]; 
 }> {
-  const response: AxiosResponse<PublicListsResponse> = await axios.get(apis.list.getPublicLists, {
+  const response: AxiosResponse<PublicListsResponse> = await axios.get(apis.list.getAccessedLists, {
     params: {
       page,
       limit,

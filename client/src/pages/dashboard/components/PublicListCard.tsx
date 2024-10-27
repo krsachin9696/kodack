@@ -11,11 +11,11 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import CardWrapper from '../../../components/shared/card';
 import CustomModal from '../../../components/base/customModal';
-import CreateList from './CreateList';
-import fetchPublicLists from '../services/getPublicLists';
+import fetchPublicLists from '../services/getAccessedLists';
 import { useQuery } from '@tanstack/react-query';
 import queryKeys from '../../../constants/queryKeys';
 import AddPublicList from './AddPublicList';
+import { Link } from 'react-router-dom';
 
 const PublicListCard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -27,100 +27,100 @@ const PublicListCard: React.FC = () => {
     queryFn: () => fetchPublicLists(page, limit),
   });
 
-  // if (isLoading || isError) {
-  //   return (
-  //     <CardWrapper
-  //       sx={{
-  //         p: 0,
-  //         justifyContent: 'flex-start',
-  //         alignItems: 'flex-start',
-  //         backgroundColor: 'rgba(255, 255, 255, 0.04)',
-  //       }}
-  //     >
-  //       <Box marginBottom={1} width="100%">
-  //         <CardWrapper
-  //           sx={{
-  //             backgroundColor: 'rgba(255, 255, 255, 0.08)',
-  //             flexDirection: 'row',
-  //             justifyContent: 'space-between',
-  //             paddingBottom: 1,
-  //           }}
-  //         >
-  //           <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-  //             <ListAltIcon />
-  //             <Typography sx={{ fontWeight: 600 }}>Public Lists</Typography>
-  //           </Box>
-  //           <Box>
-  //             <AddCircleTwoToneIcon
-  //               onClick={() => setModalOpen(true)}
-  //               style={{ cursor: 'pointer' }}
-  //             />
-  //           </Box>
-  //         </CardWrapper>
-  //         <Divider
-  //           variant="fullWidth"
-  //           sx={{ border: '0.01px solid', borderColor: 'gray' }}
-  //         />
-  //       </Box>
+  if (isLoading || isError) {
+    return (
+      <CardWrapper
+        sx={{
+          p: 0,
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          backgroundColor: 'rgba(255, 255, 255, 0.04)',
+        }}
+      >
+        <Box marginBottom={1} width="100%">
+          <CardWrapper
+            sx={{
+              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingBottom: 1,
+            }}
+          >
+            <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+              <ListAltIcon />
+              <Typography sx={{ fontWeight: 600 }} component={Link} to='/list'>Public Lists</Typography>
+            </Box>
+            <Box>
+              <AddCircleTwoToneIcon
+                onClick={() => setModalOpen(true)}
+                style={{ cursor: 'pointer' }}
+              />
+            </Box>
+          </CardWrapper>
+          <Divider
+            variant="fullWidth"
+            sx={{ border: '0.01px solid', borderColor: 'gray' }}
+          />
+        </Box>
 
-  //       <Box
-  //         width="100%"
-  //         padding={1}
-  //         gap={1}
-  //         display="flex"
-  //         flexDirection="column"
-  //       >
-  //         {[...Array(limit)].map((_, index) => (
-  //           <Box
-  //             key={index}
-  //             width="100%"
-  //             padding={1}
-  //             borderLeft={4}
-  //             borderColor="skyblue"
-  //             borderRadius={2}
-  //             display="flex"
-  //             flexDirection="column"
-  //             sx={{
-  //               backgroundColor: 'rgba(255, 255, 255, 0.02)',
-  //             }}
-  //           >
-  //             <Box display="flex" justifyContent="space-between">
-  //               <Skeleton variant="text" width="60%" height={24} />
-  //               <Skeleton
-  //                 variant="rounded"
-  //                 width="10%"
-  //                 height={24}
-  //                 sx={{ marginTop: 1 }}
-  //               />
-  //             </Box>
-  //             <Box display="flex" justifyContent="flex-start" gap={2}>
-  //               <Skeleton
-  //                 variant="rounded"
-  //                 width="10%"
-  //                 height={20}
-  //                 sx={{ marginTop: 1 }}
-  //               />
-  //               <Skeleton
-  //                 variant="rounded"
-  //                 width="10%"
-  //                 height={20}
-  //                 sx={{ marginTop: 1 }}
-  //               />
-  //               <Skeleton
-  //                 variant="rounded"
-  //                 width="10%"
-  //                 height={20}
-  //                 sx={{ marginTop: 1 }}
-  //               />
-  //             </Box>
-  //           </Box>
-  //         ))}
-  //       </Box>
-  //     </CardWrapper>
-  //   );
-  // }
+        <Box
+          width="100%"
+          padding={1}
+          gap={1}
+          display="flex"
+          flexDirection="column"
+        >
+          {[...Array(limit)].map((_, index) => (
+            <Box
+              key={index}
+              width="100%"
+              padding={1}
+              borderLeft={4}
+              borderColor="skyblue"
+              borderRadius={2}
+              display="flex"
+              flexDirection="column"
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.02)',
+              }}
+            >
+              <Box display="flex" justifyContent="space-between">
+                <Skeleton variant="text" width="60%" height={24} />
+                <Skeleton
+                  variant="rounded"
+                  width="10%"
+                  height={24}
+                  sx={{ marginTop: 1 }}
+                />
+              </Box>
+              <Box display="flex" justifyContent="flex-start" gap={2}>
+                <Skeleton
+                  variant="rounded"
+                  width="10%"
+                  height={20}
+                  sx={{ marginTop: 1 }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  width="10%"
+                  height={20}
+                  sx={{ marginTop: 1 }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  width="10%"
+                  height={20}
+                  sx={{ marginTop: 1 }}
+                />
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      </CardWrapper>
+    );
+  }
 
-  // if (isError) return <p>Error loading lists...</p>;
+  if (isError) return <p>Error loading lists...</p>;
 
   const lists = data?.data.lists;
   const totalPages = data?.data.totalPages;
@@ -154,7 +154,7 @@ const PublicListCard: React.FC = () => {
           >
             <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
               <ListAltIcon />
-              <Typography sx={{ fontWeight: 600 }}>Public Lists</Typography>
+              <Typography sx={{ fontWeight: 600 }} component={Link} to='/list'>Public Lists</Typography>
             </Box>
             <Box>
               <AddCircleTwoToneIcon

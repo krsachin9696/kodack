@@ -15,6 +15,7 @@ import CreateList from './CreateList';
 import fetchPaginatedLists from '../services/getPersonalLists';
 import { useQuery } from '@tanstack/react-query';
 import queryKeys from '../../../constants/queryKeys';
+import { Link } from 'react-router-dom';
 
 const PersonalListCard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -152,7 +153,7 @@ const PersonalListCard: React.FC = () => {
           >
             <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
               <ListAltIcon />
-              <Typography sx={{ fontWeight: 600 }}>Personal Lists</Typography>
+              <Typography sx={{ fontWeight: 600 }} component={Link} to='/list'>Personal Lists</Typography>
             </Box>
             <Box>
               <AddCircleTwoToneIcon

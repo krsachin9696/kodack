@@ -10,7 +10,13 @@ listRoute.get('/personal-lists', listControllers.getPersonalLists);
 listRoute.get('/public-lists', listControllers.getPublicLists);
 listRoute.post('/request-access', validate(listSchema.requestAccessSchema), listControllers.requestAccess);
 listRoute.get('/access-requests', listControllers.viewAllAccessRequests);
-listRoute.put('/grant-access', validate(listSchema.grantAccessSchema), listControllers.grantAccess);
+listRoute.put(
+  '/grant-access',
+  validate(listSchema.grantAccessSchema),
+  listControllers.updateAccessStatus,
+);
 listRoute.get('/accessible-public-lists', listControllers.getAccessiblePublicLists);
+listRoute.get('/accessible-lists', listControllers.getAllAccessRequestedLists);
+
 
 export default listRoute;

@@ -23,7 +23,6 @@ model User {
 
   // Relations with List and Access
   lists   List[]   @relation("UserLists")
-  listAccess ListAccess[] @relation("UserAccess")
   accessRequest AccessRequest[] @relation("UserRequest")
   
   // One-to-many relation with List model for created and updated lists
@@ -59,7 +58,6 @@ model List {
   createdBy User @relation("ListCreatedBy", fields: [createdById], references: [userID])
   updatedBy User @relation("ListUpdatedBy", fields: [updatedById], references: [userID])
 
-  listAccess ListAccess[] @relation("ListAccess") // Relation to Access model
   accessRequest AccessRequest[] @relation("AccessRequest")
 
   // Many-to-many relation with Question model
@@ -72,36 +70,21 @@ model List {
   tags Tag[]
 }
 
-
+enum AccessStatus{
+  PENDING
+  APPROVED
+  REJECTED
+}
 model AccessRequest {
   id          String   @id @default(uuid()) @db.Uuid
   userID      String   @db.Uuid
   listID      String   @db.Uuid
-  status      String   @db.VarChar(20) // e.g., 'PENDING', 'GRANTED', 'REJECTED'
+  status      AccessStatus  @default(PENDING)
   createdAt   DateTime @default(now()) @db.Timestamp(6)
 
   // Relations
   user User @relation("UserRequest",fields: [userID], references: [userID])
   list List @relation("AccessRequest",fields: [listID], references: [listID])
-  listAccess ListAccess @relation("ListAccess",fields: [id], references: [id])
-}
-
-
-model ListAccess {
-  id        String   @id @default(uuid()) @db.Uuid
-  userID    String   @db.Uuid
-  listID    String   @db.Uuid
-  hasAccess Boolean  
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-
-  // Relations
-  user User @relation("UserAccess",fields: [userID], references: [userID])
-  list List @relation("ListAccess",fields: [listID], references: [listID])
-
-  accessRequest AccessRequest[] @relation("ListAccess")
-
-  // Unique constraint to prevent duplicate user-list access entries
-  @@unique([userID, listID])
 }
 
 model Question {

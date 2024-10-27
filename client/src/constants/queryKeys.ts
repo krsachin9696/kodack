@@ -9,6 +9,8 @@ enum queryKeys {
   CONTACT_US = 'contact-us',
   PERSONAL_LISTS = 'personal-lists',
   PUBLIC_LISTS = 'public-lists',
+  ADD_PUBLIC_LISTS = 'add-public-lists',
+  REQUEST_ACCESS = 'request-access',
 }
 
 export default queryKeys;
