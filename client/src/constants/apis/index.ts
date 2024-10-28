@@ -17,7 +17,7 @@ export default {
     createList: `${SERVERURL}/list`,
     getPersonalLists: `${SERVERURL}/list/personal-lists`,
     getPublicLists: `${SERVERURL}/list/public-lists`,
-    getAccessedLists: `${SERVERURL}/list/accessed-lists`,
+    getAccessedLists: `${SERVERURL}/list//accessible-lists`,
     requestAccess: `${SERVERURL}/list/request-access`,
   },
   public: {

@@ -91,6 +91,25 @@ export const viewAllAccessRequests = async (req, res) => {
   }
 };
 
+// export const getAllAccessRequestedLists = async (req, res) => {
+//   try {
+//     const userID = req.user.userID;
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+
+//     const accessedLists = await listServices.getAllAccessRequestedListsService(
+//       userID,
+//       page,
+//       limit,
+//     );
+
+//     res.status(200).json(accessedLists);
+//   } catch (error) {
+//     logger.error('error', error);
+//     res.status(500).json({ error: 'Failed to retrieve all access requests' });
+//   }
+// };
+
 export const getAllAccessRequestedLists = async (req, res) => {
   try {
     const userID = req.user.userID;
@@ -109,6 +128,7 @@ export const getAllAccessRequestedLists = async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve all access requests' });
   }
 };
+
 
 export const updateAccessStatus = async (req, res) => {
   try {

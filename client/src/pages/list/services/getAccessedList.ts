@@ -11,7 +11,8 @@ export interface ListItemProps {
   listID: string;
   name: string;
   tags: string[];
-  status: AccessStatus;
+  accessStatus: AccessStatus | null;
+  owner: string;
 }
 
 export interface PublicListsResponse {

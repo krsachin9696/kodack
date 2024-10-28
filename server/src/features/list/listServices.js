@@ -65,6 +65,8 @@ export const getAllPublicListsService = async (
     limit,
   );
 
+  console.log(lists.accessRequest, "this is list");
+
   const totalPages = Math.ceil(totalItems / limit);
 
   return {
@@ -97,6 +99,27 @@ export const requestAccessService = async (userID, listID) => {
   return await listRepository.createNewAccessRequest(userID, listID);
 };
 
+// export const getAllAccessRequestedListsService = async (
+//   userID,
+//   page = 1,
+//   limit = 10,
+// ) => {
+//   const { lists, totalItems } = await listRepository.getAllAccessRequestedLists(
+//     userID,
+//     page,
+//     limit,
+//   );
+
+//   const totalPages = Math.ceil(totalItems / limit);
+
+//   return {
+//     lists,
+//     totalItems,
+//     totalPages,
+//     currentPage: page,
+//   };
+// };
+
 export const getAllAccessRequestedListsService = async (
   userID,
   page = 1,
@@ -117,6 +140,7 @@ export const getAllAccessRequestedListsService = async (
     currentPage: page,
   };
 };
+
 
 export const viewAllAccessRequestsService = async (userID) => {
   const lists = await listRepository.getListsByOwnerID(userID);

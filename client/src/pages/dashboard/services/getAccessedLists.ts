@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
 
 export interface ListItemProps {
+  owner: ReactNode;
   listID: string;
   name: string;
   tags: string[];
