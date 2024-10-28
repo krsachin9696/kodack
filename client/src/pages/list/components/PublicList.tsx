@@ -108,8 +108,6 @@ export default function PublicList() {
     );
   }
   if (isError) return <p>Error loading lists...</p>;
-  
-  console.log(data, "data alkdsjj")
 
   const lists = data?.lists;
   const totalPages = data?.page;

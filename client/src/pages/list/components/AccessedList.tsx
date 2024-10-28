@@ -1,194 +1,3 @@
-// import { Box, Chip, Pagination, Skeleton, Typography } from '@mui/material';
-// import CardWrapper from '../../../components/shared/card';
-// import { useState } from 'react';
-// import queryKeys from '../../../constants/queryKeys';
-// import { useQuery } from '@tanstack/react-query';
-// import fetchAccessedLists, { AccessStatus } from '../services/getAccessedList';
-
-// export default function AccessList() {
-//   const [page, setPage] = useState(1);
-//   const limit = 7;
-
-//   const { data, isLoading, isError } = useQuery({
-//     queryKey: [queryKeys.PERSONAL_LISTS, page, limit],
-//     queryFn: () => fetchAccessedLists(page, limit),
-//   });
-
-//   const handlePageChange = (
-//     _event: React.ChangeEvent<unknown>,
-//     value: number,
-//   ) => {
-//     setPage(value);
-//   };
-
-//   if (isLoading || isError) {
-//     return (
-//       <CardWrapper
-//         sx={{
-//           p: 0,
-//           justifyContent: 'flex-start',
-//           alignItems: 'flex-start',
-//           backgroundColor: 'rgba(255, 255, 255, 0.04)',
-//         }}
-//       >
-//         <Box
-//           width="100%"
-//           padding={1}
-//           gap={1}
-//           display="flex"
-//           flexDirection="column"
-//         >
-//           {[...Array(limit)].map((_, index) => (
-//             <Box
-//               key={index}
-//               width="100%"
-//               padding={1}
-//               borderLeft={4}
-//               borderColor="skyblue"
-//               borderRadius={2}
-//               display="flex"
-//               flexDirection="column"
-//               sx={{
-//                 backgroundColor: 'rgba(255, 255, 255, 0.02)',
-//               }}
-//             >
-//               <Box display="flex" justifyContent="space-between">
-//                 <Skeleton variant="text" width="60%" height={24} />
-//                 <Skeleton
-//                   variant="rounded"
-//                   width="10%"
-//                   height={24}
-//                   sx={{ marginTop: 1 }}
-//                 />
-//               </Box>
-//               <Box display="flex" justifyContent="flex-start" gap={2}>
-//                 <Skeleton
-//                   variant="rounded"
-//                   width="10%"
-//                   height={20}
-//                   sx={{ marginTop: 1 }}
-//                 />
-//                 <Skeleton
-//                   variant="rounded"
-//                   width="10%"
-//                   height={20}
-//                   sx={{ marginTop: 1 }}
-//                 />
-//                 <Skeleton
-//                   variant="rounded"
-//                   width="10%"
-//                   height={20}
-//                   sx={{ marginTop: 1 }}
-//                 />
-//               </Box>
-//             </Box>
-//           ))}
-//         </Box>
-//       </CardWrapper>
-//     );
-//   }
-//   if (isError) return <p>Error loading lists...</p>;
-
-//   console.log(data, "data of accessed list");
-
-//   const lists = data?.lists || [];
-//   const totalPages = data?.page;
-
-//   return (
-//     <CardWrapper sx={{ backgroundColor: 'transparent', p: 0 }}>
-//       <Box width="100%" gap={1} display="flex" flexDirection="column">
-//         {lists &&
-//           lists.map((list, index) => {
-//             // Convert status to lowercase
-//             const statusLabel = list.status ? AccessStatus[list.status].toLowerCase() : 'unknown';
-
-//             // Map status to colors
-//             const statusColors: {
-//               [key in AccessStatus]: 'primary' | 'secondary' | 'error';
-//             } = {
-//               [AccessStatus.PENDING]: 'secondary',
-//               [AccessStatus.APPROVED]: 'primary',
-//               [AccessStatus.REJECTED]: 'error',
-//             };
-//             return (
-//               <Box
-//                 key={index}
-//                 width="100%"
-//                 padding={1}
-//                 borderLeft={4}
-//                 borderColor="skyblue"
-//                 borderRadius={2}
-//                 display="flex"
-//                 flexDirection="column"
-//                 sx={{
-//                   backgroundColor: 'rgba(255, 255, 255, 0.02)',
-//                   '&:hover': {
-//                     backgroundColor: 'rgba(255, 255, 255, 0.06)',
-//                   },
-//                 }}
-//               >
-//                 <Box
-//                   display="flex"
-//                   justifyContent="space-between"
-//                   paddingBottom={1}
-//                 >
-//                   <Typography
-//                     sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
-//                   >
-//                     {list.name}
-//                   </Typography>
-//                   <Chip
-//                     label={statusLabel}
-//                     color={statusColors[list.status]}
-//                     variant="outlined"
-//                     size="small"
-//                   />
-//                 </Box>
-//                 <Box display="flex" justifyContent="flex-start" gap={1}>
-//                   {list.tags.map((tag, tagIndex) => (
-//                     <Chip
-//                       key={tagIndex}
-//                       label={tag}
-//                       size="small"
-//                       sx={{
-//                         backgroundColor: 'rgba(255, 255, 255, 0.04)',
-//                         color: 'white',
-//                       }}
-//                     />
-//                   ))}
-//                 </Box>
-//               </Box>
-//             );
-//           })}
-//       </Box>
-//       {totalPages && totalPages > 1 && (
-//         <Box width="100%" mt={2} display="flex" justifyContent="center">
-//           <Pagination
-//             count={totalPages}
-//             page={page}
-//             onChange={handlePageChange}
-//             color="primary"
-//             sx={{
-//               '& .MuiPaginationItem-root': {
-//                 color: 'white',
-//                 '&.Mui-selected': {
-//                   backgroundColor: 'skyblue',
-//                   color: 'black',
-//                 },
-//               },
-//               '& .MuiPaginationItem-icon': {
-//                 color: 'white',
-//               },
-//             }}
-//           />
-//         </Box>
-//       )}
-//     </CardWrapper>
-//   );
-// }
-
-
-
 import {
   Box,
   Button,
@@ -201,17 +10,15 @@ import CardWrapper from '../../../components/shared/card';
 import { useState } from 'react';
 import queryKeys from '../../../constants/queryKeys';
 import { useQuery } from '@tanstack/react-query';
-import fetchAccessedLists from '../../dashboard/services/getAccessedLists';
-import { AccessStatus } from '../services/getAccessedList';
-// import fetchAccessList, { AccessStatus } from '../services/getPublicLists';
+import fetchAccessedList from '../services/getAccessedList';
 
 export default function AccessList() {
   const [page, setPage] = useState(1);
   const limit = 7;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: [queryKeys.PERSONAL_LISTS, page, limit],
-    queryFn: () => fetchAccessedLists(page, limit),
+    queryKey: [queryKeys.ACCESSED_LISTS, page, limit],
+    queryFn: () => fetchAccessedList(page, limit),
   });
 
   const handlePageChange = (
@@ -289,30 +96,29 @@ export default function AccessList() {
   }
   if (isError) return <p>Error loading lists...</p>;
 
-  console.log(data, 'public list data');
-
-  const lists = data?.data?.lists;
-  const totalPages = data?.data?.totalPages;
-
+  
+  const lists = data?.lists;
+  const totalPages = data?.page;
+  
   return (
     <CardWrapper sx={{ backgroundColor: 'transparent', p: 0 }}>
       <Box width="100%" gap={1} display="flex" flexDirection="column">
         {lists &&
           lists.map((list, index) => {
-            // Convert status to lowercase
-            const statusLabel =
-              list.accessStatus !== null
-                ? AccessStatus[list.accessStatus].toLowerCase()
-                : 'unknown';
+            // // Convert status to lowercase
+            // const statusLabel =
+            //   list.accessStatus !== null
+            //     ? list.accessStatus
+            //     : 'unknown';
 
-            // Map status to colors
-            const statusColors: {
-              [key in AccessStatus]: 'primary' | 'secondary' | 'error';
-            } = {
-              [AccessStatus.PENDING]: 'secondary',
-              [AccessStatus.APPROVED]: 'primary',
-              [AccessStatus.REJECTED]: 'error',
-            };
+            // // Map status to colors
+            // const statusColors: {
+            //   [key in AccessStatus]: 'primary' | 'secondary' | 'error';
+            // } = {
+            //   [AccessStatus.PENDING]: 'secondary',
+            //   [AccessStatus.APPROVED]: 'primary',
+            //   [AccessStatus.REJECTED]: 'error',
+            // };
             return (
               <Box
                 key={index}
@@ -342,8 +148,9 @@ export default function AccessList() {
                   </Typography>
                   {list.accessStatus !== null ? (
                     <Chip
-                      label={statusLabel}
-                      color={statusColors[list.accessStatus]}
+                      // label={statusLabel}
+                      // color={statusColors[list.accessStatus]}
+                      label={'check'}
                       variant="outlined"
                       size="small"
                     />

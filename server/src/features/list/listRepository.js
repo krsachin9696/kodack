@@ -154,17 +154,14 @@ export const getAllPublicLists = async (
     },
   });
 
-  const accessRequests = await prisma.accessRequest.findMany({
-    where: {
-      userID: userID,
-      // listID: {
-      //   in: lists.map((list) => list.listID),
-      // },
-    },
-  });
-
-  console.log(accessRequests, "accessRequest");
-
+  // const accessRequests = await prisma.accessRequest.findMany({
+  //   where: {
+  //     userID: userID,
+  //     listID: {
+  //       in: lists.map((list) => list.listID),
+  //     },
+  //   },
+  // });
 
   const totalItems = await prisma.list.count({
     where: {
@@ -216,77 +213,6 @@ export const getPendingRequestsForLists = async (listIDs) => {
   });
 };
 
-// export const getAllAccessRequestedLists = async (
-//   userID,
-//   page = 1,
-//   limit = 10,
-// ) => {
-//   const skip = (page - 1) * limit;
-
-//   const lists = await prisma.list.findMany({
-//     where: {
-//       accessRequest: {
-//         userID,
-//       },
-//     },
-//     include: {
-//       user: {
-//         select: {
-//           name: true,
-//         },
-//       },
-//       tags: {
-//         select: {
-//           name: true,
-//         },
-//       },
-//     },
-//     skip,
-//     take: limit,
-//     orderBy: {
-//       createdAt: 'desc',
-//     },
-//   });
-
-//   // const lists = await prisma.accessRequest.findMany({
-//   //   where: {
-//   //     userID,
-//   //   },
-//   //   include: {
-//   //     list: {
-//   //       include: {
-//   //         user: {
-//   //           select: {
-//   //             name: true,
-//   //           },
-//   //         },
-//   //         tags: {
-//   //           select: {
-//   //             name: true,
-//   //           },
-//   //         },
-//   //       },
-//   //     },
-//   //   },
-//   //   skip,
-//   //   take: limit,
-//   //   orderBy: {
-//   //     createdAt: 'desc',
-//   //   },
-//   // });
-
-//   const totalItems = await prisma.list.count({
-//     where: {
-//       accessRequest: {
-//         userID,
-//       },
-//     },
-//   });
-
-//   return { lists, totalItems };
-// };
-
-
 export const getAllAccessRequestedLists = async (
   userID,
   page = 1,
@@ -321,7 +247,12 @@ export const getAllAccessRequestedLists = async (
     },
   });
 
-  const lists = accessRequests.map((request) => request.list);
+  console.log(accessRequests, 'adjf');
+
+  const lists = accessRequests.map((request) => ({
+    ...request.list,
+    accessStatus: request.status,
+  }));
 
   const totalItems = await prisma.accessRequest.count({
     where: {
@@ -329,9 +260,10 @@ export const getAllAccessRequestedLists = async (
     },
   });
 
+  // console.log(accessRequests, "this is lists");
+
   return { lists, totalItems };
 };
-
 
 export const findAlreadyGrantedRequest = async (userID, listID) => {
   return await prisma.listAccess.findFirst({
