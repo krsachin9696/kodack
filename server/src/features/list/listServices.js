@@ -99,7 +99,8 @@ export const getAccessiblePublicListsService = async (userID, searchTerm, page =
     totalPages,
     currentPage: page,
   };
-};
+}
+
 
 // const { PrismaClient } = require('@prisma/client');
 // const prisma = new PrismaClient();
@@ -115,8 +116,6 @@ export const getAccessiblePublicListsService = async (userID, searchTerm, page =
 //         where,
 //       });
 //     }
-//   }
-
 //   // Proceed with the original action if hasAccess remains true
 //   return next(params);
 // });
