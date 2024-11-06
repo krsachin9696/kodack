@@ -9,7 +9,7 @@ import UnprotectedRoute from '../components/base/unprotectRoute';
 import NotFound from '../pages/not-found';
 import LandingPage from '../pages/landing-page'
 import ForgotPassword from '../pages/forgot-password'
-import CourseTable from '../pages/list/list';
+import ListPage from '../pages/list';
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +21,10 @@ export const router = createBrowserRouter([
         // path: 'profile/:username',
         element: <Dashboard />,
       },
+      {
+        path: 'list',
+        element: <ListPage />
+      }
     ],
   },
   {
@@ -57,10 +61,6 @@ export const router = createBrowserRouter([
   {
     path: 'about',
     element: <AboutUs />,
-  },
-  {
-    path: 'list',
-    element: <CourseTable />
   },
   {
     path: '*',

@@ -11,10 +11,12 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import CardWrapper from '../../../components/shared/card';
 import CustomModal from '../../../components/base/customModal';
-import CreateList from './CreateList';
-import fetchPublicLists from '../services/getPublicLists';
+import fetchPublicLists from '../services/getAccessedLists';
 import { useQuery } from '@tanstack/react-query';
 import queryKeys from '../../../constants/queryKeys';
+import AddPublicList from './AddPublicList';
+import { Link } from 'react-router-dom';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 const PublicListCard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -47,7 +49,9 @@ const PublicListCard: React.FC = () => {
           >
             <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
               <ListAltIcon />
-              <Typography sx={{ fontWeight: 600 }}>Public Lists</Typography>
+              <Typography sx={{ fontWeight: 600 }} component={Link} to="/list">
+                Public Lists
+              </Typography>
             </Box>
             <Box>
               <AddCircleTwoToneIcon
@@ -153,14 +157,15 @@ const PublicListCard: React.FC = () => {
           >
             <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
               <ListAltIcon />
-              <Typography sx={{ fontWeight: 600 }}>Public Lists</Typography>
+              <Typography sx={{ fontWeight: 600 }} component={Link} to="/list">
+                Public Lists
+              </Typography>
             </Box>
-            <Box>
-              <AddCircleTwoToneIcon
-                onClick={() => setModalOpen(true)}
-                style={{ cursor: 'pointer' }}
-              />
-            </Box>
+            <Link to="/list" style={{ textDecoration: 'none' }}>
+              <Box style={{ cursor: 'pointer' }}>
+                <KeyboardArrowRightIcon />
+              </Box>
+            </Link>
           </CardWrapper>
           <Divider
             variant="fullWidth"
@@ -260,8 +265,8 @@ const PublicListCard: React.FC = () => {
         )}
       </CardWrapper>
 
-      <CustomModal open={modalOpen} setOpen={setModalOpen} name="Create List">
-        <CreateList />
+      <CustomModal open={modalOpen} setOpen={setModalOpen} name="Public Lists">
+        <AddPublicList onClose={() => setModalOpen(false)} />
       </CustomModal>
     </>
   );
