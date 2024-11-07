@@ -1,5 +1,5 @@
-import { AccessStatus } from '@prisma/client';
 import prisma from '../../config/prismaClient.js';
+import { AccessStatus } from '@prisma/client';
 
 export const findListByNameAndUser = async (userID, name) => {
   return await prisma.list.findFirst({
@@ -87,13 +87,6 @@ export const getListsByUserId = async (userID, page = 1, limit = 10) => {
   return { lists, totalItems };
 };
 
-export const getListsByOwnerID = async (userID) => {
-  return await prisma.list.findMany({
-    where: { userID: userID },
-    select: { listID: true },
-  });
-};
-
 export const getAllPublicLists = async (
   userID,
   searchTerm,
@@ -154,15 +147,6 @@ export const getAllPublicLists = async (
     },
   });
 
-  // const accessRequests = await prisma.accessRequest.findMany({
-  //   where: {
-  //     userID: userID,
-  //     listID: {
-  //       in: lists.map((list) => list.listID),
-  //     },
-  //   },
-  // });
-
   const totalItems = await prisma.list.count({
     where: {
       isPublic: true,
@@ -194,8 +178,15 @@ export const createNewAccessRequest = async (userID, listID) => {
     data: {
       userID,
       listID,
-      status: AccessStatus.PENDING,
+      status: AccessStatus.PENDING
     },
+  });
+};
+
+export const getListsByOwnerID = async (userID) => {
+  return await prisma.list.findMany({
+    where: { userID: userID },
+    select: { listID: true },
   });
 };
 
@@ -285,10 +276,19 @@ export const createGrantedAccess = async (userID, listID) => {
   });
 };
 
+// export const updateAccessRequestStatus = async (userID, listID, status) => {
+//   return await prisma.accessRequest.update({
+//     where: { userID, listID },
+//     data: { status: status },
+//   });
+// };
+
 export const updateAccessRequestStatus = async (userID, listID, status) => {
   return await prisma.accessRequest.update({
-    where: { userID, listID },
-    data: { status: status },
+    where: {
+      userID_listID: { userID, listID },  // Composite unique constraint
+    },
+    data: { status },
   });
 };
 
@@ -349,3 +349,5 @@ export const getAccessiblePublicLists = async (
 
   return { lists, totalItems };
 };
+
+

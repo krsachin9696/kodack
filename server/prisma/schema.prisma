@@ -85,6 +85,9 @@ model AccessRequest {
   // Relations
   user User @relation("UserRequest",fields: [userID], references: [userID])
   list List @relation("AccessRequest",fields: [listID], references: [listID])
+
+  // Composite unique constraint
+  @@unique([userID, listID])  // This ensures that each user can only request access to a list once
 }
 
 model Question {

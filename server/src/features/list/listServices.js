@@ -1,4 +1,3 @@
-import { AccessStatus } from '@prisma/client';
 import * as listRepository from './listRepository.js';
 
 export const createListService = async (
@@ -65,9 +64,7 @@ export const getAllPublicListsService = async (
     limit,
   );
 
-  console.log(lists.accessRequest, "this is list");
-
-  const totalPages = Math.ceil(totalItems / limit);
+const totalPages = Math.ceil(totalItems / limit);
 
   return {
     lists: lists.map((list) => ({
@@ -90,9 +87,7 @@ export const requestAccessService = async (userID, listID) => {
     listID,
   );
 
-  console.log(existingAccess, "akjdajajsf")
-
-  if (existingAccess && existingAccess.status === AccessStatus.APPROVED) {
+  if (existingAccess) {
     throw new Error('Access already requested');
   }
 
