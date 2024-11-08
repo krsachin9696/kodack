@@ -91,24 +91,22 @@ export const viewAllAccessRequests = async (req, res) => {
   }
 };
 
-// export const getAllAccessRequestedLists = async (req, res) => {
-//   try {
-//     const userID = req.user.userID;
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = parseInt(req.query.limit) || 10;
+export const updateAccessStatus = async (req, res) => {
+  try {
+    const { userID, listID, status } = req.body;
 
-//     const accessedLists = await listServices.getAllAccessRequestedListsService(
-//       userID,
-//       page,
-//       limit,
-//     );
+    const updatedStatus = await listServices.updateAccessStatusService(
+      userID,
+      listID,
+      status,
+    );
 
-//     res.status(200).json(accessedLists);
-//   } catch (error) {
-//     logger.error('error', error);
-//     res.status(500).json({ error: 'Failed to retrieve all access requests' });
-//   }
-// };
+    res.status(200).json({ message: `Access ${updatedStatus} successfully` });
+  } catch (error) {
+    logger.error('error', error);
+    res.status(500).json({ error: 'Failed to update access status' });
+  }
+};
 
 export const getAllAccessRequestedLists = async (req, res) => {
   try {
@@ -130,42 +128,6 @@ export const getAllAccessRequestedLists = async (req, res) => {
 };
 
 
-export const updateAccessStatus = async (req, res) => {
-  try {
-    const { userID, listID, status } = req.body;
 
-    const updatedStatus = await listServices.updateAccessStatusService(
-      userID,
-      listID,
-      status,
-    );
 
-    res.status(200).json({ message: `Access ${updatedStatus} successfully` });
-  } catch (error) {
-    logger.error('error', error);
-    res.status(500).json({ error: 'Failed to update access status' });
-  }
-};
 
-// Controller for fetching public lists user has access to
-export const getAccessiblePublicLists = async (req, res) => {
-  try {
-    const userID = req.user.userID;
-    const searchTerm = req.query.search || '';
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-
-    const result = await listServices.getAccessiblePublicListsService(
-      userID,
-      searchTerm,
-      page,
-      limit,
-    );
-    res.status(200).json(result);
-  } catch (error) {
-    logger.error('error', error);
-    res
-      .status(500)
-      .json({ error: 'Failed to retrieve accessible public lists' });
-  }
-};

@@ -7,7 +7,7 @@ const contactUsSchemaValidation = Joi.object({
     'string.max': 'Name must not exceed 50 characters.',
   }),
 
-  email: Joi.string().trim().email().required().messages({
+  email: Joi.string().trim().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
     'string.email': 'Invalid email format.',
   }),

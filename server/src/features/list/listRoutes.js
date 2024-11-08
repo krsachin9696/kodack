@@ -11,10 +11,6 @@ listRoute.get('/public-lists', listControllers.getPublicLists);
 listRoute.post('/request-access', validate(listSchema.requestAccessSchema), listControllers.requestAccess);
 listRoute.get('/access-requests', listControllers.viewAllAccessRequests);
 listRoute.put('/grant-access', validate(listSchema.grantAccessSchema), listControllers.updateAccessStatus);
-// listRoute.get(
-//   '/accessible-public-lists',
-//   listControllers.getAccessiblePublicLists,
-// );
 listRoute.get('/accessed-lists', listControllers.getAllAccessRequestedLists);
 
 export default listRoute;

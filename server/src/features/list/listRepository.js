@@ -204,6 +204,16 @@ export const getPendingRequestsForLists = async (listIDs) => {
   });
 };
 
+export const updateAccessRequestStatus = async (userID, listID, status) => {
+  return await prisma.accessRequest.update({
+    where: {
+      userID_listID: { userID, listID },  // Composite unique constraint
+    },
+    data: { status },
+  });
+};
+
+
 export const getAllAccessRequestedLists = async (
   userID,
   page = 1,
@@ -238,8 +248,6 @@ export const getAllAccessRequestedLists = async (
     },
   });
 
-  console.log(accessRequests, 'adjf');
-
   const lists = accessRequests.map((request) => ({
     ...request.list,
     accessStatus: request.status,
@@ -248,102 +256,6 @@ export const getAllAccessRequestedLists = async (
   const totalItems = await prisma.accessRequest.count({
     where: {
       userID,
-    },
-  });
-
-  // console.log(accessRequests, "this is lists");
-
-  return { lists, totalItems };
-};
-
-export const findAlreadyGrantedRequest = async (userID, listID) => {
-  return await prisma.listAccess.findFirst({
-    where: {
-      userID,
-      listID,
-      hasAccess: true,
-    },
-  });
-};
-
-export const createGrantedAccess = async (userID, listID) => {
-  return await prisma.listAccess.create({
-    data: {
-      userID,
-      listID,
-      hasAccess: true,
-    },
-  });
-};
-
-// export const updateAccessRequestStatus = async (userID, listID, status) => {
-//   return await prisma.accessRequest.update({
-//     where: { userID, listID },
-//     data: { status: status },
-//   });
-// };
-
-export const updateAccessRequestStatus = async (userID, listID, status) => {
-  return await prisma.accessRequest.update({
-    where: {
-      userID_listID: { userID, listID },  // Composite unique constraint
-    },
-    data: { status },
-  });
-};
-
-// Fetch public lists user has access to
-export const getAccessiblePublicLists = async (
-  userID,
-  searchTerm,
-  page = 1,
-  limit = 10,
-) => {
-  const skip = (page - 1) * limit;
-
-  const lists = await prisma.list.findMany({
-    where: {
-      isPublic: true,
-      listAccess: {
-        some: {
-          userID: userID,
-          hasAccess: true,
-        },
-      },
-      name: {
-        contains: searchTerm,
-        mode: 'insensitive',
-      },
-    },
-    select: {
-      listID: true,
-      name: true,
-      tags: {
-        select: {
-          name: true,
-        },
-      },
-    },
-    skip,
-    take: limit,
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
-
-  const totalItems = await prisma.list.count({
-    where: {
-      isPublic: true,
-      listAccess: {
-        some: {
-          userID: userID,
-          hasAccess: true,
-        },
-      },
-      name: {
-        contains: searchTerm,
-        mode: 'insensitive',
-      },
     },
   });
 

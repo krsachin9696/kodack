@@ -9,7 +9,7 @@ const signupSchema = Joi.object({
     'string.empty': 'Username is required.',
   }),
 
-  email: Joi.string().trim().email().required().messages({
+  email: Joi.string().trim().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
     'string.email': 'Invalid email format.',
   }),
@@ -30,7 +30,7 @@ const signupSchema = Joi.object({
 });
 
 const loginSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
     'string.email': 'Invalid email format.',
   }),
@@ -47,7 +47,7 @@ const forgotPasswordSchema = Joi.object({
 })
 
 const otpSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
     'string.email': 'Invalid email format.',
   }),
@@ -57,7 +57,7 @@ const otpSchema = Joi.object({
 });
 
 const passwordSetupSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
     'string.email': 'Invalid email format.',
   }),
