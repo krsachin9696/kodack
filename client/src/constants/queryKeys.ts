@@ -7,6 +7,11 @@ enum queryKeys {
   VERIFY_OTP = 'verify-otp',
   GET_USER_DATA = 'get-user-data',
   CONTACT_US = 'contact-us',
+  PERSONAL_LISTS = 'personal-lists',
+  PUBLIC_LISTS = 'public-lists',
+  ACCESSED_LISTS = 'accessed-lists',
+  ADD_PUBLIC_LISTS = 'add-public-lists',
+  REQUEST_ACCESS = 'request-access',
 }
 
 export default queryKeys;

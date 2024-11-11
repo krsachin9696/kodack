@@ -1,213 +1,262 @@
-// import prisma from '../../config/prismaClient.js';
-
-// export const createList = async (data) => {
-//   const { userID, name, visibility = 1, isDeleted = false, tags = [] } = data;
-
-//   const listData = {
-//     name,
-//     visibility,
-//     isDeleted,
-//     userID,
-//     tags: {
-//       create: tags.map((tag) => ({ tag: { connect: { id: tag } } })),
-//     },
-//     createdById: userID,
-//     updatedById: userID,
-//   };
-
-//   return await prisma.list.create({
-//     data: listData,
-//   });
-// };
-
-// import { v4 as uuidv4, validate as validateUUID } from 'uuid';
-// import prisma from '../../config/prismaClient.js';
-
-// export const createList = async (data) => {
-//   const { userID, name, visibility = 1, isDeleted = false, tags = [] } = data;
-
-//   // Validate UUID for userID
-//   if (!validateUUID(userID)) {
-//     throw new Error("Invalid UUID for userID");
-//   }
-
-//   // Filter valid UUIDs for tags
-//   const validTags = tags.filter(tag => validateUUID(tag));
-//   if (validTags.length !== tags.length) {
-//     console.warn("Some tags have invalid UUIDs and were filtered out.");
-//   }
-
-//   const listData = {
-//     name,
-//     visibility,
-//     isDeleted,
-//     userID,
-//     tags: {
-//       create: validTags.map((tag) => ({ tag: { connect: { id: tag } } })),
-//     },
-//     createdById: userID,
-//     updatedById: userID,
-//   };
-
-//   try {
-//     // Create the list and return the result
-//     const createdList = await prisma.list.create({
-//       data: listData,
-//       include: {
-//         tags: true,  // Optionally include tags in the response
-//       },
-//     });
-//     return createdList;
-//   } catch (error) {
-//     console.error("Error creating list:", error);
-//     throw new Error("Failed to create the list. Please try again.");
-//   }
-// };
-
 import prisma from '../../config/prismaClient.js';
-import { validate as validateUUID } from 'uuid';
+import { AccessStatus } from '@prisma/client';
 
-export const createList = async (data) => {
-  const { userID, name, visibility = 1, isDeleted = false, tags = [] } = data;
-
-  // Validate UUID for userID
-  if (!validateUUID(userID)) {
-    throw new Error("Invalid UUID for userID");
-  }
-
-  // Separate tags based on whether they are new or existing UUIDs
-  const existingTags = tags.filter(tag => validateUUID(tag));
-  const newTags = tags.filter(tag => !validateUUID(tag)); // assuming non-UUID means it's a new tag name
-
-  const listData = {
-    name,
-    visibility,
-    isDeleted,
-    userID,
-    createdById: userID,
-    updatedById: userID,
-    tags: {
-      create: newTags.map(tagName => ({
-        tag: {
-          create: { name: tagName }, // Create new tags
-        }
-      })),
-      connect: existingTags.map(tagID => ({ tagID })), // Connect existing tags by ID
+export const findListByNameAndUser = async (userID, name) => {
+  return await prisma.list.findFirst({
+    where: {
+      AND: [{ name }, { userID }],
     },
-  };
+  });
+};
 
-  try {
-    const createdList = await prisma.list.create({
-      data: listData,
-      include: {
-        tags: {
-          include: {
-            tag: true, // Include tag details in the result
-          },
-        },
+export const findExistingTags = async (tags) => {
+  return await prisma.tag.findMany({
+    where: { name: { in: tags } },
+  });
+};
+
+export const createNewTag = async (tagName) => {
+  return await prisma.tag.create({
+    data: { name: tagName },
+  });
+};
+
+export const createList = async (
+  userID,
+  name,
+  description,
+  isPublic,
+  allTags,
+) => {
+  const newList = await prisma.list.create({
+    data: {
+      name,
+      description,
+      isPublic,
+      isDeleted: false,
+      user: {
+        connect: { userID: userID },
       },
-    });
-    return createdList;
-  } catch (error) {
-    console.error("Error creating list:", error);
-    throw new Error("Failed to create the list. Please try again.");
-  }
-};
-
-
-
-export const getAllLists = async () => {
-  return await prisma.list.findMany({ where: { isDeleted: false } });
-};
-
-export const updateList = async (id, data) => {
-  return await prisma.list.update({
-    where: {
-      listID: id,
+      createdBy: {
+        connect: { userID: userID },
+      },
+      updatedBy: {
+        connect: { userID: userID },
+      },
+      tags: {
+        connect: allTags.map((tag) => ({ id: tag.id })),
+      },
     },
-    data,
   });
+
+  return newList;
 };
 
-export const softDeleteList = async (id) => {
-  return await prisma.list.update({
-    where: { listID: id },
-    data: { isDeleted: true },
-  });
-};
+export const getListsByUserId = async (userID, page = 1, limit = 10) => {
+  const skip = (page - 1) * limit;
 
-export const getListsByUserId = async (userId) => {
-  return await prisma.list.findMany({
+  const lists = await prisma.list.findMany({
     where: {
-      userID: userId,
+      userID: userID,
       isDeleted: false,
     },
     select: {
       listID: true,
       name: true,
+      tags: {
+        select: {
+          name: true,
+        },
+      },
+      isPublic: true,
     },
-  });
-};
-
-export const getListDetailsRepository = async (
-  listID,
-  userID,
-  { page, limit },
-) => {
-  const skip = (page - 1) * limit;
-
-  const listDetails = await prisma.list.findUnique({
-    where: { listID },
-    include: {
-      user: {
-        select: {
-          userID: true,
-          name: true,
-        },
-      },
-      createdBy: {
-        select: {
-          userID: true,
-          name: true,
-        },
-      },
-      updatedBy: {
-        select: {
-          userID: true,
-          name: true,
-        },
-      },
-      questions: {
-        skip,
-        take: limit,
-        where: { isDeleted: false },
-        include: {
-          question: true,
-          userQuestionStatuses: {
-            where: { userID },
-          },
-        },
-      },
-      UserQuestionStatus: {
-        where: { userID },
-      },
+    skip,
+    take: limit,
+    orderBy: {
+      createdAt: 'desc',
     },
   });
 
-  const totalQuestionsCount = await prisma.listQuestion.count({
+  const totalItems = await prisma.list.count({
     where: {
-      listID,
+      userID: userID,
       isDeleted: false,
     },
   });
 
-  return {
-    listDetails,
-    pagination: {
-      currentPage: page,
-      pageSize: limit,
-      totalItems: totalQuestionsCount,
-      totalPages: Math.ceil(totalQuestionsCount / limit),
+  return { lists, totalItems };
+};
+
+export const getAllPublicLists = async (
+  userID,
+  searchTerm,
+  page = 1,
+  limit = 10,
+) => {
+  const skip = (page - 1) * limit;
+
+  const lists = await prisma.list.findMany({
+    where: {
+      isPublic: true,
+      userID: { not: userID },
+      OR: [
+        {
+          name: {
+            contains: searchTerm,
+            mode: 'insensitive',
+          },
+        },
+        {
+          tags: {
+            some: {
+              name: {
+                contains: searchTerm,
+                mode: 'insensitive',
+              },
+            },
+          },
+        },
+      ],
     },
-  };
+    select: {
+      listID: true,
+      name: true,
+      tags: {
+        select: {
+          name: true,
+        },
+      },
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      accessRequest: {
+        where: {
+          userID,
+        },
+        select: {
+          status: true,
+        },
+      },
+    },
+    skip,
+    take: limit,
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  const totalItems = await prisma.list.count({
+    where: {
+      isPublic: true,
+      userID: { not: userID },
+      name: {
+        contains: searchTerm,
+        mode: 'insensitive',
+      },
+    },
+  });
+
+  return { lists, totalItems };
+};
+
+export const findExistingRequest = async (userID, listID) => {
+  return await prisma.accessRequest.findFirst({
+    where: {
+      userID,
+      listID,
+    },
+    select: {
+      status: true,
+    },
+  });
+};
+
+export const createNewAccessRequest = async (userID, listID) => {
+  return await prisma.accessRequest.create({
+    data: {
+      userID,
+      listID,
+      status: AccessStatus.PENDING,
+    },
+  });
+};
+
+export const getListsByOwnerID = async (userID) => {
+  return await prisma.list.findMany({
+    where: { userID: userID },
+    select: { listID: true },
+  });
+};
+
+export const getPendingRequestsForLists = async (listIDs) => {
+  return await prisma.accessRequest.findMany({
+    where: {
+      listID: { in: listIDs },
+      status: AccessStatus.PENDING,
+    },
+    select: {
+      userID: true, // ID of the user who requested access
+      listID: true, // ID of the list for which access is requested
+      createdAt: true, // Timestamp for when the request was made
+    },
+  });
+};
+
+export const updateAccessRequestStatus = async (userID, listID, status) => {
+  return await prisma.accessRequest.update({
+    where: {
+      userID_listID: { userID, listID }, // Composite unique constraint
+    },
+    data: { status },
+  });
+};
+
+export const getAllAccessRequestedLists = async (
+  userID,
+  page = 1,
+  limit = 10,
+) => {
+  const skip = (page - 1) * limit;
+
+  const accessRequests = await prisma.accessRequest.findMany({
+    where: {
+      userID,
+    },
+    include: {
+      list: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+          tags: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+    skip,
+    take: limit,
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  const lists = accessRequests.map((request) => ({
+    ...request.list,
+    accessStatus: request.status,
+  }));
+
+  const totalItems = await prisma.accessRequest.count({
+    where: {
+      userID,
+    },
+  });
+
+  return { lists, totalItems };
 };

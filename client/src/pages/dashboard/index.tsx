@@ -2,8 +2,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import LeetcodeInfo from './components/LeetcodeInfo';
 import { Box, Grid2 } from '@mui/material';
-import ListSection from './components/ListSection';
 import UserProfile from './components/userProfile';
+import PersonalListCard from './components/PersonalListCard';
+import PublicListCard from './components/PublicListCard';
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -18,11 +19,13 @@ const Dashboard: React.FC = () => {
 
   const personalLists = [
     {
+      listID: 'akkdjf',
       name: 'A2Z DSA Sheet',
       tags: ['array', 'recursion', 'dp'],
       isPublic: false,
     },
     {
+      listID: 'adf',
       name: 'Algorithm Study Plan',
       tags: ['dynamic programming', 'greedy'],
       isPublic: true,
@@ -31,14 +34,16 @@ const Dashboard: React.FC = () => {
 
   const publicLists = [
     {
+      listID: 'dfe',
       name: 'Interview Preparation',
       tags: ['array', 'strings', 'searching'],
-      isPublic: true,
+      access: true,
     },
     {
+      listID: 'dvdg',
       name: 'Competitive Programming',
       tags: ['graphs', 'trees', 'backtracking'],
-      isPublic: true,
+      access: false,
     },
   ];
 
@@ -76,10 +81,10 @@ const Dashboard: React.FC = () => {
         sx={{ display: 'flex' }}
       >
         <Grid2 size={{ xs: 12, sm: 8, md: 6 }}>
-          <ListSection title="Personal Lists" lists={personalLists} />
+          <PersonalListCard />
         </Grid2>
         <Grid2 size={{ xs: 12, sm: 8, md: 6 }}>
-          <ListSection title="Public Lists" lists={publicLists} />
+          <PublicListCard />
         </Grid2>
       </Grid2>
     </Box>

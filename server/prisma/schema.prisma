@@ -21,9 +21,10 @@ model User {
   createdAt    DateTime  @default(now()) @db.Timestamp(6)
   updatedAt    DateTime  @updatedAt @db.Timestamp(6)
 
-  // One-to-many relation with List model
-  lists List[] @relation("UserLists")
-
+  // Relations with List and Access
+  lists   List[]   @relation("UserLists")
+  accessRequest AccessRequest[] @relation("UserRequest")
+  
   // One-to-many relation with List model for created and updated lists
   createdLists List[] @relation("ListCreatedBy")
   updatedLists List[] @relation("ListUpdatedBy")
@@ -39,12 +40,13 @@ model User {
 }
 
 model List {
-  listID     String   @id @default(uuid()) @db.Uuid
-  name       String   @db.VarChar(150)
-  visibility Int
-  isDeleted  Boolean  @default(false)
-  createdAt  DateTime @default(now()) @db.Timestamp(6)
-  updatedAt  DateTime @updatedAt @db.Timestamp(6)
+  listID      String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(150)
+  isPublic    Boolean
+  description String
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
 
   // Foreign key field for the relation with User
   userID      String @db.Uuid
@@ -56,6 +58,8 @@ model List {
   createdBy User @relation("ListCreatedBy", fields: [createdById], references: [userID])
   updatedBy User @relation("ListUpdatedBy", fields: [updatedById], references: [userID])
 
+  accessRequest AccessRequest[] @relation("AccessRequest")
+
   // Many-to-many relation with Question model
   questions ListQuestion[]
 
@@ -64,6 +68,26 @@ model List {
 
   // Many-to-many relation with Tag model
   tags Tag[]
+}
+
+enum AccessStatus{
+  PENDING
+  APPROVED
+  REJECTED
+}
+model AccessRequest {
+  id          String   @id @default(uuid()) @db.Uuid
+  userID      String   @db.Uuid
+  listID      String   @db.Uuid
+  status      AccessStatus  @default(PENDING)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+
+  // Relations
+  user User @relation("UserRequest",fields: [userID], references: [userID])
+  list List @relation("AccessRequest",fields: [listID], references: [listID])
+
+  // Composite unique constraint
+  @@unique([userID, listID])  // This ensures that each user can only request access to a list once
 }
 
 model Question {
@@ -127,21 +151,21 @@ model UserQuestionStatus {
 }
 
 model Tag {
-  id        String    @id @default(uuid()) @db.Uuid
-  name      String    @db.VarChar(50)
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(50)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
 
   // Many-to-many relation with List model
   lists List[]
 }
 
 model ContactUs {
-  id           String    @id @default(uuid()) @db.Uuid
-  name         String    @db.VarChar(100)
-  email        String    @db.VarChar(100)
-  subject      String    @db.VarChar(200)
-  message      String    @db.VarChar(500)
-  createdAt    DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime  @updatedAt @db.Timestamp(6)
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(100)
+  email     String   @db.VarChar(100)
+  subject   String   @db.VarChar(200)
+  message   String   @db.VarChar(500)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
 }

@@ -14,14 +14,18 @@ import {
   otpSchema,
   passwordSetupSchema,
   forgotPasswordSchema,
-} from './authValidations.js';
+} from './authSchema.js';
 import validate from '../../middlewares/validationMiddleware.js';
 
 const authRoute = Router();
 
 authRoute.post('/signup', validate(signupSchema), signup);
 authRoute.post('/login', validate(loginSchema), login);
-authRoute.post('/forgot-password', validate(forgotPasswordSchema), forgotPassword)
+authRoute.post(
+  '/forgot-password',
+  validate(forgotPasswordSchema),
+  forgotPassword,
+);
 authRoute.post('/verify-otp', validate(otpSchema), verifyOtp);
 authRoute.post('/setup-password', validate(passwordSetupSchema), setupPassword);
 authRoute.post('/logout', logout);

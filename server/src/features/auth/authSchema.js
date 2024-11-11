@@ -9,7 +9,7 @@ const signupSchema = Joi.object({
     'string.empty': 'Username is required.',
   }),
 
-  email: Joi.string().trim().email().required().messages({
+  email: Joi.string().trim().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
     'string.email': 'Invalid email format.',
   }),
@@ -30,7 +30,7 @@ const signupSchema = Joi.object({
 });
 
 const loginSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
     'string.email': 'Invalid email format.',
   }),
@@ -40,14 +40,14 @@ const loginSchema = Joi.object({
 });
 
 const forgotPasswordSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
-    'string.email': 'Invalid email format.'
-  })
-})
+    'string.email': 'Invalid email format.',
+  }),
+});
 
 const otpSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
     'string.email': 'Invalid email format.',
   }),
@@ -57,13 +57,13 @@ const otpSchema = Joi.object({
 });
 
 const passwordSetupSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email().required().lowercase().messages({
     'string.empty': 'Email is required.',
     'string.email': 'Invalid email format.',
   }),
   password: Joi.string().min(8).required().messages({
     'string.empty': 'Password is required.',
-    'string.min': 'Password must be at least 6 characters long.',
+    'string.min': 'Password must be at least 8 characters long.',
   }),
   confirmPassword: Joi.string().required().valid(Joi.ref('password')).messages({
     'any.only': 'Passwords must match.',
@@ -71,4 +71,10 @@ const passwordSetupSchema = Joi.object({
   }),
 });
 
-export { signupSchema, loginSchema, otpSchema, passwordSetupSchema, forgotPasswordSchema };
+export {
+  signupSchema,
+  loginSchema,
+  otpSchema,
+  passwordSetupSchema,
+  forgotPasswordSchema,
+};

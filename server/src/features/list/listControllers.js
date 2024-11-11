@@ -1,90 +1,128 @@
 import logger from '../../utils/logger.js';
-import * as listService from './listServices.js';
+import * as listServices from './listServices.js';
 
 export const createList = async (req, res) => {
   try {
-    const { userID, name, visibility, tags, isDeleted } = req.body;
+    const { name, isPublic, description, tags } = req.body;
+    const userID = req.user.userID;
 
-    if (!userID || !name) {
-      return res.status(400).json({ error: 'userID and name are required' });
-    }
-
-    const newList = await listService.createList({
+    const newList = await listServices.createListService(
       userID,
       name,
-      visibility,
-      isDeleted,
+      description,
+      isPublic,
       tags,
-    });
+    );
+    //201 is used because request was a success and a new resource is created as a result
     res.status(201).json(newList);
   } catch (error) {
-    console.error(error);
+    logger.error('error', error);
+    //500 is used because of internal server error that server cant handle
     res.status(500).json({ error: 'Failed to create list' });
   }
 };
 
-export const getAllLists = async (req, res) => {
+export const getPersonalLists = async (req, res) => {
   try {
-    const lists = await listService.getAllLists();
-    res.status(200).json(lists);
-  } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: 'Failed to retrieve lists' });
-  }
-};
+    const userID = req.user.userID;
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+    const limit = parseInt(req.query.limit) || 10; // Default to limit 10 if not provided
 
-export const updateList = async (req, res) => {
-  try {
-    const updatedList = await listService.updateList(req.params.id, req.body);
-    res.status(200).json(updatedList);
-  } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: 'Failed to update list' });
-  }
-};
-
-export const deleteList = async (req, res) => {
-  try {
-    await listService.softDeleteList(req.params.id);
-    res.status(204).send();
-  } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: 'Failed to delete list' });
-  }
-};
-
-export const getListsByUserId = async (req, res) => {
-  try {
-    const lists = await listService.getListsByUserId(req.params.userID);
-    res.status(200).json(lists);
-  } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: 'Failed to retrieve lists' });
-  }
-};
-
-export const getListDetails = async (req, res) => {
-  try {
-    const { listID } = req.params;
-    const { userID } = req.header;
-
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-
-    if (!userID) {
-      return res
-        .status(400)
-        .json({ error: 'userID query parameter is required' });
-    }
-
-    const { listDetails, pagination } = await listService.getListDetails(
-      listID,
+    const result = await listServices.getPersonalListsService(
       userID,
-      { page, limit },
+      page,
+      limit,
     );
-    res.status(200).json({ listDetails, pagination });
+
+    //200 is used for transmitting result of action to message body
+    res.status(200).json(result);
   } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: 'Failed to retrieve list details' });
+    logger.error('error', error);
+    res.status(500).json({ error: 'Failed to retrieve lists' });
+  }
+};
+
+export const getPublicLists = async (req, res) => {
+  try {
+    const userID = req.user.userID;
+    const searchTerm = req.query.search || '';
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const result = await listServices.getAllPublicListsService(
+      userID,
+      searchTerm,
+      page,
+      limit,
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    logger.error('error', error);
+    res.status(500).json({ error: 'Failed to retrieve public lists' });
+  }
+};
+
+export const requestAccess = async (req, res) => {
+  try {
+    const { listID } = req.body;
+    const userID = req.user.userID;
+
+    await listServices.requestAccessService(userID, listID);
+
+    res.status(201).json({ message: 'Access requested successfully' });
+  } catch (error) {
+    logger.error('error', error);
+    res.status(500).json({ error: 'Failed to request access' });
+  }
+};
+
+export const viewAllAccessRequests = async (req, res) => {
+  try {
+    const userID = req.user.userID;
+
+    const allAccessRequests =
+      await listServices.viewAllAccessRequestsService(userID);
+
+    res.status(200).json(allAccessRequests);
+  } catch (error) {
+    logger.error('error', error);
+    res.status(500).json({ error: 'Failed to retrieve all access requests' });
+  }
+};
+
+export const updateAccessStatus = async (req, res) => {
+  try {
+    const { userID, listID, status } = req.body;
+
+    const updatedStatus = await listServices.updateAccessStatusService(
+      userID,
+      listID,
+      status,
+    );
+
+    res.status(200).json({ message: `Access ${updatedStatus} successfully` });
+  } catch (error) {
+    logger.error('error', error);
+    res.status(500).json({ error: 'Failed to update access status' });
+  }
+};
+
+export const getAllAccessRequestedLists = async (req, res) => {
+  try {
+    const userID = req.user.userID;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const accessedLists = await listServices.getAllAccessRequestedListsService(
+      userID,
+      page,
+      limit,
+    );
+
+    res.status(200).json(accessedLists);
+  } catch (error) {
+    logger.error('error', error);
+    res.status(500).json({ error: 'Failed to retrieve all access requests' });
   }
 };
