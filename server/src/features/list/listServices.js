@@ -64,7 +64,7 @@ export const getAllPublicListsService = async (
     limit,
   );
 
-const totalPages = Math.ceil(totalItems / limit);
+  const totalPages = Math.ceil(totalItems / limit);
 
   return {
     lists: lists.map((list) => ({
@@ -73,7 +73,7 @@ const totalPages = Math.ceil(totalItems / limit);
       tags: list.tags.map((tag) => tag.name),
       owner: list.user?.name,
       isPublic: list.isPublic,
-      accessStatus: list.accessRequest[0].status
+      accessStatus: list.accessRequest[0].status,
     })),
     totalItems,
     totalPages,
@@ -140,7 +140,3 @@ export const getAllAccessRequestedListsService = async (
     currentPage: page,
   };
 };
-
-
-
-

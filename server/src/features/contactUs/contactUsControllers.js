@@ -8,11 +8,13 @@ export const createContactUs = async (req, res) => {
       name,
       email,
       subject,
-      message
+      message,
     );
 
     //201 used because request succeded and new resource was created as a result, generally used in post and put.
-    res.status(201).json({ message: 'Form submitted successfully', newContactForm });
+    res
+      .status(201)
+      .json({ message: 'Form submitted successfully', newContactForm });
   } catch (error) {
     //error logged in log file
     logger.error('Error creating contact form:', error);

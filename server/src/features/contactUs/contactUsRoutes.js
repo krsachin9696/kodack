@@ -5,6 +5,10 @@ import * as contactUsSchema from './contactUsSchema.js';
 
 const contactUsRoute = Router();
 
-contactUsRoute.post('/', validate(contactUsSchema.contactUsSchemaValidation), contactUsControllers.createContactUs);
+contactUsRoute.post(
+  '/',
+  validate(contactUsSchema.contactUsSchemaValidation),
+  contactUsControllers.createContactUs,
+);
 
 export default contactUsRoute;

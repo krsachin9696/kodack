@@ -126,8 +126,3 @@ export const getAllAccessRequestedLists = async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve all access requests' });
   }
 };
-
-
-
-
-

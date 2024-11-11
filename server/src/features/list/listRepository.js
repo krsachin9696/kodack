@@ -178,7 +178,7 @@ export const createNewAccessRequest = async (userID, listID) => {
     data: {
       userID,
       listID,
-      status: AccessStatus.PENDING
+      status: AccessStatus.PENDING,
     },
   });
 };
@@ -207,12 +207,11 @@ export const getPendingRequestsForLists = async (listIDs) => {
 export const updateAccessRequestStatus = async (userID, listID, status) => {
   return await prisma.accessRequest.update({
     where: {
-      userID_listID: { userID, listID },  // Composite unique constraint
+      userID_listID: { userID, listID }, // Composite unique constraint
     },
     data: { status },
   });
 };
-
 
 export const getAllAccessRequestedLists = async (
   userID,
@@ -261,5 +260,3 @@ export const getAllAccessRequestedLists = async (
 
   return { lists, totalItems };
 };
-
-
