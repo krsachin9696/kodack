@@ -22,22 +22,26 @@ export const createListSchema = Joi.object({
 export const requestAccessSchema = Joi.object({
   listID: Joi.string().trim().max(200).required().messages({
     'string.empty': 'List ID is required.',
-    'string.max': 'List ID must be less than or equal to 200 characters.'
-  })
-})
+    'string.max': 'List ID must be less than or equal to 200 characters.',
+  }),
+});
 
 export const grantAccessSchema = Joi.object({
   userID: Joi.string().trim().max(200).required().messages({
     'string.empty': 'User ID is required.',
-    'string.max': 'User ID must be less than or equal to 200 characters.'
+    'string.max': 'User ID must be less than or equal to 200 characters.',
   }),
   listID: Joi.string().trim().max(200).required().messages({
     'string.empty': 'List ID is required.',
-    'string.max': 'List ID must be less than or equal to 200 characters.'
+    'string.max': 'List ID must be less than or equal to 200 characters.',
   }),
-  status: Joi.string().trim().valid('PENDING', 'APPROVED', 'REJECTED').required().uppercase().messages({
-    'string.empty': 'Status is required.',
-    'any.only': 'Status must be one of PENDING, APPROVED, or REJECTED.',
-  })
+  status: Joi.string()
+    .trim()
+    .valid('APPROVED', 'REJECTED')
+    .required()
+    .uppercase()
+    .messages({
+      'string.empty': 'Status is required.',
+      'any.only': 'Status must be APPROVED or REJECTED.',
+    }),
 });
-

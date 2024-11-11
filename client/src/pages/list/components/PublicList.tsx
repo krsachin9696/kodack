@@ -21,12 +21,15 @@ export default function PublicList() {
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.PERSONAL_LISTS, page, limit],
     queryFn: () => fetchPublicLists(page, limit),
+    
   });
 
+  
   const { mutate: handleRequestAccess } = useMutation({
     mutationFn: (listID: string) => requestAccessService({listID}),
     mutationKey: [queryKeys.REQUEST_ACCESS],
     onSuccess: (data) => {
+      console.log(data)
       toast.info("Access Request sent successfully!");
     },
     onError: () => {
@@ -118,9 +121,10 @@ export default function PublicList() {
         {lists &&
           lists.map((list, index) => {
             // Convert status to lowercase
+            
             const statusLabel =
               list.accessStatus !== null
-                ? AccessStatus[list.accessStatus].toLowerCase()
+                ? (String(list.accessStatus)).toLowerCase()
                 : 'unknown';
 
             // Map status to colors
