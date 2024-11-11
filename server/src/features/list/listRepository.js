@@ -220,7 +220,7 @@ export const getAllAccessRequestedLists = async (
 ) => {
   const skip = (page - 1) * limit;
 
-  const accessRequests = await prisma.accessRequest.findMany({
+  const accessRequestList = await prisma.accessRequest.findMany({
     where: {
       userID,
     },
@@ -237,6 +237,14 @@ export const getAllAccessRequestedLists = async (
               name: true,
             },
           },
+          accessRequest: {
+            where: {
+              userID,
+            },
+            select: {
+              status: true,
+            },
+          },
         },
       },
     },
@@ -247,9 +255,8 @@ export const getAllAccessRequestedLists = async (
     },
   });
 
-  const lists = accessRequests.map((request) => ({
+  const lists = accessRequestList.map((request) => ({
     ...request.list,
-    accessStatus: request.status,
   }));
 
   const totalItems = await prisma.accessRequest.count({

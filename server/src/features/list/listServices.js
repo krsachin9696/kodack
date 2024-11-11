@@ -66,6 +66,8 @@ export const getAllPublicListsService = async (
 
   const totalPages = Math.ceil(totalItems / limit);
 
+  console.log(lists[0].accessRequest, 'aodfj');
+
   return {
     lists: lists.map((list) => ({
       listID: list.listID,
@@ -73,7 +75,7 @@ export const getAllPublicListsService = async (
       tags: list.tags.map((tag) => tag.name),
       owner: list.user?.name,
       isPublic: list.isPublic,
-      accessStatus: list.accessRequest[0].status,
+      accessStatus: list.accessRequest?.[0]?.status || null,
     })),
     totalItems,
     totalPages,
@@ -134,7 +136,14 @@ export const getAllAccessRequestedListsService = async (
   const totalPages = Math.ceil(totalItems / limit);
 
   return {
-    lists,
+    lists: lists.map((list) => ({
+      listID: list.listID,
+      name: list.name,
+      tags: list.tags.map((tag) => tag.name),
+      owner: list.user?.name,
+      isPublic: list.isPublic,
+      accessStatus: list.accessRequest?.[0]?.status || null,
+    })),
     totalItems,
     totalPages,
     currentPage: page,
