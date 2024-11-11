@@ -24,16 +24,16 @@ const signup = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  const {email} = req.body;
+  const { email } = req.body;
   try {
-    const result = await forgotPasswordUser(email)
+    const result = await forgotPasswordUser(email);
     //200 is used for transmitting result of action to message body
     res.status(200).json(result);
   } catch (error) {
     //400 is used because server cannot proceed due to client error
-    res.status(400).json({error:error.message});
+    res.status(400).json({ error: error.message });
   }
-}
+};
 
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;

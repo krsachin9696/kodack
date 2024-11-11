@@ -34,7 +34,10 @@ export const getAllQuestions = async (req, res) => {
 
 export const updateQuestion = async (req, res) => {
   try {
-    const updatedQuestion = await questionService.updateQuestion(req.params.id, req.body);
+    const updatedQuestion = await questionService.updateQuestion(
+      req.params.id,
+      req.body,
+    );
     res.status(200).json(updatedQuestion);
   } catch (error) {
     logger.error(error);
@@ -54,7 +57,9 @@ export const deleteQuestion = async (req, res) => {
 
 export const getQuestionDetails = async (req, res) => {
   try {
-    const questionDetails = await questionService.getQuestionDetails(req.params.id);
+    const questionDetails = await questionService.getQuestionDetails(
+      req.params.id,
+    );
     res.status(200).json(questionDetails);
   } catch (error) {
     logger.error(error);

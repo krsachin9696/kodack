@@ -22,17 +22,17 @@ export const createListSchema = Joi.object({
 export const requestAccessSchema = Joi.object({
   listID: Joi.string().trim().max(200).required().messages({
     'string.empty': 'List ID is required.',
-    'strinf.max': 'List ID must be less than or equal to 200 characters.'
-  })
-})
+    'strinf.max': 'List ID must be less than or equal to 200 characters.',
+  }),
+});
 
 export const grantAccessSchema = Joi.object({
   userID: Joi.string().trim().max(200).required().messages({
     'string.empty': 'User ID is required.',
-    'strinf.max': 'USer ID must be less than or equal to 200 characters.'
+    'strinf.max': 'USer ID must be less than or equal to 200 characters.',
   }),
   listID: Joi.string().trim().max(200).required().messages({
     'string.empty': 'List ID is required.',
-    'strinf.max': 'List ID must be less than or equal to 200 characters.'
-  })
-})
+    'strinf.max': 'List ID must be less than or equal to 200 characters.',
+  }),
+});

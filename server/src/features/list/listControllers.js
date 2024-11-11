@@ -129,7 +129,6 @@ export const getAllAccessRequestedLists = async (req, res) => {
   }
 };
 
-
 export const updateAccessStatus = async (req, res) => {
   try {
     const { userID, listID, status } = req.body;

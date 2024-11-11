@@ -65,7 +65,7 @@ export const getAllPublicListsService = async (
     limit,
   );
 
-  console.log(lists.accessRequest, "this is list");
+  console.log(lists.accessRequest, 'this is list');
 
   const totalPages = Math.ceil(totalItems / limit);
 
@@ -90,7 +90,7 @@ export const requestAccessService = async (userID, listID) => {
     listID,
   );
 
-  console.log(existingAccess, "akjdajajsf")
+  console.log(existingAccess, 'akjdajajsf');
 
   if (existingAccess && existingAccess.status === AccessStatus.APPROVED) {
     throw new Error('Access already requested');
@@ -140,7 +140,6 @@ export const getAllAccessRequestedListsService = async (
     currentPage: page,
   };
 };
-
 
 export const viewAllAccessRequestsService = async (userID) => {
   const lists = await listRepository.getListsByOwnerID(userID);

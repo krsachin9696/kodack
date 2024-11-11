@@ -59,29 +59,28 @@ export const signupUser = async (
 };
 
 export const forgotPasswordUser = async (email) => {
-    const user = await findUserByEmail(email);
+  const user = await findUserByEmail(email);
 
-    if (!user) {
-      //not throwing error as suggested by ma'am so that information isn't revealed
-      return ('Email does not exist');
-    }
+  if (!user) {
+    //not throwing error as suggested by ma'am so that information isn't revealed
+    return 'Email does not exist';
+  }
 
-    const otp = crypto.randomInt(100000, 999999).toString();
-    const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000); //need to check otp expiration
+  const otp = crypto.randomInt(100000, 999999).toString();
+  const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000); //need to check otp expiration
 
-    await sendEmail(
-      email,
-      'Your New OTP Code',
-      `Your new OTP code is ${otp}. It is valid for 15 minutes.`
-    );
+  await sendEmail(
+    email,
+    'Your New OTP Code',
+    `Your new OTP code is ${otp}. It is valid for 15 minutes.`,
+  );
 
-    await updateUserByEmail(email, { otp, otpExpiresAt });
+  await updateUserByEmail(email, { otp, otpExpiresAt });
 
-    return {
-      message: 'A new OTP has been sent. Please verify your email with the OTP.',
-    };
+  return {
+    message: 'A new OTP has been sent. Please verify your email with the OTP.',
   };
-
+};
 
 export const verifyUserOtp = async (email, otp) => {
   const user = await findUserByEmail(email);
