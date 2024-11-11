@@ -1,4 +1,3 @@
-import { AccessStatus } from '@prisma/client';
 import * as listRepository from './listRepository.js';
 
 export const createListService = async (
@@ -65,8 +64,6 @@ export const getAllPublicListsService = async (
     limit,
   );
 
-  console.log(lists.accessRequest, 'this is list');
-
   const totalPages = Math.ceil(totalItems / limit);
 
   return {
@@ -76,7 +73,7 @@ export const getAllPublicListsService = async (
       tags: list.tags.map((tag) => tag.name),
       owner: list.user?.name,
       isPublic: list.isPublic,
-      accessStatus: list.accessRequest.status || null,
+      accessStatus: list.accessRequest[0].status,
     })),
     totalItems,
     totalPages,
@@ -90,55 +87,11 @@ export const requestAccessService = async (userID, listID) => {
     listID,
   );
 
-  console.log(existingAccess, 'akjdajajsf');
-
-  if (existingAccess && existingAccess.status === AccessStatus.APPROVED) {
+  if (existingAccess) {
     throw new Error('Access already requested');
   }
 
   return await listRepository.createNewAccessRequest(userID, listID);
-};
-
-// export const getAllAccessRequestedListsService = async (
-//   userID,
-//   page = 1,
-//   limit = 10,
-// ) => {
-//   const { lists, totalItems } = await listRepository.getAllAccessRequestedLists(
-//     userID,
-//     page,
-//     limit,
-//   );
-
-//   const totalPages = Math.ceil(totalItems / limit);
-
-//   return {
-//     lists,
-//     totalItems,
-//     totalPages,
-//     currentPage: page,
-//   };
-// };
-
-export const getAllAccessRequestedListsService = async (
-  userID,
-  page = 1,
-  limit = 10,
-) => {
-  const { lists, totalItems } = await listRepository.getAllAccessRequestedLists(
-    userID,
-    page,
-    limit,
-  );
-
-  const totalPages = Math.ceil(totalItems / limit);
-
-  return {
-    lists,
-    totalItems,
-    totalPages,
-    currentPage: page,
-  };
 };
 
 export const viewAllAccessRequestsService = async (userID) => {
@@ -167,16 +120,13 @@ export const updateAccessStatusService = async (userID, listID, status) => {
   return access.status;
 };
 
-// Fetch public lists the user has access to
-export const getAccessiblePublicListsService = async (
+export const getAllAccessRequestedListsService = async (
   userID,
-  searchTerm,
   page = 1,
   limit = 10,
 ) => {
-  const { lists, totalItems } = await listRepository.getAccessiblePublicLists(
+  const { lists, totalItems } = await listRepository.getAllAccessRequestedLists(
     userID,
-    searchTerm,
     page,
     limit,
   );
@@ -184,34 +134,9 @@ export const getAccessiblePublicListsService = async (
   const totalPages = Math.ceil(totalItems / limit);
 
   return {
-    lists: lists.map((list) => ({
-      listID: list.listID,
-      name: list.name,
-      tags: list.tags.map((tag) => tag.name),
-      isPublic: list.isPublic,
-    })),
+    lists,
     totalItems,
     totalPages,
     currentPage: page,
   };
 };
-
-// const { PrismaClient } = require('@prisma/client');
-// const prisma = new PrismaClient();
-
-// prisma.$use(async (params, next) => {
-//   // Check if the update action is on the Access model
-//   if (params.model === 'Access' && params.action === 'update') {
-//     const { where, data } = params.args;
-
-//     // If `hasAccess` is being set to false, delete the record
-//     if (data.hasAccess === false) {
-//       return await prisma.access.delete({
-//         where,
-//       });
-//     }
-//   }
-
-//   // Proceed with the original action if hasAccess remains true
-//   return next(params);
-// });

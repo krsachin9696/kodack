@@ -91,44 +91,6 @@ export const viewAllAccessRequests = async (req, res) => {
   }
 };
 
-// export const getAllAccessRequestedLists = async (req, res) => {
-//   try {
-//     const userID = req.user.userID;
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = parseInt(req.query.limit) || 10;
-
-//     const accessedLists = await listServices.getAllAccessRequestedListsService(
-//       userID,
-//       page,
-//       limit,
-//     );
-
-//     res.status(200).json(accessedLists);
-//   } catch (error) {
-//     logger.error('error', error);
-//     res.status(500).json({ error: 'Failed to retrieve all access requests' });
-//   }
-// };
-
-export const getAllAccessRequestedLists = async (req, res) => {
-  try {
-    const userID = req.user.userID;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-
-    const accessedLists = await listServices.getAllAccessRequestedListsService(
-      userID,
-      page,
-      limit,
-    );
-
-    res.status(200).json(accessedLists);
-  } catch (error) {
-    logger.error('error', error);
-    res.status(500).json({ error: 'Failed to retrieve all access requests' });
-  }
-};
-
 export const updateAccessStatus = async (req, res) => {
   try {
     const { userID, listID, status } = req.body;
@@ -146,25 +108,21 @@ export const updateAccessStatus = async (req, res) => {
   }
 };
 
-// Controller for fetching public lists user has access to
-export const getAccessiblePublicLists = async (req, res) => {
+export const getAllAccessRequestedLists = async (req, res) => {
   try {
     const userID = req.user.userID;
-    const searchTerm = req.query.search || '';
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
-    const result = await listServices.getAccessiblePublicListsService(
+    const accessedLists = await listServices.getAllAccessRequestedListsService(
       userID,
-      searchTerm,
       page,
       limit,
     );
-    res.status(200).json(result);
+
+    res.status(200).json(accessedLists);
   } catch (error) {
     logger.error('error', error);
-    res
-      .status(500)
-      .json({ error: 'Failed to retrieve accessible public lists' });
+    res.status(500).json({ error: 'Failed to retrieve all access requests' });
   }
 };

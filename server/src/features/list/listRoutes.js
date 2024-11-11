@@ -23,10 +23,6 @@ listRoute.put(
   validate(listSchema.grantAccessSchema),
   listControllers.updateAccessStatus,
 );
-// listRoute.get(
-//   '/accessible-public-lists',
-//   listControllers.getAccessiblePublicLists,
-// );
 listRoute.get('/accessed-lists', listControllers.getAllAccessRequestedLists);
 
 export default listRoute;
