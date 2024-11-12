@@ -144,3 +144,40 @@ export const getListDetails = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch list details' });
   }
 };
+
+export const getAccessRequestsForList = async (req, res) => {
+  try {
+    const listID = req.params.listID;
+
+    // Fetch the access requests for the list
+    const accessRequests =
+      await listServices.getAccessRequestsForListService(listID);
+
+    // Group access requests by their status
+    const pendingRequests = accessRequests.filter(
+      (req) => req.status === 'PENDING',
+    );
+    const approvedRequests = accessRequests.filter(
+      (req) => req.status === 'APPROVED',
+    );
+
+    // Format the response
+    const response = {
+      listId: listID,
+      pendingRequests: pendingRequests.map((req) => ({
+        userId: req.userID,
+        userName: req.user.name,
+      })),
+      approved: approvedRequests.map((req) => ({
+        userId: req.userID,
+        userName: req.user.name,
+      })),
+    };
+
+    // Return the response
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Error fetching access requests', error);
+    res.status(500).json({ error: 'Failed to fetch access requests' });
+  }
+};

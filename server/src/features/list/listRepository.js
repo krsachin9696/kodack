@@ -283,3 +283,19 @@ export const getListByIdWithTags = async (listID) => {
     },
   });
 };
+
+export const getAccessRequestsForList = async (listID) => {
+  return await prisma.accessRequest.findMany({
+    where: {
+      listID: listID,
+    },
+    include: {
+      user: {
+        select: {
+          userID: true,
+          name: true,
+        },
+      },
+    },
+  });
+};
