@@ -181,3 +181,31 @@ export const getAccessRequestsForList = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch access requests' });
   }
 };
+
+export const getQuestionsForList = async (req, res) => {
+  try {
+    const listID = req.params.listID; // Extract listID from URL parameter
+
+    // Fetch the list of questions for the given listID
+    const questions = await listServices.getQuestionsForListService(listID);
+
+    // Format the response
+    const response = {
+      listId: listID,
+      questions: questions.map((q) => ({
+        questionId: q.questionId,
+        title: q.title,
+        leetcodeLink: q.leetcodeLink,
+        important: q.important,
+        done: q.done,
+        review: q.review,
+      })),
+    };
+
+    // Return the response
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Error fetching questions for list', error);
+    res.status(500).json({ error: 'Failed to fetch questions for list' });
+  }
+};

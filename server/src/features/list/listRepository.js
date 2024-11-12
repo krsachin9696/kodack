@@ -299,3 +299,19 @@ export const getAccessRequestsForList = async (listID) => {
     },
   });
 };
+
+export const getQuestionsForList = async (listID) => {
+  return await prisma.question.findMany({
+    where: {
+      listID: listID,
+    },
+    select: {
+      questionId: true,
+      title: true,
+      leetcodeLink: true,
+      important: true,
+      done: true,
+      review: true,
+    },
+  });
+};
