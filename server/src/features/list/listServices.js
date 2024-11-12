@@ -166,3 +166,17 @@ export const getListDetailsService = async (listID) => {
     tags: list.tags.map((tag) => tag.name), // Extract tag names
   };
 };
+
+export const getAccessRequestsForListService = async (listID) => {
+  // Query for the access requests for the specified list
+  const accessRequests = await listRepository.getAccessRequestsForList(listID);
+
+  return accessRequests;
+};
+
+export const getQuestionsForListService = async (listID) => {
+  // Query to fetch questions for the specified listID
+  const questions = await listRepository.getQuestionsForList(listID);
+
+  return questions;
+};

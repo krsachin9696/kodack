@@ -26,5 +26,10 @@ listRoute.put(
 listRoute.get('/accessed-lists', listControllers.getAllAccessRequestedLists);
 
 listRoute.get('/list-details/:listID', listControllers.getListDetails);
+listRoute.get(
+  '/access-requests/:listID',
+  listControllers.getAccessRequestsForList,
+);
+listRoute.get('/questions/:listID', listControllers.getQuestionsForList);
 
 export default listRoute;
