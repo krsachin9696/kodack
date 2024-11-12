@@ -149,3 +149,20 @@ export const getAllAccessRequestedListsService = async (
     currentPage: page,
   };
 };
+
+export const getListDetailsService = async (listID) => {
+  // Fetch the list by its ID, including related tags
+  const list = await listRepository.getListByIdWithTags(listID);
+
+  if (!list) {
+    return null;
+  }
+
+  // Format the response according to the API spec
+  return {
+    listId: list.listID,
+    listName: list.name,
+    description: list.description,
+    tags: list.tags.map((tag) => tag.name), // Extract tag names
+  };
+};

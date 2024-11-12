@@ -25,4 +25,6 @@ listRoute.put(
 );
 listRoute.get('/accessed-lists', listControllers.getAllAccessRequestedLists);
 
+listRoute.get('/list-details/:listID', listControllers.getListDetails);
+
 export default listRoute;
