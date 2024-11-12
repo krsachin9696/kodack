@@ -155,7 +155,7 @@ export const getListDetailsService = async (listID) => {
   const list = await listRepository.getListByIdWithTags(listID);
 
   if (!list) {
-    return null;
+    throw new Error('List not found');
   }
 
   // Format the response according to the API spec

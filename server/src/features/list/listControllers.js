@@ -130,13 +130,12 @@ export const getAllAccessRequestedLists = async (req, res) => {
 export const getListDetails = async (req, res) => {
   try {
     const { listID } = req.params;
-    console.log(listID, 'eajdf');
 
     const listDetails = await listServices.getListDetailsService(listID);
 
-    if (!listDetails) {
-      return res.status(404).json({ error: 'List not found' });
-    }
+    // if (!listDetails) {
+    //   return res.status(404).json({ error: 'List not found' });
+    // }
 
     // Send the list details as a response
     res.status(200).json(listDetails);
