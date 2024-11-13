@@ -9,6 +9,12 @@ export const findListByNameAndUser = async (userID, name) => {
   });
 };
 
+export const findListByID = async (listID) => {
+  return await prisma.list.findUnique({
+    where: { listID },
+  });
+};
+
 export const findExistingTags = async (tags) => {
   return await prisma.tag.findMany({
     where: { name: { in: tags } },
@@ -349,4 +355,25 @@ export const getQuestionsForList = async (listID, userID) => {
       review: false,
     },
   }));
+};
+
+export const createListQuestion = async (listID, questionID) => {
+  return await prisma.listQuestion.create({
+    data: {
+      listID,
+      questionID,
+    },
+  });
+};
+
+export const validateListAndUser = async (userID, listID) => {
+  const list = await prisma.list.findUnique({
+    where: { listID },
+    select: { userID: true },
+  });
+
+  // Check if list exists and if the user is the owner
+  if (!list || list.userID !== userID) {
+    throw new Error('List not found or user does not have access');
+  }
 };

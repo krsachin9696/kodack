@@ -1,9 +1,23 @@
 import express from 'express';
 import * as questionController from './questionControllers.js';
+import validate from '../../middlewares/validationMiddleware.js';
+import {
+  addQuestionSchema,
+  updateQuestionStatusSchema,
+} from './questionSchema.js';
 
 const questionRoute = express.Router();
 
-questionRoute.post('/', questionController.createQuestion);
+questionRoute.post(
+  '/add-question',
+  validate(addQuestionSchema),
+  questionController.addQuestion,
+);
+questionRoute.patch(
+  '/:listID/:questionID',
+  validate(updateQuestionStatusSchema),
+  questionController.updateQuestionStatus,
+);
 questionRoute.get('/', questionController.getAllQuestions);
 questionRoute.put('/:id', questionController.updateQuestion);
 questionRoute.delete('/:id', questionController.deleteQuestion);
