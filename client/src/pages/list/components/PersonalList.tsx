@@ -4,6 +4,7 @@ import { useState } from 'react';
 import fetchPersonalLists from '../services/getPersonalLists';
 import queryKeys from '../../../constants/queryKeys';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigateToListDetail } from '../../../utils/navigateUtils';
 
 export default function PersonalList() {
   const [page, setPage] = useState(1);
@@ -20,6 +21,8 @@ export default function PersonalList() {
   ) => {
     setPage(value);
   };
+
+  const navigateToListDetail = useNavigateToListDetail();
 
   if (isLoading || isError) {
     return (
@@ -89,8 +92,6 @@ export default function PersonalList() {
   }
   if (isError) return <p>Error loading lists...</p>;
 
-  console.log(data, "this is list data");
-
   const lists = data?.data?.lists;
   const totalPages = data?.data?.totalPages;
 
@@ -115,10 +116,12 @@ export default function PersonalList() {
               flexDirection="column"
               sx={{
                 backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                cursor: 'pointer',
                 '&:hover': {
                   backgroundColor: 'rgba(255, 255, 255, 0.06)',
                 },
               }}
+              onClick={() => navigateToListDetail(list.listID)}
             >
               <Box
                 display="flex"

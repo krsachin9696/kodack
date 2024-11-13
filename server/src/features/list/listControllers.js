@@ -130,6 +130,7 @@ export const getAllAccessRequestedLists = async (req, res) => {
 export const getListDetails = async (req, res) => {
   try {
     const { listID } = req.params;
+    console.log(listID);
 
     const listDetails = await listServices.getListDetailsService(listID);
 

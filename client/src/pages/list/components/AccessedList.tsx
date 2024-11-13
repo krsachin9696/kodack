@@ -11,6 +11,7 @@ import { useState } from 'react';
 import queryKeys from '../../../constants/queryKeys';
 import { useQuery } from '@tanstack/react-query';
 import fetchAccessedList from '../services/getAccessedList';
+import { useNavigateToListDetail } from '../../../utils/navigateUtils';
 
 export default function AccessList() {
   const [page, setPage] = useState(1);
@@ -27,6 +28,8 @@ export default function AccessList() {
   ) => {
     setPage(value);
   };
+
+  const navigateToListDetail = useNavigateToListDetail();
 
   if (isLoading || isError) {
     return (
@@ -135,6 +138,7 @@ export default function AccessList() {
                     backgroundColor: 'rgba(255, 255, 255, 0.06)',
                   },
                 }}
+                onClick={() => navigateToListDetail(list.listID)}
               >
                 <Box
                   display="flex"

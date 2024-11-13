@@ -676,9 +676,9 @@ const ListDetailPage = () => {
     }
   }, [id]);
 
-  const fetchListData = async (listId: string) => {
+  const fetchListData = async (listID: string) => {
     try {
-      const response = await fetch(`/api/lists/${listId}`);
+      const response = await fetch(`/api/lists/${listID}`);
       const data: ListData = await response.json();
       setQuestions(data.questions || []);
       setAccessRequests(data.accessRequests || []);

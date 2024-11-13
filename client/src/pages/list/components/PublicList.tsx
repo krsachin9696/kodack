@@ -13,13 +13,14 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import fetchPublicLists, { AccessStatus } from '../services/getPublicLists';
 import { toast } from 'sonner';
 import requestAccessService from '../services/requestAccess';
+import { useNavigateToListDetail } from '../../../utils/navigateUtils';
 
 export default function PublicList() {
   const [page, setPage] = useState(1);
   const limit = 7;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: [queryKeys.PERSONAL_LISTS, page, limit],
+    queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
     queryFn: () => fetchPublicLists(page, limit),
     
   });
@@ -43,6 +44,8 @@ export default function PublicList() {
   ) => {
     setPage(value);
   };
+
+  const navigateToListDetail = useNavigateToListDetail();
 
   if (isLoading || isError) {
     return (
@@ -151,6 +154,7 @@ export default function PublicList() {
                     backgroundColor: 'rgba(255, 255, 255, 0.06)',
                   },
                 }}
+                onClick={() => navigateToListDetail(list.listID)}
               >
                 <Box
                   display="flex"

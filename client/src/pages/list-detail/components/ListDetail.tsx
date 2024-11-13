@@ -40,9 +40,10 @@ const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
       </Box>
     );
   }
-
+  
   // Destructure the data received from the query
-  const list = data?.data?.lists[0];
+  const list = data?.data;
+  console.log(list)
 
   if (!list) {
     return (
@@ -55,7 +56,7 @@ const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
   return (
     <>
       <Box padding={3}>
-        <Typography variant="h4" fontWeight="bold">{list.name}</Typography>
+        <Typography variant="h4" fontWeight="bold">{list.listName}</Typography>
         <Box marginTop={2} display="flex" gap={1}>
           {list.tags.map((tag, index) => (
             <Chip key={index} label={tag} size="small" sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />

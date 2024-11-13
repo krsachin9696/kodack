@@ -172,10 +172,11 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
               label="Name"
               variant="outlined"
               name="name"
+              error={!formData.name}
               value={formData.name}
               onChange={handleChange}
               fullWidth
-              error={!!errors.name}
+              // error={!!errors.name}
               helperText={errors.name}
               sx={defaultStyles.inputStyles}
             />
