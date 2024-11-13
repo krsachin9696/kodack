@@ -185,27 +185,38 @@ export const getAccessRequestsForList = async (req, res) => {
 
 export const getQuestionsForList = async (req, res) => {
   try {
-    const listID = req.params.listID; // Extract listID from URL parameter
+    const listID = req.params.listID;
+    const userID = req.user.userID;
 
-    // Fetch the list of questions for the given listID
-    const questions = await listServices.getQuestionsForListService(listID);
+    if (!userID) {
+      return res.status(400).json({ error: 'userID is required' });
+    }
+
+    // Fetch the list of questions along with their statuses
+    const questions = await listServices.getQuestionsForListService(
+      listID,
+      userID,
+    );
 
     // Format the response
     const response = {
       listId: listID,
       questions: questions.map((q) => ({
-        questionId: q.questionId,
+        questionId: q.questionID,
         title: q.title,
         leetcodeLink: q.leetcodeLink,
-        important: q.important,
-        done: q.done,
-        review: q.review,
+        status: {
+          done: q.status?.done || false,
+          important: q.status?.important || false,
+          review: q.status?.review || false,
+        },
       })),
     };
 
     // Return the response
     res.status(200).json(response);
   } catch (error) {
+    console.log(error);
     logger.error('Error fetching questions for list', error);
     res.status(500).json({ error: 'Failed to fetch questions for list' });
   }
