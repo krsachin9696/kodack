@@ -174,9 +174,8 @@ export const getAccessRequestsForListService = async (listID) => {
   return accessRequests;
 };
 
-export const getQuestionsForListService = async (listID) => {
-  // Query to fetch questions for the specified listID
-  const questions = await listRepository.getQuestionsForList(listID);
-
+export const getQuestionsForListService = async (listID, userID) => {
+  // Query the repository for questions and statuses
+  const questions = await listRepository.getQuestionsForList(listID, userID);
   return questions;
 };

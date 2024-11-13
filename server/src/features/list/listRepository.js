@@ -300,18 +300,53 @@ export const getAccessRequestsForList = async (listID) => {
   });
 };
 
-export const getQuestionsForList = async (listID) => {
-  return await prisma.question.findMany({
+export const getQuestionsForList = async (listID, userID) => {
+  // Fetch questions from the list along with their status for the user
+  const listQuestions = await prisma.listQuestion.findMany({
+    where: { listID },
+    include: {
+      question: {
+        select: {
+          questionID: true,
+          title: true,
+          link: true,
+        },
+      },
+    },
+  });
+
+  // Fetch user-specific statuses for all questions in the list
+  const questionIDs = listQuestions.map((item) => item.questionID);
+
+  const statuses = await prisma.userQuestionStatus.findMany({
     where: {
-      listID: listID,
+      userID,
+      listID,
+      questionID: { in: questionIDs },
     },
     select: {
-      questionId: true,
-      title: true,
-      leetcodeLink: true,
-      important: true,
+      questionID: true,
       done: true,
+      important: true,
       review: true,
     },
   });
+
+  // Map statuses by questionID for easy lookup
+  const statusMap = statuses.reduce((acc, status) => {
+    acc[status.questionID] = status;
+    return acc;
+  }, {});
+
+  // Combine questions with their statuses
+  return listQuestions.map((item) => ({
+    questionID: item.questionID,
+    title: item.question.title,
+    leetcodeLink: item.question.link,
+    status: statusMap[item.questionID] || {
+      done: false,
+      important: false,
+      review: false,
+    },
+  }));
 };
