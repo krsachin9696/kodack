@@ -2,6 +2,7 @@ import express from 'express';
 import * as listControllers from './listControllers.js';
 import * as listSchema from './listSchema.js';
 import validate from '../../middlewares/validationMiddleware.js';
+import checkListAccess from './listMiddlewares.js';
 
 const listRoute = express.Router();
 
@@ -30,6 +31,10 @@ listRoute.get(
   '/access-requests/:listID',
   listControllers.getAccessRequestsForList,
 );
-listRoute.get('/questions/:listID', listControllers.getQuestionsForList);
+listRoute.get(
+  '/questions/:listID',
+  checkListAccess,
+  listControllers.getQuestionsForList,
+);
 
 export default listRoute;
