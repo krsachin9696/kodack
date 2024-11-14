@@ -13,12 +13,35 @@ export const createList = async (req, res) => {
       isPublic,
       tags,
     );
-    //201 is used because request was a success and a new resource is created as a result
-    res.status(201).json(newList);
+
+    res.status(200).json(newList);
   } catch (error) {
     logger.error('error', error);
-    //500 is used because of internal server error that server cant handle
     res.status(500).json({ error: 'Failed to create list' });
+  }
+};
+
+export const updateList = async (req, res) => {
+  try {
+    const { name, description, isPublic, tags } = req.body;
+    const { listID } = req.params;
+    const userID = req.user.userID;
+
+    // Proceed with the update service
+    const updatedList = await listServices.updateListService(
+      listID,
+      userID,
+      name,
+      description,
+      isPublic,
+      tags,
+    );
+    listID, name, description, isPublic, tags;
+
+    res.status(200).json(updatedList);
+  } catch (error) {
+    logger.error('Error updating list', error);
+    res.status(500).json({ error: 'Failed to update list' });
   }
 };
 
@@ -130,13 +153,8 @@ export const getAllAccessRequestedLists = async (req, res) => {
 export const getListDetails = async (req, res) => {
   try {
     const { listID } = req.params;
-    console.log(listID);
 
     const listDetails = await listServices.getListDetailsService(listID);
-
-    // if (!listDetails) {
-    //   return res.status(404).json({ error: 'List not found' });
-    // }
 
     // Send the list details as a response
     res.status(200).json(listDetails);
@@ -216,7 +234,6 @@ export const getQuestionsForList = async (req, res) => {
     // Return the response
     res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     logger.error('Error fetching questions for list', error);
     res.status(500).json({ error: 'Failed to fetch questions for list' });
   }

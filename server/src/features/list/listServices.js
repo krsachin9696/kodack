@@ -29,6 +29,60 @@ export const createListService = async (
   );
 };
 
+const getTagIDToConnect = async (tags) => {
+  const existingTags = await listRepository.findExistingTags(tags);
+  const existingTagNames = existingTags.map((tag) => tag.name);
+  const newTagNames = tags.filter((tag) => !existingTagNames.includes(tag));
+  const newTags = await Promise.all(
+    newTagNames.map((tagName) => listRepository.createNewTag(tagName)),
+  );
+  const allTags = [...existingTags, ...newTags];
+
+  return allTags;
+};
+
+export const updateListService = async (
+  listID,
+  userID,
+  name,
+  description,
+  isPublic,
+  tags,
+) => {
+  const existingList = await listRepository.findListByIdAndUser(listID, userID);
+  if (!existingList) {
+    throw new Error('List not found');
+  }
+
+  const existingTags = existingList.tags || [];
+  const existingTagNames = existingTags.map((tag) => tag.name);
+  const incomingTagNames = tags ? tags.map((tag) => tag.name) : [];
+
+  // const tagsToKeep = existingTags.filter(tag => incomingTagNames.includes(tag.name));
+
+  const tagsToDisconnect = existingTags.filter(
+    (tag) => !incomingTagNames.includes(tag.name),
+  );
+  const tagsNameToConnect = tags
+    ? tags.filter((tag) => !existingTagNames.includes(tag.name))
+    : [];
+
+  const tagsIdToConnect = await getTagIDToConnect(tagsNameToConnect);
+
+  const updatedList = await listRepository.updateList(
+    listID,
+    name,
+    description,
+    isPublic,
+    {
+      disconnect: tagsToDisconnect,
+      connect: tagsIdToConnect,
+    },
+  );
+
+  return updatedList;
+};
+
 export const getPersonalListsService = async (userID, page = 1, limit = 10) => {
   const { lists, totalItems } = await listRepository.getListsByUserId(
     userID,
@@ -65,8 +119,6 @@ export const getAllPublicListsService = async (
   );
 
   const totalPages = Math.ceil(totalItems / limit);
-
-  console.log(lists[0].accessRequest, 'aodfj');
 
   return {
     lists: lists.map((list) => ({
