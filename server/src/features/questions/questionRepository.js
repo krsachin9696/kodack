@@ -32,24 +32,6 @@ export const createNewQuestion = async (title, link, userID) => {
   });
 };
 
-export const getAllQuestions = async () => {
-  return await prisma.question.findMany();
-};
-
-export const updateQuestion = async (id, data) => {
-  return await prisma.question.update({
-    where: { questionID: id },
-    data,
-  });
-};
-
-export const softDeleteQuestion = async (id) => {
-  return await prisma.question.update({
-    where: { questionID: id },
-    data: { isDeleted: true },
-  });
-};
-
 export const getQuestionDetails = async (id) => {
   return await prisma.question.findUnique({
     where: { questionID: id },
