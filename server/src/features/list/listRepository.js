@@ -12,12 +12,27 @@ export const findListByNameAndUser = async (userID, name) => {
 export const findListByID = async (listID) => {
   return await prisma.list.findUnique({
     where: { listID },
+    include: {
+      tags: true,
+    },
   });
 };
 
 export const findExistingTags = async (tags) => {
   return await prisma.tag.findMany({
     where: { name: { in: tags } },
+  });
+};
+
+export const findListByIdAndUser = async (listID, userID) => {
+  return await prisma.list.findFirst({
+    where: {
+      listID,
+      userID,
+    },
+    include: {
+      tags: true,
+    },
   });
 };
 
@@ -56,6 +71,21 @@ export const createList = async (
   });
 
   return newList;
+};
+
+export const updateList = async (listID, name, description, isPublic, tags) => {
+  return await prisma.list.update({
+    where: { listID },
+    data: {
+      name,
+      description,
+      isPublic,
+      tags: {
+        disconnect: tags.disconnect.map((tag) => ({ id: tag.id })),
+        connect: tags.connect.map((tag) => ({ id: tag.id })),
+      },
+    },
+  });
 };
 
 export const getListsByUserId = async (userID, page = 1, limit = 10) => {

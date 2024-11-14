@@ -11,6 +11,12 @@ listRoute.post(
   validate(listSchema.createListSchema),
   listControllers.createList,
 );
+listRoute.put(
+  '/:listID',
+  validate(listSchema.updateListSchema),
+  listControllers.updateList,
+);
+
 listRoute.get('/personal-lists', listControllers.getPersonalLists);
 listRoute.get('/public-lists', listControllers.getPublicLists);
 listRoute.post(
