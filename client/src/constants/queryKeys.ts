@@ -12,7 +12,8 @@ enum queryKeys {
   ACCESSED_LISTS = 'accessed-lists',
   ADD_PUBLIC_LISTS = 'add-public-lists',
   REQUEST_ACCESS = 'request-access',
-  LIST_DETAILS = 'list-detail'
+  LIST_DETAILS = 'list-details',
+  EDIT_LIST_DETIALS = 'edit-list-details'
 }
 
 export default queryKeys;

@@ -8,7 +8,7 @@ export interface ListDetailResponse {
     tags: string[];
 }
 
-export default async function fetchListDetail(listID: string): Promise<AxiosResponse<ListDetailResponse>> {
+export default async function getListDetail(listID: string): Promise<AxiosResponse<ListDetailResponse>> {
     try {
         const response = await axios.get(`${apis.list.getListDetails}${listID}`, {
             withCredentials: true,

@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CustomModal from '../../../components/base/customModal';
 import EditListDetail from './EditListDetail'; // Edit modal component
 import { useQuery } from '@tanstack/react-query';
-import fetchListDetail from '../services/getListDetail'; // Assuming the service path is correct
+import getListDetail from '../services/getListDetail'; // Assuming the service path is correct
 import queryKeys from '../../../constants/queryKeys';
 
 interface ListDetailProps {
@@ -17,7 +17,7 @@ const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
   // Use query to fetch the list details
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.LIST_DETAILS, listID],
-    queryFn: () => fetchListDetail(listID),
+    queryFn: () => getListDetail(listID),
   });
 
   // Handle loading and error states

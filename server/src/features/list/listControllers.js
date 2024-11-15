@@ -24,9 +24,9 @@ export const createList = async (req, res) => {
 export const updateList = async (req, res) => {
   try {
     const { name, description, isPublic, tags } = req.body;
+    console.log(req.body, 'body for list update');
     const { listID } = req.params;
     const userID = req.user.userID;
-    console.log(listID, 'listId');
 
     // Proceed with the update service
     const updatedList = await listServices.updateListService(
@@ -37,10 +37,10 @@ export const updateList = async (req, res) => {
       isPublic,
       tags,
     );
-    listID, name, description, tags;
 
     res.status(200).json(updatedList);
   } catch (error) {
+    console.log(error);
     logger.error('Error updating list', error);
     res.status(500).json({ error: 'Failed to update list' });
   }

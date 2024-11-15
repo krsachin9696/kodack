@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import QueryKeys from '../../constants/queryKeys';
+import queryKeys from '../../constants/queryKeys';
 import __contactUs from './services';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
@@ -34,7 +34,7 @@ export default function ContactUs() {
 
   const { mutate: contactUs, status: contactUsStatus } = useMutation({
     mutationFn: () => __contactUs(formData),
-    mutationKey: [QueryKeys.CONTACT_US],
+    mutationKey: [queryKeys.CONTACT_US],
     onSuccess: () => {
       toast.info("Form submitted successfully");
       setFormData({ name: '', email: '', subject: '', message: '' });

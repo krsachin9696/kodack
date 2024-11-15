@@ -63,6 +63,7 @@ export const updateListService = async (
   const tagsToDisconnect = existingTags.filter(
     (tag) => !incomingTagNames.includes(tag.name),
   );
+
   const tagsNameToConnect = tags
     ? tags.filter((tag) => !existingTagNames.includes(tag.name))
     : [];
@@ -73,6 +74,7 @@ export const updateListService = async (
     listID,
     name,
     description,
+    isPublic,
     {
       disconnect: tagsToDisconnect,
       connect: tagsIdToConnect,
