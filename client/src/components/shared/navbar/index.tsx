@@ -17,6 +17,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import useLogout from '../../../hooks/logout';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store'; 
+import { useQuery } from '@tanstack/react-query';
+import queryKeys from '../../../constants/queryKeys';
+import fetchPersonalLists from './services/getPersonalLists';
+import fetchPublicLists from './services/getPublicLists';
+import CardWrapper from '../card';
+import { ListAltOutlined } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -30,6 +36,28 @@ export default function Navbar(props: Props) {
   const [isClosing, setIsClosing] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { handleLogout } = useLogout();
+
+  const page = 1;
+  const limit = 5;
+
+  const { data: personalListData, isLoading: personalListLoading, isError: personalListError } = useQuery({
+    queryKey: [queryKeys.PERSONAL_LISTS, page, limit],
+    queryFn: () => fetchPersonalLists(page, limit),
+  });
+
+  const { data: publicListData, isLoading: publicListLoading, isError: publicListError } = useQuery({
+    queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
+    queryFn: () => fetchPublicLists(page, limit),
+  });
+
+  // if(personalListLoading || publicListLoading) {
+  //   return <h1>Loading data</h1>
+  // }
+
+  // console.log(personalListData, "lakjdf", publicListData)
+
+  const personalLists = personalListData?.data.lists;
+  const publicLists = publicListData?.lists;
 
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -56,37 +84,10 @@ export default function Navbar(props: Props) {
     setAnchorEl(null);
   };
 
-  const handleProfileButton = () => {
-    
-    setAnchorEl(null);
-  }
-
   const handleLogoutButton = () => {
     handleLogout();
     setAnchorEl(null);
   };
-
-  // const drawer = (
-  //   <div className='bg-transparent text-white'>
-  //     <Toolbar sx={{ backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
-  //       <Typography
-  //         variant='h4'
-  //         noWrap
-  //         component='a'
-  //         color='primary'
-  //         sx={{
-  //           ml: 2,
-  //           fontFamily: 'Protest Strike, sans-serif',
-  //           fontWeight: 'semi-bold',
-  //         }}
-  //       >
-  //         KODACK
-  //       </Typography>
-  //     </Toolbar>
-  //     <Divider />
-
-  //   </div>
-  // );
 
   const drawer = (
     <Box>
@@ -123,7 +124,66 @@ export default function Navbar(props: Props) {
           color: 'white',
         }}
       >
-        <Typography variant="body1">Content for the first div</Typography>
+        {/* <Typography variant="body1">Content for the first div</Typography> */}
+        <Box marginBottom={1} width="100%">
+          <CardWrapper
+            sx={{
+              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingBottom: 1,
+            }}
+          >
+            <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+              <ListAltOutlined />
+              <Typography sx={{ fontWeight: 600 }} component={Link} to='/list'>Personal Lists</Typography>
+            </Box>
+          </CardWrapper>
+          <Divider
+            variant="fullWidth"
+            sx={{ border: '0.01px solid', borderColor: 'gray' }}
+          />
+        </Box>
+
+        <Box
+          width="100%"
+          padding={1}
+          gap={1}
+          display="flex"
+          flexDirection="column"
+        >
+          {personalLists &&
+            personalLists.map((list, index) => (
+              <Box
+                key={index}
+                width="100%"
+                padding={1}
+                borderLeft={4}
+                borderColor="skyblue"
+                borderRadius={2}
+                display="flex"
+                flexDirection="column"
+                sx={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  },
+                }}
+              >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  paddingBottom={1}
+                >
+                  <Typography
+                    sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
+                  >
+                    {list.name}
+                  </Typography>
+                </Box>
+              </Box>
+            ))}
+        </Box>
       </Paper>
 
       <Paper
@@ -135,7 +195,68 @@ export default function Navbar(props: Props) {
           color: 'white',
         }}
       >
-        <Typography variant="body1">Content for the second div</Typography>
+        {/* <Typography variant="body1">Content for the second div</Typography> */}
+        <Box marginBottom={1} width="100%">
+          <CardWrapper
+            sx={{
+              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingBottom: 1,
+            }}
+          >
+            <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+              <ListAltOutlined />
+              <Typography sx={{ fontWeight: 600 }} component={Link} to="/list">
+                Public Lists
+              </Typography>
+            </Box>
+          </CardWrapper>
+          <Divider
+            variant="fullWidth"
+            sx={{ border: '0.01px solid', borderColor: 'gray' }}
+          />
+        </Box>
+
+        <Box
+          width="100%"
+          padding={1}
+          gap={1}
+          display="flex"
+          flexDirection="column"
+        >
+          {publicLists &&
+            publicLists.map((list, index) => (
+              <Box
+                key={index}
+                width="100%"
+                padding={1}
+                borderLeft={4}
+                borderColor="skyblue"
+                borderRadius={2}
+                display="flex"
+                flexDirection="column"
+                sx={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  },
+                }}
+              >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  paddingBottom={1}
+                >
+                  <Typography
+                    sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
+                  >
+                    {list.name}
+                  </Typography>
+                </Box>
+              </Box>
+            ))}
+        </Box>
       </Paper>
     </Box>
   );
@@ -205,11 +326,11 @@ export default function Navbar(props: Props) {
               horizontal: 'right',
             }}
           >
-            <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
+            <MenuItem onClick={handleCloseMenu} component={Link} to='/'>Profile</MenuItem>
             <MenuItem onClick={handleLogoutButton}>Logout</MenuItem>
           </Menu>
         </Toolbar>
-      </AppBar>
+      </AppBar> 
 
       <Box
         component="nav"
