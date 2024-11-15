@@ -15,6 +15,8 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import useLogout from '../../../hooks/logout';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store'; 
 
 const drawerWidth = 240;
 
@@ -28,6 +30,8 @@ export default function Navbar(props: Props) {
   const [isClosing, setIsClosing] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { handleLogout } = useLogout();
+
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -51,6 +55,11 @@ export default function Navbar(props: Props) {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
+
+  const handleProfileButton = () => {
+    
+    setAnchorEl(null);
+  }
 
   const handleLogoutButton = () => {
     handleLogout();
@@ -178,7 +187,7 @@ export default function Navbar(props: Props) {
             </Typography>
           </Box>
           <Avatar
-            alt="S"
+            alt={user?.name || 'User'}
             src="/path/to/profile-pic.jpg"
             onClick={handleAvatarClick}
             sx={{ cursor: 'pointer' }}

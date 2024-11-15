@@ -21,7 +21,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 const PublicListCard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const limit = 3;
+  const limit = 5;
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
