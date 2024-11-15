@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Typography, Chip, Button, Divider, Skeleton } from '@mui/material';
+import { Box, Typography, Chip, IconButton, Divider, Skeleton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CustomModal from '../../../components/base/customModal';
-import EditListDetail from './EditListDetail'; // This will be your edit modal component
+import EditListDetail from './EditListDetail'; // Edit modal component
 import { useQuery } from '@tanstack/react-query';
-import fetchListDetail from '../services/getListDetail'; // Assuming the service path is correct
+import getListDetail from '../services/getListDetail'; // Assuming the service path is correct
 import queryKeys from '../../../constants/queryKeys';
 
 interface ListDetailProps {
@@ -17,8 +17,7 @@ const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
   // Use query to fetch the list details
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.LIST_DETAILS, listID],
-    queryFn: () => fetchListDetail(listID),
-    // enabled: !!listID, // Ensure query runs only if listID is available
+    queryFn: () => getListDetail(listID),
   });
 
   // Handle loading and error states
@@ -43,7 +42,6 @@ const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
   
   // Destructure the data received from the query
   const list = data?.data;
-  console.log(list)
 
   if (!list) {
     return (
@@ -56,24 +54,28 @@ const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
   return (
     <>
       <Box padding={3}>
-        <Typography variant="h4" fontWeight="bold">{list.listName}</Typography>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Typography variant="h4" fontWeight="bold">{list.listName}</Typography>
+          <IconButton
+            color="primary"
+            onClick={() => setModalOpen(true)}
+            sx={{ marginLeft: 2 }}
+          >
+            <EditIcon fontSize="small" />
+          </IconButton>
+        </Box>
         <Box marginTop={2} display="flex" gap={1}>
           {list.tags.map((tag, index) => (
-            <Chip key={index} label={tag} size="small" sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
+            <Chip
+              key={index}
+              label={tag}
+              size="small"
+              sx={{ color: 'white', backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+            />
           ))}
         </Box>
         <Box marginTop={2}>
           <Typography variant="body1">{list.description}</Typography>
-        </Box>
-        <Box marginTop={2} display="flex" justifyContent="flex-end">
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<EditIcon />}
-            onClick={() => setModalOpen(true)}
-          >
-            Edit
-          </Button>
         </Box>
       </Box>
       <Divider sx={{ marginY: 2 }} />

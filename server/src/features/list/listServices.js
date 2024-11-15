@@ -63,6 +63,7 @@ export const updateListService = async (
   const tagsToDisconnect = existingTags.filter(
     (tag) => !incomingTagNames.includes(tag.name),
   );
+
   const tagsNameToConnect = tags
     ? tags.filter((tag) => !existingTagNames.includes(tag.name))
     : [];
