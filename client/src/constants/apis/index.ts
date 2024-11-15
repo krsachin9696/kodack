@@ -19,7 +19,8 @@ export default {
     getPublicLists: `${SERVERURL}/list/public-lists`,
     getAccessedLists: `${SERVERURL}/list/accessed-lists`,
     requestAccess: `${SERVERURL}/list/request-access`,
-    getListDetails: `${SERVERURL}/list/list-details/`
+    getListDetails: `${SERVERURL}/list/list-details/`,
+    editListDetails: `${SERVERURL}/list/`
   },
   public: {
     contactUs: `${SERVERURL}/contact-us`,

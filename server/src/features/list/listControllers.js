@@ -26,6 +26,7 @@ export const updateList = async (req, res) => {
     const { name, description, isPublic, tags } = req.body;
     const { listID } = req.params;
     const userID = req.user.userID;
+    console.log(listID, 'listId');
 
     // Proceed with the update service
     const updatedList = await listServices.updateListService(
@@ -36,7 +37,7 @@ export const updateList = async (req, res) => {
       isPublic,
       tags,
     );
-    listID, name, description, isPublic, tags;
+    listID, name, description, tags;
 
     res.status(200).json(updatedList);
   } catch (error) {

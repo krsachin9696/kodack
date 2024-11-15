@@ -73,7 +73,6 @@ export const updateListService = async (
     listID,
     name,
     description,
-    isPublic,
     {
       disconnect: tagsToDisconnect,
       connect: tagsIdToConnect,
