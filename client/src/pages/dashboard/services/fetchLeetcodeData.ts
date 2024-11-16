@@ -2,7 +2,6 @@ import axios from "axios";
 import { LeetcodeData } from "../components/LeetcodeInfo";
 
 export const fetchLeetcodeData = async (username: string): Promise<LeetcodeData> => {
-  console.log('ye function call ho rha hai', username);
   const baseUrl = `https://alfa-leetcode-api.onrender.com/${username}`;
 
   // Fetching the solved and badges data
