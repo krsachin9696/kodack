@@ -50,14 +50,8 @@ export default function Navbar(props: Props) {
     queryFn: () => fetchPublicLists(page, limit),
   });
 
-  // if(personalListLoading || publicListLoading) {
-  //   return <h1>Loading data</h1>
-  // }
-
-  // console.log(personalListData, "lakjdf", publicListData)
-
   const personalLists = personalListData?.data.lists;
-  const publicLists = publicListData?.lists;
+  const publicLists = publicListData?.data.lists;
 
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -90,7 +84,13 @@ export default function Navbar(props: Props) {
   };
 
   const drawer = (
-    <Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+      }}
+    >
       <Toolbar
         sx={{
           backgroundColor: 'rgba(255, 255, 255, 0.08)',
@@ -114,152 +114,138 @@ export default function Navbar(props: Props) {
         </Typography>
       </Toolbar>
       <Divider />
-
-      <Paper
-        variant="elevation"
-        sx={{
-          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: '6px',
-          backdropFilter: 'blur(10px)',
-          color: 'white',
-        }}
-      >
-        {/* <Typography variant="body1">Content for the first div</Typography> */}
-        <Box marginBottom={1} width="100%">
-          <CardWrapper
-            sx={{
-              backgroundColor: 'rgba(255, 255, 255, 0.08)',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingBottom: 1,
-            }}
-          >
-            <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-              <ListAltOutlined />
-              <Typography sx={{ fontWeight: 600 }} component={Link} to='/list'>Personal Lists</Typography>
-            </Box>
-          </CardWrapper>
-          <Divider
-            variant="fullWidth"
-            sx={{ border: '0.01px solid', borderColor: 'gray' }}
-          />
-        </Box>
-
-        <Box
-          width="100%"
-          padding={1}
-          gap={1}
-          display="flex"
-          flexDirection="column"
+  
+      {/* Wrapper for Personal Lists and Public Lists */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        
+        {/* Personal Lists Section */}
+        <Paper
+          variant="elevation"
+          sx={{
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            borderRadius: '6px',
+            backdropFilter: 'blur(10px)',
+            color: 'white',
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
         >
-          {personalLists &&
-            personalLists.map((list, index) => (
-              <Box
-                key={index}
-                width="100%"
-                padding={1}
-                borderLeft={4}
-                borderColor="skyblue"
-                borderRadius={2}
-                display="flex"
-                flexDirection="column"
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                  },
-                }}
-              >
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  paddingBottom={1}
-                >
-                  <Typography
-                    sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
-                  >
-                    {list.name}
-                  </Typography>
-                </Box>
+          <Box marginBottom={1} width="100%">
+            <CardWrapper
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingBottom: 1,
+              }}
+            >
+              <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+                <ListAltOutlined />
+                <Typography sx={{ fontWeight: 600 }} component={Link} to="/list">
+                  Personal Lists
+                </Typography>
               </Box>
-            ))}
-        </Box>
-      </Paper>
-
-      <Paper
-        variant="outlined"
-        sx={{
-          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: '6px',
-          backdropFilter: 'blur(10px)',
-          color: 'white',
-        }}
-      >
-        {/* <Typography variant="body1">Content for the second div</Typography> */}
-        <Box marginBottom={1} width="100%">
-          <CardWrapper
-            sx={{
-              backgroundColor: 'rgba(255, 255, 255, 0.08)',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingBottom: 1,
-            }}
-          >
-            <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-              <ListAltOutlined />
-              <Typography sx={{ fontWeight: 600 }} component={Link} to="/list">
-                Public Lists
-              </Typography>
-            </Box>
-          </CardWrapper>
-          <Divider
-            variant="fullWidth"
-            sx={{ border: '0.01px solid', borderColor: 'gray' }}
-          />
-        </Box>
-
-        <Box
-          width="100%"
-          padding={1}
-          gap={1}
-          display="flex"
-          flexDirection="column"
+            </CardWrapper>
+            <Divider variant="fullWidth" sx={{ border: '0.01px solid', borderColor: 'gray' }} />
+          </Box>
+  
+          <Box width="100%" padding={1} gap={1} display="flex" flexDirection="column" sx={{ flex: 1 }}>
+            {personalLists &&
+              personalLists.map((list, index) => (
+                <Box
+                  key={index}
+                  width="100%"
+                  padding={1}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                  sx={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                    },
+                  }}
+                >
+                  <Box display="flex" justifyContent="space-between" paddingBottom={1}>
+                    <Typography sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}>
+                      {list.name}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+          </Box>
+        </Paper>
+  
+        {/* Gap between Personal Lists and Public Lists */}
+        <Box sx={{ height: '4px' }} />
+  
+        {/* Public Lists Section */}
+        <Paper
+          variant="outlined"
+          sx={{
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            borderRadius: '6px',
+            backdropFilter: 'blur(10px)',
+            color: 'white',
+            flex: 1, // This makes it take up the other half of the available height
+            display: 'flex',
+            flexDirection: 'column',
+          }}
         >
-          {publicLists &&
-            publicLists.map((list, index) => (
-              <Box
-                key={index}
-                width="100%"
-                padding={1}
-                borderLeft={4}
-                borderColor="skyblue"
-                borderRadius={2}
-                display="flex"
-                flexDirection="column"
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                  },
-                }}
-              >
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  paddingBottom={1}
-                >
-                  <Typography
-                    sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
-                  >
-                    {list.name}
-                  </Typography>
-                </Box>
+          <Box marginBottom={1} width="100%">
+            <CardWrapper
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingBottom: 1,
+              }}
+            >
+              <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+                <ListAltOutlined />
+                <Typography sx={{ fontWeight: 600 }} component={Link} to="/list">
+                  Public Lists
+                </Typography>
               </Box>
-            ))}
-        </Box>
-      </Paper>
+            </CardWrapper>
+            <Divider variant="fullWidth" sx={{ border: '0.01px solid', borderColor: 'gray' }} />
+          </Box>
+  
+          <Box width="100%" padding={1} gap={1} display="flex" flexDirection="column" sx={{ flex: 1 }}>
+            {publicLists &&
+              publicLists.map((list, index) => (
+                <Box
+                  key={index}
+                  width="100%"
+                  padding={1}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
+                  display="flex"
+                  flexDirection="column"
+                  sx={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                    },
+                  }}
+                >
+                  <Box display="flex" justifyContent="space-between" paddingBottom={1}>
+                    <Typography sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}>
+                      {list.name}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+          </Box>
+        </Paper>
+      </Box>
     </Box>
   );
+  
 
   const container =
     window !== undefined ? () => window().document.body : undefined;

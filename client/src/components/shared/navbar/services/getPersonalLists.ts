@@ -27,6 +27,5 @@ export default async function fetchPersonalLists(
     withCredentials: true,
   });
 
-  // console.log(response, "personal list response")
   return response;
 }
