@@ -20,13 +20,6 @@ export default async function fetchPersonalLists(
   page: number, 
   limit: number
 ): Promise<AxiosResponse<PersonalListsResponse>> {
-  // const response = await axios.get(apis.list.getPersonalLists, {
-  //   params: {
-  //     page,
-  //     limit,
-  //   },
-  //   withCredentials: true,
-  // });
   const response = await axiosInstance.get(apis.list.getPersonalLists, {
     params: {
       page,

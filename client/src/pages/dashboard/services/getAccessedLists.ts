@@ -1,8 +1,9 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export interface ListItemProps {
-  owner: ReactNode;
+  owner: string;
   listID: string;
   name: string;
   tags: string[];
@@ -20,12 +21,11 @@ export default async function fetchAccessedLists(
   page: number, 
   limit: number
 ): Promise<AxiosResponse<PublicListsResponse>> {
-  const response = await axios.get(apis.list.getPublicLists, {
+  const response = await axiosInstance.get(apis.list.getPublicLists, {
     params: {
       page,
       limit,
     },
-    withCredentials: true,
   });
   return response;
 }
