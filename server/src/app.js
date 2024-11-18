@@ -12,6 +12,7 @@ import isAuthenticated from './middlewares/authMiddleware.js';
 import { loggerMiddleware } from './middlewares/loggerMiddleware.js';
 import userRoute from './features/user/userRoutes.js';
 import questionRoute from './features/questions/questionRoutes.js';
+import { sessionRefreshMiddleware } from './middlewares/sessionRefreshMiddleware.js';
 
 const PgSession = connectPgSimple(session);
 
@@ -44,7 +45,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       // maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      maxAge: 10 * 1000,
+      maxAge: 60 * 60 * 1000, // 1 hour
       secure: false, // making this true ensures setting cookies in HTTPS only.
     },
   }),
@@ -53,6 +54,9 @@ app.use(
 // Initialize passport and session handling
 app.use(passport.initialize());
 app.use(passport.session());
+
+// resets the cookie expiration time
+app.use(sessionRefreshMiddleware);
 
 app.use(loggerMiddleware);
 
