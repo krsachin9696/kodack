@@ -3,6 +3,7 @@ export const APIURL = `${SERVERURL}/api/v1`;
 export const LEETCODE_API = `https://alfa-leetcode-api.onrender.com`;
 
 export default {
+  baseURL:  SERVERURL,
   user: {
     signup: `${SERVERURL}/auth/signup`,
     login: `${SERVERURL}/auth/login`,
