@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useParams } from 'react-router-dom';
 import {
   Box,
   Avatar,
   Menu,
   MenuItem,
-  Paper,
   AppBar,
   Divider,
   Drawer,
@@ -15,6 +14,13 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import useLogout from '../../../hooks/logout';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store';
+import { useQuery } from '@tanstack/react-query';
+import queryKeys from '../../../constants/queryKeys';
+import fetchPersonalLists from './services/getPersonalLists';
+import fetchPublicLists from './services/getPublicLists';
+import ListSection from './components/listSection';
 
 const drawerWidth = 240;
 
@@ -28,6 +34,34 @@ export default function Navbar(props: Props) {
   const [isClosing, setIsClosing] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { handleLogout } = useLogout();
+  const { id: listID } = useParams();
+  console.log(listID);
+
+  const page = 1;
+  const limit = 5;
+
+  const {
+    data: personalListData,
+    isLoading: personalListLoading,
+    isError: personalListError,
+  } = useQuery({
+    queryKey: [queryKeys.PERSONAL_LISTS, page, limit],
+    queryFn: () => fetchPersonalLists(page, limit),
+  });
+
+  const {
+    data: publicListData,
+    isLoading: publicListLoading,
+    isError: publicListError,
+  } = useQuery({
+    queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
+    queryFn: () => fetchPublicLists(page, limit),
+  });
+
+  const personalLists = personalListData?.data.lists;
+  const publicLists = publicListData?.data.lists;
+
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -57,30 +91,8 @@ export default function Navbar(props: Props) {
     setAnchorEl(null);
   };
 
-  // const drawer = (
-  //   <div className='bg-transparent text-white'>
-  //     <Toolbar sx={{ backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
-  //       <Typography
-  //         variant='h4'
-  //         noWrap
-  //         component='a'
-  //         color='primary'
-  //         sx={{
-  //           ml: 2,
-  //           fontFamily: 'Protest Strike, sans-serif',
-  //           fontWeight: 'semi-bold',
-  //         }}
-  //       >
-  //         KODACK
-  //       </Typography>
-  //     </Toolbar>
-  //     <Divider />
-
-  //   </div>
-  // );
-
   const drawer = (
-    <Box>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Toolbar
         sx={{
           backgroundColor: 'rgba(255, 255, 255, 0.08)',
@@ -105,29 +117,22 @@ export default function Navbar(props: Props) {
       </Toolbar>
       <Divider />
 
-      <Paper
-        variant="elevation"
-        sx={{
-          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: '6px',
-          backdropFilter: 'blur(10px)',
-          color: 'white',
-        }}
-      >
-        <Typography variant="body1">Content for the first div</Typography>
-      </Paper>
-
-      <Paper
-        variant="outlined"
-        sx={{
-          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: '6px',
-          backdropFilter: 'blur(10px)',
-          color: 'white',
-        }}
-      >
-        <Typography variant="body1">Content for the second div</Typography>
-      </Paper>
+      {/* Use ListSection for both Personal and Public Lists */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <ListSection
+          title="Personal Lists"
+          lists={personalLists || []}
+          linkPrefix="/list"
+          isActiveListID={listID}
+        />
+        <Box sx={{ height: '4px' }} />
+        <ListSection
+          title="Public Lists"
+          lists={publicLists || []}
+          linkPrefix="/list"
+          isActiveListID={listID}
+        />
+      </Box>
     </Box>
   );
 
@@ -178,7 +183,7 @@ export default function Navbar(props: Props) {
             </Typography>
           </Box>
           <Avatar
-            alt="S"
+            alt={user?.name || 'User'}
             src="/path/to/profile-pic.jpg"
             onClick={handleAvatarClick}
             sx={{ cursor: 'pointer' }}
@@ -196,7 +201,9 @@ export default function Navbar(props: Props) {
               horizontal: 'right',
             }}
           >
-            <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
+            <MenuItem onClick={handleCloseMenu} component={Link} to="/">
+              Profile
+            </MenuItem>
             <MenuItem onClick={handleLogoutButton}>Logout</MenuItem>
           </Menu>
         </Toolbar>
@@ -245,10 +252,7 @@ export default function Navbar(props: Props) {
 
       <Box
         component="main"
-        sx={{
-          flexGrow: 1,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-        }}
+        sx={{ flexGrow: 1, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
         <Outlet />

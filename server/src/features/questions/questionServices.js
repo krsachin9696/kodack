@@ -30,18 +30,6 @@ export const addQuestionToListService = async (userID, listID, title, link) => {
   return { message: 'Question successfully added to the list.' };
 };
 
-export const getAllQuestions = async () => {
-  return await questionRepository.getAllQuestions();
-};
-
-export const updateQuestion = async (id, data) => {
-  return await questionRepository.updateQuestion(id, data);
-};
-
-export const softDeleteQuestion = async (id) => {
-  return await questionRepository.softDeleteQuestion(id);
-};
-
 export const getQuestionDetails = async (id) => {
   return await questionRepository.getQuestionDetails(id);
 };

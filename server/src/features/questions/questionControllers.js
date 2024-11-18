@@ -43,39 +43,6 @@ export const addQuestion = async (req, res) => {
   }
 };
 
-export const getAllQuestions = async (req, res) => {
-  try {
-    const questions = await questionService.getAllQuestions();
-    res.status(200).json(questions);
-  } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: 'Failed to retrieve questions' });
-  }
-};
-
-export const updateQuestion = async (req, res) => {
-  try {
-    const updatedQuestion = await questionService.updateQuestion(
-      req.params.id,
-      req.body,
-    );
-    res.status(200).json(updatedQuestion);
-  } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: 'Failed to update question' });
-  }
-};
-
-export const deleteQuestion = async (req, res) => {
-  try {
-    await questionService.softDeleteQuestion(req.params.id);
-    res.status(204).send();
-  } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: 'Failed to delete question' });
-  }
-};
-
 export const getQuestionDetails = async (req, res) => {
   try {
     const questionDetails = await questionService.getQuestionDetails(
