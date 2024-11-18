@@ -50,8 +50,7 @@ const EditList: React.FC<EditListProps> = ({ list, onClose }) => {
     toast.info('List updated successfully.');
     onClose();
     },
-    onError: (error) => {
-      console.log(error);
+    onError: () => {
       toast.error('Error updating the list.');
     },
   });
@@ -93,10 +92,21 @@ const EditList: React.FC<EditListProps> = ({ list, onClose }) => {
   };
 
   const handleSubmit = () => {
+    const isUnchanged =
+      formData.name === list.listName &&
+      formData.description === list.description &&
+      JSON.stringify(formData.tags) === JSON.stringify(list.tags);
+  
+    if (isUnchanged) {
+      toast.info('No changes detected.');
+      return;
+    }
+  
     if (formData.name && formData.description && formData.tags.length > 0 && formData.tags.length <= 5) {
       mutate();
     }
   };
+  
 
   return (
     <Box width="100%" height="100%" minHeight={300} sx={{ background: 'transparent', padding: 2 }}>

@@ -20,7 +20,12 @@ export default {
     getAccessedLists: `${SERVERURL}/list/accessed-lists`,
     requestAccess: `${SERVERURL}/list/request-access`,
     getListDetails: `${SERVERURL}/list/list-details/`,
-    editListDetails: `${SERVERURL}/list/`
+    editListDetails: `${SERVERURL}/list/`,
+    getListQuestions: `${SERVERURL}/list/questions/`,
+    getAccessRequests: `${SERVERURL}/list/access-requests/`
+  },
+  question: {
+    addQuestion: `${SERVERURL}/question/add-question`
   },
   public: {
     contactUs: `${SERVERURL}/contact-us`,

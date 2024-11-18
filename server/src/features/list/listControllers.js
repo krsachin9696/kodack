@@ -24,7 +24,6 @@ export const createList = async (req, res) => {
 export const updateList = async (req, res) => {
   try {
     const { name, description, isPublic, tags } = req.body;
-    console.log(req.body, 'body for list update');
     const { listID } = req.params;
     const userID = req.user.userID;
 
@@ -204,6 +203,7 @@ export const getAccessRequestsForList = async (req, res) => {
 
 export const getQuestionsForList = async (req, res) => {
   try {
+    console.log('here');
     const listID = req.params.listID;
     const userID = req.user.userID;
 
@@ -231,6 +231,7 @@ export const getQuestionsForList = async (req, res) => {
         },
       })),
     };
+    console.log('here', response);
 
     // Return the response
     res.status(200).json(response);
