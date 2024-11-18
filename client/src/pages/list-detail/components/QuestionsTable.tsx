@@ -27,13 +27,13 @@ import {
   Delete,
   Add,
 } from '@mui/icons-material';
-import AddQuestion from './AddQuestion';
 import CustomModal from '../../../components/base/customModal';
 import { useQuery } from '@tanstack/react-query';
 import getQuestions from '../services/getQuestions';
 import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
 import { Question } from '..';
+import AddQuestion from './AddQuestion';
 
 interface QuestionsTableProps {
   questions: Question[];
@@ -222,13 +222,30 @@ export default function QuestionsTable({
                     </TableCell>
                     <TableCell align="center">
                       {question.leetcodeLink ? (
-                        <IconButton
-                          href={question.leetcodeLink}
-                          target="_blank"
-                          color="primary"
-                        >
-                          <Link />
-                        </IconButton>
+                       <IconButton
+                       href={question.leetcodeLink}
+                       target="_blank"
+                       color="primary"
+                       sx={{
+                         borderRadius: '50%',
+                         backgroundColor: 'gray',
+                         padding: 1,
+                         '&:hover': {
+                           backgroundColor: '#ccc',
+                         },
+                       }}
+                     >
+                       <img
+                         src="/leetcode.svg"
+                         alt="LeetCode Link"
+                         style={{
+                           width: 24, 
+                           height: 24, 
+                           borderRadius: '50%', // Ensure the image is also circular
+                         }}
+                       />
+                     </IconButton>
+                     
                       ) : (
                         'No Link'
                       )}
