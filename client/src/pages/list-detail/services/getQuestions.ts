@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
 
 export interface QuestionResponse {
-    questionID: string;
+    questionId: string;
     title: string;
     leetcodeLink: string;
     status: {
@@ -22,7 +22,6 @@ export default async function getQuestions(listID: string): Promise<AxiosRespons
         const response = await axios.get(`${apis.list.getListQuestions}${listID}`, {
             withCredentials: true,
         });
-        console.log("questiondata", response)
         return response;
     } catch (error) {
         console.error("Error fetching questions:", error);

@@ -35,7 +35,6 @@ export default function Navbar(props: Props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { handleLogout } = useLogout();
   const { id: listID } = useParams();
-  console.log(listID);
 
   const page = 1;
   const limit = 5;

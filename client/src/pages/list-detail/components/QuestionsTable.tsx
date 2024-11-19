@@ -27,21 +27,19 @@ import {
   Delete,
   Add,
 } from '@mui/icons-material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import AddQuestion from './AddQuestion';
 import CustomModal from '../../../components/base/customModal';
-import { useQuery } from '@tanstack/react-query';
 import getQuestions from '../services/getQuestions';
+import updateQuestion, { UpdateQuestionInputProps } from '../services/updateQuestion.ts';
 import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Question } from '..';
 
 interface QuestionsTableProps {
   questions: Question[];
-  onToggleImportant: (questionID: string) => void;
-  onToggleDone: (questionID: string) => void;
-  onToggleReview: (questionID: string) => void;
-  onDeleteQuestions: (questionID: string[]) => void;
-  onAddQuestion: (question: {
+    onAddQuestion: (question: {
     listID: string;
     title: string;
     link: string;
@@ -49,28 +47,26 @@ interface QuestionsTableProps {
 }
 
 export default function QuestionsTable({
-  onToggleImportant,
-  onToggleDone,
-  onToggleReview,
-  onDeleteQuestions,
   onAddQuestion,
 }: QuestionsTableProps) {
   const { id } = useParams<{ id: string }>();
   const listID = id || '';
+  const queryClient = useQueryClient();
+
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
-  const [modalOpen, setModalOpen] = useState(false); // Manage modal state
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: [queryKeys.LIST_QUESTIONS, listID],
-    queryFn: () => getQuestions(listID!), // Ensure listID is not undefined
-    enabled: !!listID, // Only fetch if listID exists
+    queryFn: () => getQuestions(listID!),
+    enabled: !!listID,
   });
 
   const questions =
     data?.data.questions.map((q) => ({
-      questionID: q.questionID,
+      questionId: q.questionId,
       title: q.title,
       leetcodeLink: q.leetcodeLink,
       important: q.status.important,
@@ -78,89 +74,70 @@ export default function QuestionsTable({
       review: q.status.review,
     })) || [];
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedQuestions(
-      event.target.checked ? questions.map((q) => q.questionID) : [],
-    );
-  };
+  const { mutate } = useMutation({
+    mutationFn: ({
+      questionId,
+      status,
+    }: {
+      questionId: string;
+      status: UpdateQuestionInputProps;
+    }) => updateQuestion(listID, questionId, status),
+    onSuccess: (response) => {
+      const { questionID, ...updatedStatus } = response.data;
+      queryClient.setQueryData([queryKeys.LIST_QUESTIONS, listID], (oldData: any) => {
+        if (!oldData) return;
+        const updatedQuestions = oldData.data.questions.map((q: any) =>
+          q.questionId === questionID
+            ? { ...q, status: { ...q.status, ...updatedStatus } }
+            : q
+        );
+        return { ...oldData, data: { questions: updatedQuestions } };
+      });
+    },
+  });
 
-  const handleCheckboxClick = (questionID: string) => {
-    setSelectedQuestions((prevSelected) =>
-      prevSelected.includes(questionID)
-        ? prevSelected.filter((id) => id !== questionID)
-        : [...prevSelected, questionID],
+  const handleToggleStatus = (
+    questionId: string,
+    field: keyof UpdateQuestionInputProps,
+    currentValue: boolean
+  ) => mutate({ questionId, status: { [field]: !currentValue } });
+
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setSelectedQuestions(
+      event.target.checked ? questions.map((q) => q.questionId) : []
     );
-  };
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    newPage: number,
-  ) => {
+
+  const handleCheckboxClick = (questionId: string) =>
+    setSelectedQuestions((prev) =>
+      prev.includes(questionId)
+        ? prev.filter((id) => id !== questionId)
+        : [...prev, questionId]
+    );
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) =>
     setPage(newPage);
-  };
 
   const paginatedQuestions = questions.slice((page - 1) * limit, page * limit);
 
   return (
     <Box>
-      {/* Header Section */}
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6">Questions</Typography>
         <Button
           variant="contained"
           startIcon={<Add />}
-          onClick={() => setModalOpen(true)} // Open the modal
+          onClick={() => setModalOpen(true)}
+          sx={{ backgroundColor: '#1976d2', color: 'white', '&:hover': { backgroundColor: '#1565c0' } }}
         >
           Add Question
         </Button>
       </Box>
 
-      {/* Loading and Error States */}
       {isLoading && <Typography>Loading...</Typography>}
       {isError && <Typography color="error">Error: {String(error)}</Typography>}
 
-      {/* Main Content */}
       {!isLoading && !isError && (
         <>
-          {/* Toolbar Section */}
-          {selectedQuestions.length > 0 && (
-            <Toolbar>
-              <Tooltip title="Mark as Important">
-                <IconButton
-                  onClick={() => selectedQuestions.forEach(onToggleImportant)}
-                >
-                  <Star sx={{ color: 'grey' }} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Mark as Done">
-                <IconButton
-                  onClick={() => selectedQuestions.forEach(onToggleDone)}
-                >
-                  <Check sx={{ color: 'grey' }} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Mark for Review">
-                <IconButton
-                  onClick={() => selectedQuestions.forEach(onToggleReview)}
-                >
-                  <RateReview sx={{ color: 'grey' }} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete">
-                <IconButton
-                  onClick={() => onDeleteQuestions(selectedQuestions)}
-                >
-                  <Delete sx={{ color: 'grey' }} />
-                </IconButton>
-              </Tooltip>
-            </Toolbar>
-          )}
-
-          {/* Table Section */}
           <TableContainer
             component={Paper}
             sx={{ backgroundColor: 'rgba(255, 255, 255, 0.04)' }}
@@ -179,109 +156,61 @@ export default function QuestionsTable({
                         selectedQuestions.length === questions.length
                       }
                       onChange={handleSelectAllClick}
-                      inputProps={{ 'aria-label': 'select all questions' }}
                       sx={{ color: 'grey' }}
                     />
                   </TableCell>
-                  <TableCell align="center" sx={{ color: 'white' }}>
-                    Question
-                  </TableCell>
-                  <TableCell align="center" sx={{ color: 'white' }}>
-                    LeetCode Link
-                  </TableCell>
-                  <TableCell align="center" sx={{ color: 'white' }}>
-                    Mark as Important
-                  </TableCell>
-                  <TableCell align="center" sx={{ color: 'white' }}>
-                    Mark as Done
-                  </TableCell>
-                  <TableCell align="center" sx={{ color: 'white' }}>
-                    Review
-                  </TableCell>
+                  <TableCell align="center" sx={{ color: 'white' }}>Question</TableCell>
+                  <TableCell align="center" sx={{ color: 'white' }}>LeetCode Link</TableCell>
+                  <TableCell align="center" sx={{ color: 'white' }}>Mark as Important</TableCell>
+                  <TableCell align="center" sx={{ color: 'white' }}>Mark as Done</TableCell>
+                  <TableCell align="center" sx={{ color: 'white' }}>Review</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedQuestions.map((question) => (
-                  <TableRow
-                    key={question.questionID}
-                    selected={selectedQuestions.includes(question.questionID)}
-                  >
+                {paginatedQuestions.map((q) => (
+                  <TableRow key={q.questionId}>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedQuestions.includes(
-                          question.questionID,
-                        )}
-                        onChange={() =>
-                          handleCheckboxClick(question.questionID)
-                        }
+                        checked={selectedQuestions.includes(q.questionId)}
+                        onChange={() => handleCheckboxClick(q.questionId)}
                         sx={{ color: 'grey' }}
                       />
                     </TableCell>
-                    <TableCell align="center" sx={{ color: 'white' }}>
-                      {question.title}
-                    </TableCell>
+                    <TableCell align="center" sx={{ color: 'white' }}>{q.title}</TableCell>
                     <TableCell align="center">
-                      {question.leetcodeLink ? (
-                        <IconButton
-                          href={question.leetcodeLink}
-                          target="_blank"
-                          color="primary"
-                        >
+                      {q.leetcodeLink ? (
+                        <IconButton href={q.leetcodeLink} target="_blank" color="primary">
                           <Link />
                         </IconButton>
-                      ) : (
-                        'No Link'
-                      )}
+                      ) : 'No Link'}
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton
-                        onClick={() => onToggleImportant(question.questionID)}
-                        color="secondary"
-                      >
-                        {question.important ? <Star /> : <StarBorder />}
+                      <IconButton onClick={() => handleToggleStatus(q.questionId, 'important', q.important)}>
+                        {q.important ? <Star sx={{ color: '#fbc02d' }} /> : <StarBorder sx={{ color: '#fbc02d' }} />}
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
                       <Box
+                        onClick={() => handleToggleStatus(q.questionId, 'done', q.done)}
                         sx={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '2px 6px', // Smaller padding for a compact look
-                          border: '1px solid #2196f3',
-                          borderRadius: '3px', // Smaller border radius
                           cursor: 'pointer',
-                          fontWeight: question.done ? 'bold' : 'normal',
-                          fontSize: '12px', // Smaller font size
-                          color: question.done ? 'green' : '#2196f3',
-                          minWidth: '60px', // Reduced minimum width
-                          transition: 'all 0.3s ease',
+                          fontWeight: q.done ? 'bold' : 'normal',
+                          color: q.done ? 'green' : '#2196f3',
                           '&:hover': {
-                            backgroundColor: question.done
-                              ? 'green'
-                              : '#2196f3',
+                            backgroundColor: q.done ? 'green' : '#2196f3',
                             color: 'white',
                           },
                         }}
-                        onClick={() => onToggleDone(question.questionID)}
                       >
-                        {question.done ? (
-                          <Check sx={{ fontSize: 16 }} /> // Smaller icon size
-                        ) : (
-                          <Typography variant="body2" sx={{ fontSize: '10px' }}>
-                            Mark as Done
-                          </Typography>
-                        )}
+                        {q.done ? <Check /> : 'Mark as Done'}
                       </Box>
                     </TableCell>
                     <TableCell align="center">
                       <IconButton
-                        onClick={() => onToggleReview(question.questionID)}
-                        color="primary"
+                        onClick={() => handleToggleStatus(q.questionId, 'review', q.review)}
+                        sx={{ color: q.review ? 'yellow' : 'inherit' }}
                       >
-                        <RateReview
-                          sx={{ color: question.review ? 'yellow' : 'inherit' }}
-                        />
+                        <RateReview />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -290,36 +219,18 @@ export default function QuestionsTable({
             </Table>
           </TableContainer>
 
-          {/* Pagination Section */}
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mt={2}
-          >
-            <Typography>
-              Page: {page} of {Math.ceil(questions.length / limit)}
-            </Typography>
-            <Select
-              value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
-              sx={{ color: 'white' }}
-            >
+          <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+            <Typography>Page: {page} of {Math.ceil(questions.length / limit)}</Typography>
+            <Select value={limit} onChange={(e) => setLimit(Number(e.target.value))} sx={{ color: 'white' }}>
               {[5, 10, 15].map((value) => (
-                <MenuItem key={value} value={value}>
-                  {value} per page
-                </MenuItem>
+                <MenuItem key={value} value={value}>{value} per page</MenuItem>
               ))}
             </Select>
-            <Pagination
-              count={Math.ceil(questions.length / limit)}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-            />
+            <Pagination count={Math.ceil(questions.length / limit)} page={page} onChange={handlePageChange} color="primary" />
           </Box>
         </>
       )}
+
       <CustomModal open={modalOpen} setOpen={setModalOpen} name="Add Question">
         <AddQuestion onAddQuestion={onAddQuestion} />
       </CustomModal>

@@ -6,9 +6,10 @@ import { toast } from 'sonner';
 import addQuestion from '../services/addQuestion';
 import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface AddQuestionProps {
-  onAddQuestion: (question: { listID:string; title:string; link:string }) => void;
+  onAddQuestion: (question: { listID:string; title:string; link:string;}) => void;
 }
 
 const AddQuestion: React.FC<AddQuestionProps> = ({ onAddQuestion }) => {
@@ -19,25 +20,39 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onAddQuestion }) => {
   const title = match ? match[1].replace(/-/g, ' ') : '';
   const { id } = useParams<{ id: string }>();
   const listID = id || '';
+  const queryClient = useQueryClient();
   
   const { mutate, status } = useMutation({
-    mutationFn: () => addQuestion({ listID, title, link }),
+    mutationFn: () => addQuestion({ listID, title, link}),
     mutationKey: [queryKeys.ADD_QUESTIONS],
-    onSuccess: () => {
+    onSuccess: (response) => {
+      const { questionId } = response.data;
+      // Update the cache with the newly added question
+      queryClient.setQueryData([queryKeys.LIST_QUESTIONS, listID], (oldData: any) => {
+        if (!oldData) return;
+        const result = {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            questions: [...oldData.data.questions, {questionId, title, leetcodeLink: link, status:{important: false, done: false, review: false }}],
+          },
+        };
+        return result;
+      });
+  
       onAddQuestion({
         listID,
         title,
-        link,
+        link
       });
       setLink('');
       toast.success('Question added successfully!');
     },
-    onError: (error) => {
-      console.log(error)
+    onError: () => {
       toast.error('Error adding question. Please try again.');
     },
   });
-
+  
   const handleAddQuestion = () => {
     if (!link) {
       setLinkError('LeetCode link is required.');

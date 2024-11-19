@@ -25,7 +25,8 @@ export default {
     getAccessRequests: `${SERVERURL}/list/access-requests/`
   },
   question: {
-    addQuestion: `${SERVERURL}/question/add-question`
+    addQuestion: `${SERVERURL}/question/add-question`,
+    updateQuestion: `${SERVERURL}/question`
   },
   public: {
     contactUs: `${SERVERURL}/contact-us`,

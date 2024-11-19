@@ -27,7 +27,10 @@ export const addQuestionToListService = async (userID, listID, title, link) => {
   // 4. Connect the question to the list using the ListQuestion table
   await listRepository.createListQuestion(listID, questionID);
 
-  return { message: 'Question successfully added to the list.' };
+  return {
+    message: 'Question successfully added to the list.',
+    questionId: questionID,
+  };
 };
 
 export const getQuestionDetails = async (id) => {

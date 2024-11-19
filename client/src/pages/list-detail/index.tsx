@@ -6,7 +6,7 @@ import AccessRequests from './components/AccessRequests';
 import QuestionsTable from './components/QuestionsTable';
 
 export interface Question {
-  questionID: string;
+  questionId: string;
   title: string;
   leetcodeLink?: string;
   important: boolean;
@@ -48,7 +48,7 @@ const ListDetailPage = () => {
   const handleToggleImportant = (questionID: string) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((q) =>
-        q.questionID === questionID ? { ...q, important: !q.important } : q
+        q.questionId === questionID ? { ...q, important: !q.important } : q
       )
     );
   };
@@ -56,7 +56,7 @@ const ListDetailPage = () => {
   const handleToggleDone = (questionID: string) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((q) =>
-        q.questionID === questionID ? { ...q, done: !q.done } : q
+        q.questionId === questionID ? { ...q, done: !q.done } : q
       )
     );
   };
@@ -64,14 +64,14 @@ const ListDetailPage = () => {
   const handleToggleReview = (questionID: string) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((q) =>
-        q.questionID === questionID ? { ...q, review: !q.review } : q
+        q.questionId === questionID ? { ...q, review: !q.review } : q
       )
     );
   };
 
   const handleDeleteQuestions = (selectedIDs: string[]) => {
     setQuestions((prevQuestions) =>
-      prevQuestions.filter((q) => !selectedIDs.includes(q.questionID))
+      prevQuestions.filter((q) => !selectedIDs.includes(q.questionId))
     );
   };
 
@@ -79,7 +79,7 @@ const ListDetailPage = () => {
     setQuestions((prevQuestions) => [
       ...prevQuestions,
       {
-        questionID: `${Date.now()}`, // Generate unique questionID
+        questionId: `${Date.now()}`, // Generate unique questionID
         title: newQuestion.title,
         leetcodeLink: newQuestion.link,
         important: false,
@@ -108,10 +108,6 @@ const ListDetailPage = () => {
       <Divider sx={{ my: 2 }} />
       <QuestionsTable
         questions={questions}
-        onToggleImportant={handleToggleImportant}
-        onToggleDone={handleToggleDone}
-        onToggleReview={handleToggleReview}
-        onDeleteQuestions={handleDeleteQuestions}
         onAddQuestion={handleAddQuestion}
       />
     </Box>

@@ -27,7 +27,6 @@ export const addQuestion = async (req, res) => {
   try {
     const { listID, title, link } = req.body;
     const userID = req.user.userID;
-    console.log(req.body);
 
     const newQuestion = await questionService.addQuestionToListService(
       userID,

@@ -15,7 +15,8 @@ enum queryKeys {
   LIST_DETAILS = 'list-details',
   EDIT_LIST_DETIALS = 'edit-list-details',
   ADD_QUESTIONS = 'add-questions',
-  LIST_QUESTIONS = 'list-questions'
+  LIST_QUESTIONS = 'list-questions',
+  UPDATE_QUESTIONS_STATUS = 'update-questions'
 }
 
 export default queryKeys;
