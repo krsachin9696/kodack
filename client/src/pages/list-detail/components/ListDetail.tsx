@@ -19,7 +19,6 @@ const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
     queryKey: [queryKeys.LIST_DETAILS, listID],
     queryFn: () => getListDetail(listID),
   });
-console.log("rtrtrtrt",data)
   // Handle loading and error states
   if (isLoading) {
     return (

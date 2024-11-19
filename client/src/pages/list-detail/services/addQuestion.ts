@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import apis from '../../../constants/apis';
 
 export interface AddQuestionInputProps {
@@ -9,15 +9,14 @@ export interface AddQuestionInputProps {
 
 interface AddQuestionResponseProps {
   message: string;
-  questionID: string;
+  questionId: string;
   question: AddQuestionInputProps;
 }
 
 export default async function addQuestion(
   data: AddQuestionInputProps
-): Promise<AddQuestionInputProps> {
-  const response = await axios.post<AddQuestionResponseProps>(apis.question.addQuestion, data, {
+): Promise<AxiosResponse<AddQuestionResponseProps>> {
+  return await axios.post(apis.question.addQuestion, data, {
     withCredentials: true,
   });
-  return response.data.question;
 }
