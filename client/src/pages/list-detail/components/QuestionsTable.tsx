@@ -36,7 +36,6 @@ import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Question } from '..';
-import AddQuestion from './AddQuestion';
 
 interface QuestionsTableProps {
   questions: Question[];
@@ -179,9 +178,9 @@ export default function QuestionsTable({
                     </TableCell>
                     <TableCell align="center" sx={{ color: 'white' }}>{q.title}</TableCell>
                     <TableCell align="center">
-                      {question.leetcodeLink ? (
+                      {q.leetcodeLink ? (
                        <IconButton
-                       href={question.leetcodeLink}
+                       href={q.leetcodeLink}
                        target="_blank"
                        color="primary"
                        sx={{
