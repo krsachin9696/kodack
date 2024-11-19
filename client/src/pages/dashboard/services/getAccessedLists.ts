@@ -2,15 +2,7 @@ import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
 import axiosInstance from '../../../services/axiosInterceptor';
 
-export interface ListItemProps {
-  owner: string;
-  listID: string;
-  name: string;
-  tags: string[];
-  access: boolean;
-}
-
-interface PublicListsResponse {
+interface AccessListsResponse {
   lists: ListItemProps[];
   totalPages: number;
   currentPage: number;
@@ -20,7 +12,7 @@ interface PublicListsResponse {
 export default async function fetchAccessedLists(
   page: number, 
   limit: number
-): Promise<AxiosResponse<PublicListsResponse>> {
+): Promise<AxiosResponse<AccessListsResponse>> {
   const response = await axiosInstance.get(apis.list.getPublicLists, {
     params: {
       page,

@@ -11,12 +11,13 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import CardWrapper from '../../../components/shared/card';
 import CustomModal from '../../../components/base/customModal';
-import fetchPublicLists from '../services/getAccessedLists';
 import { useQuery } from '@tanstack/react-query';
 import queryKeys from '../../../constants/queryKeys';
 import AddPublicList from './AddPublicList';
 import { Link } from 'react-router-dom';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import fetchLists from '../../../services/getLists';
+import apis from '../../../constants/apis';
 
 const PublicListCard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,7 +26,7 @@ const PublicListCard: React.FC = () => {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
-    queryFn: () => fetchPublicLists(page, limit),
+    queryFn: () => fetchLists(apis.list.getPublicLists, page, limit),
   });
 
   if (isLoading || isError) {
@@ -208,7 +209,7 @@ const PublicListCard: React.FC = () => {
                   >
                     {list.name}
                   </Typography>
-                  {list.access ? (
+                  {list.status ? (
                     <Chip
                       label="granted"
                       color="warning"

@@ -12,10 +12,11 @@ import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import CardWrapper from '../../../components/shared/card';
 import CustomModal from '../../../components/base/customModal';
 import CreateList from './CreateList';
-import fetchPersonalLists from '../services/getPersonalLists';
 import { useQuery } from '@tanstack/react-query';
 import queryKeys from '../../../constants/queryKeys';
 import { Link } from 'react-router-dom';
+import apis from '../../../constants/apis';
+import fetchLists from '../../../services/getLists';
 
 const PersonalListCard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -24,7 +25,7 @@ const PersonalListCard: React.FC = () => {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.PERSONAL_LISTS, page, limit],
-    queryFn: () => fetchPersonalLists(page, limit),
+    queryFn: () => fetchLists(apis.list.getPersonalLists, page, limit),
   });
 
   if (isLoading || isError) {

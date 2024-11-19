@@ -2,13 +2,6 @@ import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
 import axiosInstance from '../../../services/axiosInterceptor';
 
-export interface ListItemProps {
-  listID: string;
-  name: string;
-  tags: string[];
-  isPublic: boolean;
-}
-
 interface PersonalListsResponse {
   lists: ListItemProps[];
   totalPages: number;
