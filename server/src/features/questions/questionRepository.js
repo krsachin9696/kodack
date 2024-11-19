@@ -63,9 +63,9 @@ export const updateUserQuestionStatus = async (
       },
     },
     update: {
-      done: done !== undefined ? done : false,
-      important: important !== undefined ? important : false,
-      review: review !== undefined ? review : false,
+      ...(done !== undefined && { done }),
+      ...(important !== undefined && { important }),
+      ...(review !== undefined && { review }),
     },
     create: {
       user: { connect: { userID } },
