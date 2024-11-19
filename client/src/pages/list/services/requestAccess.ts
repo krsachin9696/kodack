@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export interface RequestAccessProps {
   listID: string
@@ -12,8 +13,6 @@ interface LoginResponseProps {
 export default async function requestAccessService(
   requestAccessDetails: RequestAccessProps,
 ): Promise<AxiosResponse<LoginResponseProps>> {
-  const response = await axios.post(apis.list.requestAccess, requestAccessDetails, {
-    withCredentials: true,
-  });
+  const response = await axiosInstance.post(apis.list.requestAccess, requestAccessDetails);
   return response;
 }

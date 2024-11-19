@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export interface ListItemProps {
   listID: string;
@@ -19,12 +20,11 @@ export default async function fetchPersonalLists(
   page: number, 
   limit: number
 ): Promise<AxiosResponse<PersonalListsResponse>> {
-  const response = await axios.get(apis.list.getPersonalLists, {
+  const response = await axiosInstance.get(apis.list.getPersonalLists, {
     params: {
       page,
       limit,
     },
-    withCredentials: true,
   });
   return response;
 }

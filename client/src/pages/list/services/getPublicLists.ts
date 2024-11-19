@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export enum AccessStatus {
   PENDING,
@@ -31,12 +32,11 @@ export default async function fetchPublicLists(
   totalTags: number; 
   lists: ListItemProps[]; 
 }> {
-  const response: AxiosResponse<PublicListsResponse> = await axios.get(apis.list.getPublicLists, {
+  const response: AxiosResponse<PublicListsResponse> = await axiosInstance.get(apis.list.getPublicLists, {
     params: {
       page,
       limit,
     },
-    withCredentials: true,
   });
   
   const { totalPages, currentPage, totalItems, lists } = response.data;

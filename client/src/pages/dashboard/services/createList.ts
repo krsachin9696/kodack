@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export interface CreateListInputProps {
   name: string;
@@ -16,8 +17,6 @@ interface CreateListResponseProps {
 export default async function createList(
   newList: CreateListInputProps
 ): Promise<AxiosResponse<CreateListResponseProps>> {
-  const response = await axios.post(apis.list.createList, newList, {
-    withCredentials: true,
-  });
+  const response = await axiosInstance.post(apis.list.createList, newList);
   return response;
 }

@@ -36,6 +36,7 @@ import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Question } from '..';
+import AddQuestion from './AddQuestion';
 
 interface QuestionsTableProps {
   questions: Question[];
@@ -178,11 +179,34 @@ export default function QuestionsTable({
                     </TableCell>
                     <TableCell align="center" sx={{ color: 'white' }}>{q.title}</TableCell>
                     <TableCell align="center">
-                      {q.leetcodeLink ? (
-                        <IconButton href={q.leetcodeLink} target="_blank" color="primary">
-                          <Link />
-                        </IconButton>
-                      ) : 'No Link'}
+                      {question.leetcodeLink ? (
+                       <IconButton
+                       href={question.leetcodeLink}
+                       target="_blank"
+                       color="primary"
+                       sx={{
+                         borderRadius: '50%',
+                         backgroundColor: 'gray',
+                         padding: 1,
+                         '&:hover': {
+                           backgroundColor: '#ccc',
+                         },
+                       }}
+                     >
+                       <img
+                         src="/leetcode.svg"
+                         alt="LeetCode Link"
+                         style={{
+                           width: 24, 
+                           height: 24, 
+                           borderRadius: '50%', // Ensure the image is also circular
+                         }}
+                       />
+                     </IconButton>
+                     
+                      ) : (
+                        'No Link'
+                      )}
                     </TableCell>
                     <TableCell align="center">
                       <IconButton onClick={() => handleToggleStatus(q.questionId, 'important', q.important)}>
