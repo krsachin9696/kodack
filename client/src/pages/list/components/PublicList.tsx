@@ -10,10 +10,11 @@ import CardWrapper from '../../../components/shared/card';
 import { useState } from 'react';
 import queryKeys from '../../../constants/queryKeys';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import fetchPublicLists, { AccessStatus } from '../services/getPublicLists';
 import { toast } from 'sonner';
 import requestAccessService from '../services/requestAccess';
 import { useNavigateToListDetail } from '../../../utils/navigateUtils';
+import fetchLists from '../../../services/getLists';
+import apis from '../../../constants/apis';
 
 export default function PublicList() {
   const [page, setPage] = useState(1);
@@ -21,17 +22,14 @@ export default function PublicList() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
-    queryFn: () => fetchPublicLists(page, limit),
-    
+    queryFn: () => fetchLists(apis.list.getPublicLists, page, limit),
   });
 
-  
   const { mutate: handleRequestAccess } = useMutation({
-    mutationFn: (listID: string) => requestAccessService({listID}),
+    mutationFn: (listID: string) => requestAccessService({ listID }),
     mutationKey: [queryKeys.REQUEST_ACCESS],
     onSuccess: (data) => {
-      console.log(data)
-      toast.info("Access Request sent successfully!");
+      toast.info('Access Request sent successfully!');
     },
     onError: () => {
       toast.error('Some error occurred');
@@ -115,8 +113,8 @@ export default function PublicList() {
   }
   if (isError) return <p>Error loading lists...</p>;
 
-  const lists = data?.lists;
-  const totalPages = data?.page;
+  const lists = data?.data.lists;
+  const totalPages = data?.data.totalPages;
 
   return (
     <CardWrapper sx={{ backgroundColor: 'transparent', p: 0 }}>
@@ -124,20 +122,25 @@ export default function PublicList() {
         {lists &&
           lists.map((list, index) => {
             // Convert status to lowercase
-            
             const statusLabel =
               list.accessStatus !== null
-                ? (String(list.accessStatus)).toLowerCase()
+                ? String(list.accessStatus).toLowerCase()
                 : 'unknown';
 
-            // Map status to colors
-            const statusColors: {
-              [key in AccessStatus]: 'primary' | 'secondary' | 'error';
-            } = {
-              [AccessStatus.PENDING]: 'secondary',
-              [AccessStatus.APPROVED]: 'primary',
-              [AccessStatus.REJECTED]: 'error',
-            };
+            function getStatusColor(
+              status: string | undefined
+            ): 'primary' | 'warning' | 'error' | 'success' {
+              if (status === 'approved') {
+                return 'success';
+              } else if (status === 'pending') {
+                return 'warning';
+              } else if (status === 'rejected') {
+                return 'error';
+              }
+
+              return 'primary';
+            }
+
             return (
               <Box
                 key={index}
@@ -169,7 +172,7 @@ export default function PublicList() {
                   {list.accessStatus !== null ? (
                     <Chip
                       label={statusLabel}
-                      color={statusColors[list.accessStatus]}
+                      color={getStatusColor(statusLabel)}
                       variant="outlined"
                       size="small"
                     />

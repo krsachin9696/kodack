@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import { ReactNode } from 'react';
-import { Divider, IconButton, Typography } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CardWrapper from '../shared/card';
 

@@ -76,7 +76,6 @@ passport.use(
 
 // Serialize user to store in session
 passport.serializeUser((user, done) => {
-  console.log(user, 'this is user');
   done(null, user.userID);
 });
 

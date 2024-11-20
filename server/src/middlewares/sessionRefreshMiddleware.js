@@ -1,7 +1,7 @@
 export function sessionRefreshMiddleware(req, res, next) {
   if (req.session) {
     // Extend session expiration on client side (browser cookie)
-    req.session.cookie.maxAge = 60 * 60 * 1000;
+    req.session.cookie.maxAge = 10 * 1000;
 
     // Update session expiration in PostgreSQL store
     req.session.save((err) => {

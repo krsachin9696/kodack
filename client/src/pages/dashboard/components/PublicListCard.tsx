@@ -6,26 +6,38 @@ import {
   Divider,
   Pagination,
   Skeleton,
+  Button,
 } from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import CardWrapper from '../../../components/shared/card';
-import CustomModal from '../../../components/base/customModal';
-import fetchPublicLists from '../services/getAccessedLists';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import queryKeys from '../../../constants/queryKeys';
-import AddPublicList from './AddPublicList';
 import { Link } from 'react-router-dom';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import fetchLists from '../../../services/getLists';
+import apis from '../../../constants/apis';
+import { toast } from 'sonner';
+import requestAccessService from '../../list/services/requestAccess';
 
 const PublicListCard: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const limit = 5;
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
-    queryFn: () => fetchPublicLists(page, limit),
+    queryFn: () => fetchLists(apis.list.getPublicLists, page, limit),
+  });
+
+  const { mutate: handleRequestAccess } = useMutation({
+    mutationFn: (listID: string) => requestAccessService({ listID }),
+    mutationKey: [queryKeys.REQUEST_ACCESS],
+    onSuccess: (data) => {
+      toast.info('Access Request sent successfully!');
+    },
+    onError: () => {
+      toast.error('Some error occurred');
+    },
   });
 
   if (isLoading || isError) {
@@ -54,10 +66,7 @@ const PublicListCard: React.FC = () => {
               </Typography>
             </Box>
             <Box>
-              <AddCircleTwoToneIcon
-                onClick={() => setModalOpen(true)}
-                style={{ cursor: 'pointer' }}
-              />
+              <AddCircleTwoToneIcon style={{ cursor: 'pointer' }} />
             </Box>
           </CardWrapper>
           <Divider
@@ -181,64 +190,94 @@ const PublicListCard: React.FC = () => {
           flexDirection="column"
         >
           {lists &&
-            lists.map((list, index) => (
-              <Box
-                key={index}
-                width="100%"
-                padding={1}
-                borderLeft={4}
-                borderColor="skyblue"
-                borderRadius={2}
-                display="flex"
-                flexDirection="column"
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                  },
-                }}
-              >
+            lists.map((list, index) => {
+              const statusLabel =
+                list.accessStatus !== null
+                  ? String(list.accessStatus).toLowerCase()
+                  : 'unknown';
+
+              function getStatusColor(
+                status: string | undefined,
+              ): 'primary' | 'warning' | 'error' | 'success' {
+                if (status === 'approved') {
+                  return 'success';
+                } else if (status === 'pending') {
+                  return 'warning';
+                } else if (status === 'rejected') {
+                  return 'error';
+                }
+
+                return 'primary';
+              }
+
+              return (
                 <Box
+                  key={index}
+                  width="100%"
+                  padding={1}
+                  borderLeft={4}
+                  borderColor="skyblue"
+                  borderRadius={2}
                   display="flex"
-                  justifyContent="space-between"
-                  paddingBottom={1}
+                  flexDirection="column"
+                  sx={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                    },
+                  }}
                 >
-                  <Typography
-                    sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    paddingBottom={1}
                   >
-                    {list.name}
-                  </Typography>
-                  {list.access ? (
-                    <Chip
-                      label="granted"
-                      color="warning"
-                      variant="outlined"
-                      size="small"
-                    />
-                  ) : (
-                    <Chip
-                      label="pending"
-                      color="primary"
-                      variant="outlined"
-                      size="small"
-                    />
-                  )}
+                    <Typography
+                      sx={{ fontFamily: 'sans-serif', fontWeight: '600' }}
+                    >
+                      {list.name}
+                    </Typography>
+                    {list.accessStatus ? (
+                      <Chip
+                        label={statusLabel}
+                        color={getStatusColor(statusLabel)}
+                        variant="outlined"
+                        size="small"
+                      />
+                    ) : (
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => handleRequestAccess(list.listID)}
+                        sx={{
+                          padding: '2px 4px',
+                          borderRadius: '4px',
+                          textTransform: 'none',
+                          '&:hover': {
+                            backgroundColor: 'rgba(135, 206, 250, 0.2)',
+                          },
+                        }}
+                      >
+                        Request Access
+                      </Button>
+                    )}
+                  </Box>
+                  <Box display="flex" justifyContent="flex-start" gap={1}>
+                    {list.tags.map((tag, tagIndex) => (
+                      <Chip
+                        key={tagIndex}
+                        label={tag}
+                        size="small"
+                        sx={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                          color: 'white',
+                        }}
+                      />
+                    ))}
+                  </Box>
                 </Box>
-                <Box display="flex" justifyContent="flex-start" gap={1}>
-                  {list.tags.map((tag, tagIndex) => (
-                    <Chip
-                      key={tagIndex}
-                      label={tag}
-                      size="small"
-                      sx={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                        color: 'white',
-                      }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-            ))}
+              );
+            })}
         </Box>
 
         {totalPages && totalPages > 1 && (
@@ -264,10 +303,6 @@ const PublicListCard: React.FC = () => {
           </Box>
         )}
       </CardWrapper>
-
-      <CustomModal open={modalOpen} setOpen={setModalOpen} name="Public Lists">
-        <AddPublicList onClose={() => setModalOpen(false)} />
-      </CustomModal>
     </>
   );
 };
