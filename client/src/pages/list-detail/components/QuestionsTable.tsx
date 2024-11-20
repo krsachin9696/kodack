@@ -35,10 +35,10 @@ import updateQuestion, { UpdateQuestionInputProps } from '../services/updateQues
 import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Question } from '..';
+import { Question } from '../index.tsx';
 
 interface QuestionsTableProps {
-  questions: Question[];
+  questions: Question[] ;
     onAddQuestion: (question: {
     listID: string;
     title: string;
@@ -244,12 +244,33 @@ export default function QuestionsTable({
 
           <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
             <Typography>Page: {page} of {Math.ceil(questions.length / limit)}</Typography>
-            <Select value={limit} onChange={(e) => setLimit(Number(e.target.value))} sx={{ color: 'white' }}>
+            <Select value={limit} onChange={(e) => setLimit(Number(e.target.value))}
+            sx={{
+              color: 'white', 
+              borderColor: 'white', 
+              '& .MuiOutlinedInput-root': {
+                borderColor: 'white', // Make border white
+              },
+              '& .MuiSelect-icon': {
+                color: 'white', // Make the dropdown icon white
+              }
+            }}
+            >
               {[5, 10, 15].map((value) => (
                 <MenuItem key={value} value={value}>{value} per page</MenuItem>
               ))}
             </Select>
-            <Pagination count={Math.ceil(questions.length / limit)} page={page} onChange={handlePageChange} color="primary" />
+            <Pagination count={Math.ceil(questions.length / limit)} page={page} onChange={handlePageChange} color="primary"
+             sx={{
+      '& .MuiPaginationItem-root': {
+        color: 'white', // Make pagination numbers white
+      },
+      '& .MuiPaginationItem-page.Mui-selected': {
+        backgroundColor: 'white', // White background for selected page number
+        color: 'black', // Black text for the selected page number
+      },
+    }}
+            />
           </Box>
         </>
       )}

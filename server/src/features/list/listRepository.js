@@ -202,6 +202,7 @@ export const findExistingRequest = async (userID, listID) => {
     where: {
       userID,
       listID,
+      status: 'APPROVED',
     },
     select: {
       status: true,
