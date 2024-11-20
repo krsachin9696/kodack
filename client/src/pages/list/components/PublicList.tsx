@@ -16,29 +16,20 @@ import { useNavigateToListDetail } from '../../../utils/navigateUtils';
 import fetchLists from '../../../services/getLists';
 import apis from '../../../constants/apis';
 
-enum AccessStatus {
-  PENDING,
-  APPROVED,
-  REJECTED
-}
-
-
 export default function PublicList() {
   const [page, setPage] = useState(1);
   const limit = 7;
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
-    queryFn: () => fetchLists( apis.list.getPublicLists, page, limit),    
+    queryFn: () => fetchLists(apis.list.getPublicLists, page, limit),
   });
 
-  
   const { mutate: handleRequestAccess } = useMutation({
-    mutationFn: (listID: string) => requestAccessService({listID}),
+    mutationFn: (listID: string) => requestAccessService({ listID }),
     mutationKey: [queryKeys.REQUEST_ACCESS],
     onSuccess: (data) => {
-      console.log(data)
-      toast.info("Access Request sent successfully!");
+      toast.info('Access Request sent successfully!');
     },
     onError: () => {
       toast.error('Some error occurred');
@@ -131,20 +122,25 @@ export default function PublicList() {
         {lists &&
           lists.map((list, index) => {
             // Convert status to lowercase
-            
             const statusLabel =
               list.accessStatus !== null
-                ? (String(list.accessStatus)).toLowerCase()
+                ? String(list.accessStatus).toLowerCase()
                 : 'unknown';
 
-            // Map status to colors
-            const statusColors: {
-              [key in AccessStatus]: 'primary' | 'secondary' | 'error';
-            } = {
-              [AccessStatus.PENDING]: 'secondary',
-              [AccessStatus.APPROVED]: 'primary',
-              [AccessStatus.REJECTED]: 'error',
-            };
+            function getStatusColor(
+              status: string | undefined
+            ): 'primary' | 'warning' | 'error' | 'success' {
+              if (status === 'approved') {
+                return 'success';
+              } else if (status === 'pending') {
+                return 'warning';
+              } else if (status === 'rejected') {
+                return 'error';
+              }
+
+              return 'primary';
+            }
+
             return (
               <Box
                 key={index}
@@ -176,7 +172,7 @@ export default function PublicList() {
                   {list.accessStatus !== null ? (
                     <Chip
                       label={statusLabel}
-                      color={statusColors[list.accessStatus as AccessStatus]}
+                      color={getStatusColor(statusLabel)}
                       variant="outlined"
                       size="small"
                     />

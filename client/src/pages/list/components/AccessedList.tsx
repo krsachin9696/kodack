@@ -100,29 +100,34 @@ export default function AccessList() {
   }
   if (isError) return <p>Error loading lists...</p>;
 
-  
   const lists = data?.data.lists;
   const totalPages = data?.data.totalPages;
-  
+
   return (
     <CardWrapper sx={{ backgroundColor: 'transparent', p: 0 }}>
       <Box width="100%" gap={1} display="flex" flexDirection="column">
         {lists &&
           lists.map((list, index) => {
-            // // Convert status to lowercase
-            // const statusLabel =
-            //   list.accessStatus !== null
-            //     ? list.accessStatus
-            //     : 'unknown';
+            // Convert status to lowercase
+            const statusLabel =
+              list.accessStatus !== null
+                ? String(list.accessStatus).toLowerCase()
+                : 'unknown';
 
-            // // Map status to colors
-            // const statusColors: {
-            //   [key in AccessStatus]: 'primary' | 'secondary' | 'error';
-            // } = {
-            //   [AccessStatus.PENDING]: 'secondary',
-            //   [AccessStatus.APPROVED]: 'primary',
-            //   [AccessStatus.REJECTED]: 'error',
-            // };
+            function getStatusColor(
+              status: string | undefined,
+            ): 'primary' | 'warning' | 'error' | 'success' {
+              if (status === 'approved') {
+                return 'success';
+              } else if (status === 'pending') {
+                return 'warning';
+              } else if (status === 'rejected') {
+                return 'error';
+              }
+
+              return 'primary';
+            }
+
             return (
               <Box
                 key={index}
@@ -153,9 +158,8 @@ export default function AccessList() {
                   </Typography>
                   {list.accessStatus !== null ? (
                     <Chip
-                      // label={statusLabel}
-                      // color={statusColors[list.accessStatus]}
-                      label={'check'}
+                      label={statusLabel}
+                      color={getStatusColor(statusLabel)}
                       variant="outlined"
                       size="small"
                     />
@@ -163,9 +167,6 @@ export default function AccessList() {
                     <Button
                       variant="outlined"
                       color="primary"
-                      onClick={() => {
-                        console.log(`Requesting access for ${list.name}`);
-                      }}
                       sx={{
                         padding: '2px 4px',
                         borderRadius: '4px',
@@ -226,4 +227,3 @@ export default function AccessList() {
     </CardWrapper>
   );
 }
-
