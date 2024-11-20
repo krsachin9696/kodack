@@ -1,10 +1,11 @@
 import { Box, Chip, Pagination, Skeleton, Typography } from '@mui/material';
 import CardWrapper from '../../../components/shared/card';
 import { useState } from 'react';
-import fetchPersonalLists from '../services/getPersonalLists';
 import queryKeys from '../../../constants/queryKeys';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigateToListDetail } from '../../../utils/navigateUtils';
+import fetchLists from '../../../services/getLists';
+import apis from '../../../constants/apis';
 
 export default function PersonalList() {
   const [page, setPage] = useState(1);
@@ -12,7 +13,7 @@ export default function PersonalList() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.PERSONAL_LISTS, page, limit],
-    queryFn: () => fetchPersonalLists(page, limit),
+    queryFn: () => fetchLists(apis.list.getPersonalLists, page, limit),
   });
 
   const handlePageChange = (

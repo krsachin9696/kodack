@@ -10,8 +10,9 @@ import CardWrapper from '../../../components/shared/card';
 import { useState } from 'react';
 import queryKeys from '../../../constants/queryKeys';
 import { useQuery } from '@tanstack/react-query';
-import fetchAccessedList from '../services/getAccessedList';
 import { useNavigateToListDetail } from '../../../utils/navigateUtils';
+import fetchLists from '../../../services/getLists';
+import apis from '../../../constants/apis';
 
 export default function AccessList() {
   const [page, setPage] = useState(1);
@@ -19,7 +20,7 @@ export default function AccessList() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.ACCESSED_LISTS, page, limit],
-    queryFn: () => fetchAccessedList(page, limit),
+    queryFn: () => fetchLists(apis.list.getAccessedLists, page, limit),
   });
 
   const handlePageChange = (
@@ -100,8 +101,8 @@ export default function AccessList() {
   if (isError) return <p>Error loading lists...</p>;
 
   
-  const lists = data?.lists;
-  const totalPages = data?.page;
+  const lists = data?.data.lists;
+  const totalPages = data?.data.totalPages;
   
   return (
     <CardWrapper sx={{ backgroundColor: 'transparent', p: 0 }}>

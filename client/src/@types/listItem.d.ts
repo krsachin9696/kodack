@@ -1,16 +1,16 @@
-interface ListItemProps {
-  listID: string;
-  name: string;
-  tags: string[];
-  status?: string;
-  isPublic?: boolean;
-  owner?: string;
-}
-
 enum AccessStatus {
   PENDING,
   APPROVED,
   REJECTED
+}
+
+interface ListItemProps {
+  listID: string;
+  name: string;
+  tags: string[];
+  accessStatus: AccessStatus | null;
+  isPublic?: boolean;
+  owner?: string;
 }
 
 interface GetListResponseProps {

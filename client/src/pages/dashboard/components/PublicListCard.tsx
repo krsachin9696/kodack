@@ -10,17 +10,16 @@ import {
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import CardWrapper from '../../../components/shared/card';
-import CustomModal from '../../../components/base/customModal';
+// import CustomModal from '../../../components/base/customModal';
 import { useQuery } from '@tanstack/react-query';
 import queryKeys from '../../../constants/queryKeys';
-import AddPublicList from './AddPublicList';
 import { Link } from 'react-router-dom';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import fetchLists from '../../../services/getLists';
 import apis from '../../../constants/apis';
 
 const PublicListCard: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const limit = 5;
 
@@ -56,7 +55,7 @@ const PublicListCard: React.FC = () => {
             </Box>
             <Box>
               <AddCircleTwoToneIcon
-                onClick={() => setModalOpen(true)}
+                // onClick={() => setModalOpen(true)}
                 style={{ cursor: 'pointer' }}
               />
             </Box>
@@ -209,7 +208,7 @@ const PublicListCard: React.FC = () => {
                   >
                     {list.name}
                   </Typography>
-                  {list.status ? (
+                  {list.accessStatus ? (
                     <Chip
                       label="granted"
                       color="warning"
@@ -266,9 +265,9 @@ const PublicListCard: React.FC = () => {
         )}
       </CardWrapper>
 
-      <CustomModal open={modalOpen} setOpen={setModalOpen} name="Public Lists">
+      {/* <CustomModal open={modalOpen} setOpen={setModalOpen} name="Public Lists">
         <AddPublicList onClose={() => setModalOpen(false)} />
-      </CustomModal>
+      </CustomModal> */}
     </>
   );
 };

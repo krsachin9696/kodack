@@ -10,10 +10,18 @@ import CardWrapper from '../../../components/shared/card';
 import { useState } from 'react';
 import queryKeys from '../../../constants/queryKeys';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import fetchPublicLists, { AccessStatus } from '../services/getPublicLists';
 import { toast } from 'sonner';
 import requestAccessService from '../services/requestAccess';
 import { useNavigateToListDetail } from '../../../utils/navigateUtils';
+import fetchLists from '../../../services/getLists';
+import apis from '../../../constants/apis';
+
+enum AccessStatus {
+  PENDING,
+  APPROVED,
+  REJECTED
+}
+
 
 export default function PublicList() {
   const [page, setPage] = useState(1);
@@ -21,8 +29,7 @@ export default function PublicList() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
-    queryFn: () => fetchPublicLists(page, limit),
-    
+    queryFn: () => fetchLists( apis.list.getPublicLists, page, limit),    
   });
 
   
@@ -115,8 +122,8 @@ export default function PublicList() {
   }
   if (isError) return <p>Error loading lists...</p>;
 
-  const lists = data?.lists;
-  const totalPages = data?.page;
+  const lists = data?.data.lists;
+  const totalPages = data?.data.totalPages;
 
   return (
     <CardWrapper sx={{ backgroundColor: 'transparent', p: 0 }}>
@@ -169,7 +176,7 @@ export default function PublicList() {
                   {list.accessStatus !== null ? (
                     <Chip
                       label={statusLabel}
-                      color={statusColors[list.accessStatus]}
+                      color={statusColors[list.accessStatus as AccessStatus]}
                       variant="outlined"
                       size="small"
                     />
