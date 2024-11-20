@@ -45,6 +45,7 @@ app.use(
     cookie: {
       maxAge: 60 * 60 * 1000, // 1 hour
       secure: false, // making this true ensures setting cookies in HTTPS only.
+      // rolling: true, // reset the sid on every request
     },
   }),
 );
