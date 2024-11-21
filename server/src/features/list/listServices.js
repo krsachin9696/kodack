@@ -157,14 +157,15 @@ export const viewAllAccessRequestsService = async (userID) => {
 };
 
 export const updateAccessStatusService = async (userID, listID, status) => {
-  const existingAccess = await listRepository.findExistingRequest(
-    userID,
-    listID,
-  );
+  // const existingAccess = await listRepository.findExistingRequest(
+  //   userID,
+  //   listID,
+  //   status
+  // );
 
-  if (existingAccess.status === 'APPROVED') {
-    throw new Error('Access already granted to this user.');
-  }
+  // if (existingAccess) {
+  //   throw new Error('Access already granted to this user.');
+  // }
 
   const access = await listRepository.updateAccessRequestStatus(
     userID,
@@ -172,7 +173,7 @@ export const updateAccessStatusService = async (userID, listID, status) => {
     status,
   );
 
-  return access.status;
+  return access;
 };
 
 export const getAllAccessRequestedListsService = async (

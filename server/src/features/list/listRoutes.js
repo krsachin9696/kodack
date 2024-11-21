@@ -25,7 +25,7 @@ listRoute.post(
   listControllers.requestAccess,
 );
 listRoute.get('/access-requests', listControllers.viewAllAccessRequests);
-listRoute.put(
+listRoute.patch(
   '/grant-access',
   validate(listSchema.grantAccessSchema),
   listControllers.updateAccessStatus,

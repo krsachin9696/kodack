@@ -159,7 +159,7 @@ const CustomList = ({
                     backgroundColor: 'rgba(255, 255, 255, 0.06)',
                   },
                 }}
-                onClick={() => navigateToListDetail(list.listID)}
+                //onClick={() => navigateToListDetail(list.listID)}
               >
                 <Box
                   display="flex"

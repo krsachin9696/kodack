@@ -124,7 +124,7 @@ export const updateAccessStatus = async (req, res) => {
       status,
     );
 
-    res.status(200).json({ message: `Access ${updatedStatus} successfully` });
+    res.status(200).json(updatedStatus);
   } catch (error) {
     logger.error('error', error);
     res.status(500).json({ error: 'Failed to update access status' });

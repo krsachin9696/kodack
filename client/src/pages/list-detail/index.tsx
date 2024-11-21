@@ -4,39 +4,32 @@ import { Box, Divider } from '@mui/material';
 import ListDetail from './components/ListDetail';
 import AccessRequests from './components/AccessRequests';
 import QuestionsTable from './components/QuestionsTable';
+import axios from 'axios';
+
 
 export interface Question {
   questionId: string;
   title: string;
-  leetcodeLink?: string;
+  leetcodeLink: string;
   important: boolean;
   done: boolean;
   review: boolean;
-}
+};
 
-interface ListData {
-  questions: Question[];
-  accessRequests: string[];
-  usersWithAccess: string[];
-}
 
 const ListDetailPage = () => {
-  const { id } = useParams<{ id: string }>(); // Retrieve the dynamic `id` from the URL
+  const { id } = useParams<{ id: string }>(); // Retrieve dynamic `id` from the URL
+  const listID = id || '';
 
+  // State to manage questions, access requests, and users with access
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [accessRequests, setAccessRequests] = useState<string[]>(['User1', 'User2', 'User3']);
-  const [usersWithAccess, setUsersWithAccess] = useState<string[]>(['user4']);
+  const [accessRequests, setAccessRequests] = useState([]);
+  const [usersWithAccess, setUsersWithAccess] = useState([]);
 
-  useEffect(() => {
-    if (id) {
-      fetchListData(id);
-    }
-  }, [id]);
-
-  const fetchListData = async (listID: string) => {
+  // Function to fetch data for the list
+  const fetchListData = async () => {
     try {
-      const response = await fetch(`/api/lists/${listID}`);
-      const data: ListData = await response.json();
+      const { data } = await axios.get(`/api/lists/${listID}`);
       setQuestions(data.questions || []);
       setAccessRequests(data.accessRequests || []);
       setUsersWithAccess(data.usersWithAccess || []);
@@ -45,41 +38,20 @@ const ListDetailPage = () => {
     }
   };
 
-  const handleToggleImportant = (questionID: string) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((q) =>
-        q.questionId === questionID ? { ...q, important: !q.important } : q
-      )
-    );
-  };
+  // Fetch data on component mount and `listID` change
+  useEffect(() => {
+    if (listID) {
+      fetchListData();
+    }
+  }, [listID]);
+  
 
-  const handleToggleDone = (questionID: string) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((q) =>
-        q.questionId === questionID ? { ...q, done: !q.done } : q
-      )
-    );
-  };
-
-  const handleToggleReview = (questionID: string) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((q) =>
-        q.questionId === questionID ? { ...q, review: !q.review } : q
-      )
-    );
-  };
-
-  const handleDeleteQuestions = (selectedIDs: string[]) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.filter((q) => !selectedIDs.includes(q.questionId))
-    );
-  };
-
+  // Function to handle adding a question
   const handleAddQuestion = (newQuestion: { title: string; link: string }) => {
     setQuestions((prevQuestions) => [
       ...prevQuestions,
       {
-        questionId: `${Date.now()}`, // Generate unique questionID
+        questionId: `${Date.now()}`, // Unique question ID
         title: newQuestion.title,
         leetcodeLink: newQuestion.link,
         important: false,
@@ -91,21 +63,24 @@ const ListDetailPage = () => {
 
   return (
     <Box sx={{ padding: 4 }}>
-      <ListDetail listID={id || ''} />
+      {/* List Details Section */}
+      <ListDetail listID={listID} />
       <Divider sx={{ my: 2 }} />
-      <Box display="flex">
-        <AccessRequests
-          requests={accessRequests}
-          usersWithAccess={usersWithAccess}
-          onApprove={(user) =>
-            setAccessRequests(accessRequests.filter((request) => request !== user))
-          }
-          onReject={(user) =>
-            setAccessRequests(accessRequests.filter((request) => request !== user))
-          }
-        />
-      </Box>
+
+      {/* Access Requests Section */}
+      <AccessRequests
+        // requests={accessRequests}
+        // usersWithAccess={usersWithAccess}
+        // onApprove={(userID) =>
+        //   setAccessRequests((prev) => prev.filter((req) => req !== userID))
+        // }
+        // onReject={(userID) =>
+        //   setAccessRequests((prev) => prev.filter((req) => req !== userID))
+        // }
+      />
       <Divider sx={{ my: 2 }} />
+
+      {/* Questions Section */}
       <QuestionsTable
         questions={questions}
         onAddQuestion={handleAddQuestion}

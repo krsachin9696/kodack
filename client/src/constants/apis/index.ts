@@ -23,7 +23,8 @@ export default {
     getListDetails: `${SERVERURL}/list/list-details/`,
     editListDetails: `${SERVERURL}/list/`,
     getListQuestions: `${SERVERURL}/list/questions/`,
-    getAccessRequests: `${SERVERURL}/list/access-requests/`
+    getAccessRequests: `${SERVERURL}/list/access-requests/`,
+    grantAccess: `${SERVERURL}/list/grant-access`
   },
   question: {
     addQuestion: `${SERVERURL}/question/add-question`,
