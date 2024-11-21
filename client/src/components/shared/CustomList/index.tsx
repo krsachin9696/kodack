@@ -31,7 +31,7 @@ const CustomList = ({
 }: CustomListProps) => {
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [queryKey, page, limit],
     queryFn: () => fetchLists(apiEndpoint, page, limit),
   });
@@ -41,6 +41,7 @@ const CustomList = ({
     mutationKey: [queryKeys.REQUEST_ACCESS],
     onSuccess: () => {
       toast.info('Access Request sent successfully!');
+      refetch();
     },
     onError: () => {
       toast.error('Some error occurred');
@@ -159,7 +160,7 @@ const CustomList = ({
                     backgroundColor: 'rgba(255, 255, 255, 0.06)',
                   },
                 }}
-                //onClick={() => navigateToListDetail(list.listID)}
+                onClick={() => navigateToListDetail(list.listID)}
               >
                 <Box
                   display="flex"
@@ -189,7 +190,10 @@ const CustomList = ({
                     <Button
                       variant="outlined"
                       color="primary"
-                      onClick={() => handleRequestAccess(list.listID)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRequestAccess(list.listID);
+                      }}                    
                       sx={{
                         padding: '2px 4px',
                         borderRadius: '4px',
