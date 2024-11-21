@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
-import apis from '../../../constants/apis';
-import axiosInstance from '../../../services/axiosInterceptor';
+import apis from '../constants/apis';
+import axiosInstance from './axiosInterceptor';
 
 export interface RequestAccessProps {
   listID: string

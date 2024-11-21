@@ -2,11 +2,11 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import PersonalList from './components/PersonalList';
 import SearchBar from '../../components/base/Searchbar';
 import { Button } from '@mui/material';
-import PublicList from './components/PublicList';
-import AccessList from './components/AccessedList';
+import queryKeys from '../../constants/queryKeys';
+import apis from '../../constants/apis';
+import CustomList from '../../components/shared/CustomList';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -98,13 +98,26 @@ export default function ListPage() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <PublicList />
+        <CustomList
+          queryKey={queryKeys.PUBLIC_LISTS}
+          apiEndpoint={apis.list.getPublicLists}
+          limit={7}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PersonalList />
+        <CustomList
+          isPersonalList
+          queryKey={queryKeys.PERSONAL_LISTS}
+          apiEndpoint={apis.list.getPersonalLists}
+          limit={7}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <AccessList />
+        <CustomList
+          queryKey={queryKeys.ACCESSED_LISTS}
+          apiEndpoint={apis.list.getAccessedLists}
+          limit={7}
+        />
       </CustomTabPanel>
     </Box>
   );

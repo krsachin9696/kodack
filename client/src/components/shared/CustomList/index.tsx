@@ -8,27 +8,38 @@ import {
 } from '@mui/material';
 import CardWrapper from '../../../components/shared/card';
 import { useState } from 'react';
-import queryKeys from '../../../constants/queryKeys';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import requestAccessService from '../services/requestAccess';
-import { useNavigateToListDetail } from '../../../utils/navigateUtils';
+import queryKeys from '../../../constants/queryKeys';
 import fetchLists from '../../../services/getLists';
-import apis from '../../../constants/apis';
+import { useNavigateToListDetail } from '../../../utils/navigateUtils';
+import requestAccessService from '../../../services/requestAccess';
 
-export default function PublicList() {
+// Define the types for the props
+interface CustomListProps {
+  queryKey: string;
+  apiEndpoint: string;
+  isPersonalList?: boolean;
+  limit: number;
+}
+
+const CustomList = ({
+  queryKey,
+  apiEndpoint,
+  isPersonalList = false,
+  limit,
+}: CustomListProps) => {
   const [page, setPage] = useState(1);
-  const limit = 7;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: [queryKeys.PUBLIC_LISTS, page, limit],
-    queryFn: () => fetchLists(apis.list.getPublicLists, page, limit),
+    queryKey: [queryKey, page, limit],
+    queryFn: () => fetchLists(apiEndpoint, page, limit),
   });
 
   const { mutate: handleRequestAccess } = useMutation({
     mutationFn: (listID: string) => requestAccessService({ listID }),
     mutationKey: [queryKeys.REQUEST_ACCESS],
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.info('Access Request sent successfully!');
     },
     onError: () => {
@@ -72,9 +83,7 @@ export default function PublicList() {
               borderRadius={2}
               display="flex"
               flexDirection="column"
-              sx={{
-                backgroundColor: 'rgba(255, 255, 255, 0.02)',
-              }}
+              sx={{ backgroundColor: 'rgba(255, 255, 255, 0.02)' }}
             >
               <Box display="flex" justifyContent="space-between">
                 <Skeleton variant="text" width="60%" height={24} />
@@ -111,35 +120,28 @@ export default function PublicList() {
       </CardWrapper>
     );
   }
-  if (isError) return <p>Error loading lists...</p>;
 
-  const lists = data?.data.lists;
-  const totalPages = data?.data.totalPages;
+  const lists = data?.data?.lists;
+  const totalPages = data?.data?.totalPages;
 
   return (
     <CardWrapper sx={{ backgroundColor: 'transparent', p: 0 }}>
       <Box width="100%" gap={1} display="flex" flexDirection="column">
         {lists &&
           lists.map((list, index) => {
-            // Convert status to lowercase
             const statusLabel =
               list.accessStatus !== null
                 ? String(list.accessStatus).toLowerCase()
                 : 'unknown';
 
-            function getStatusColor(
-              status: string | undefined
-            ): 'primary' | 'warning' | 'error' | 'success' {
-              if (status === 'approved') {
-                return 'success';
-              } else if (status === 'pending') {
-                return 'warning';
-              } else if (status === 'rejected') {
-                return 'error';
-              }
-
+            const getStatusColor = (
+              status: string | undefined,
+            ): 'primary' | 'warning' | 'error' | 'success' => {
+              if (status === 'approved') return 'success';
+              if (status === 'pending') return 'warning';
+              if (status === 'rejected') return 'error';
               return 'primary';
-            }
+            };
 
             return (
               <Box
@@ -169,7 +171,14 @@ export default function PublicList() {
                   >
                     {list.name}
                   </Typography>
-                  {list.accessStatus !== null ? (
+                  {isPersonalList ? (
+                    <Chip
+                      label={list.isPublic ? 'public' : 'private'}
+                      color={list.isPublic ? 'warning' : 'primary'}
+                      variant="outlined"
+                      size="small"
+                    />
+                  ) : list.accessStatus !== null ? (
                     <Chip
                       label={statusLabel}
                       color={getStatusColor(statusLabel)}
@@ -194,24 +203,24 @@ export default function PublicList() {
                     </Button>
                   )}
                 </Box>
-                <Box display="flex" justifyContent="space-between" gap={1}>
-                  <Box>
-                    {list.tags.map((tag, tagIndex) => (
-                      <Chip
-                        key={tagIndex}
-                        label={tag}
-                        size="small"
-                        sx={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                          color: 'white',
-                        }}
-                      />
-                    ))}
-                  </Box>
+                <Box display="flex" justifyContent="flex-start" gap={1}>
+                  {list.tags.map((tag, tagIndex) => (
+                    <Chip
+                      key={tagIndex}
+                      label={tag}
+                      size="small"
+                      sx={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                        color: 'white',
+                      }}
+                    />
+                  ))}
+                </Box>
+                {!isPersonalList ?? (
                   <Typography variant="body2" sx={{ color: 'gray' }}>
                     {list.owner}
                   </Typography>
-                </Box>
+                )}
               </Box>
             );
           })}
@@ -231,13 +240,13 @@ export default function PublicList() {
                   color: 'black',
                 },
               },
-              '& .MuiPaginationItem-icon': {
-                color: 'white',
-              },
+              '& .MuiPaginationItem-icon': { color: 'white' },
             }}
           />
         </Box>
       )}
     </CardWrapper>
   );
-}
+};
+
+export default CustomList;
