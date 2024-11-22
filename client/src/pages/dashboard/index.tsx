@@ -12,40 +12,10 @@ const Dashboard: React.FC = () => {
   const socialLinks = {
     linkedin: 'https://linkedin.com/in/johndoe',
     github: 'https://github.com/johndoe',
-    twitter: null,
-    portfolio: 'https://johndoe.com',
+    twitter: 'www.x.com',
+    portfolio: undefined,
     leetcode: 'https://leetcode.com/johndoe',
   };
-
-  const personalLists = [
-    {
-      listID: 'akkdjf',
-      name: 'A2Z DSA Sheet',
-      tags: ['array', 'recursion', 'dp'],
-      isPublic: false,
-    },
-    {
-      listID: 'adf',
-      name: 'Algorithm Study Plan',
-      tags: ['dynamic programming', 'greedy'],
-      isPublic: true,
-    },
-  ];
-
-  const publicLists = [
-    {
-      listID: 'dfe',
-      name: 'Interview Preparation',
-      tags: ['array', 'strings', 'searching'],
-      access: true,
-    },
-    {
-      listID: 'dvdg',
-      name: 'Competitive Programming',
-      tags: ['graphs', 'trees', 'backtracking'],
-      access: false,
-    },
-  ];
 
   return (
     <Box
