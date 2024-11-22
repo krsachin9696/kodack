@@ -32,7 +32,7 @@ const CustomList = ({
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [queryKey, page, limit],
+    queryKey: [queryKey, page],
     queryFn: () => fetchLists(apiEndpoint, page, limit),
   });
 
@@ -123,7 +123,7 @@ const CustomList = ({
   }
 
   const lists = data?.data?.lists;
-  const totalPages = data?.data?.totalPages;
+  const totalPages = data?.data?.totalPages || 0;
 
   return (
     <CardWrapper sx={{ backgroundColor: 'transparent', p: 0 }}>
@@ -229,7 +229,7 @@ const CustomList = ({
             );
           })}
       </Box>
-      {totalPages && totalPages > 1 && (
+      {totalPages != Infinity && totalPages && totalPages > 1 && (
         <Box width="100%" mt={2} display="flex" justifyContent="center">
           <Pagination
             count={totalPages}

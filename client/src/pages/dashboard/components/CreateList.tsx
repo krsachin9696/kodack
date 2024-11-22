@@ -15,9 +15,10 @@ import {
 import { defaultStyles } from '../../../constants/defaultStyles';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { Cancel } from '@mui/icons-material';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createList, { CreateListInputProps } from '../services/createList';
 import { toast } from 'sonner';
+import queryKeys from '../../../constants/queryKeys';
 
 interface CreateListProps {
   onClose: () => void; // Add this line
@@ -38,10 +39,48 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
     tags: '',
   });
 
+  const queryClient = useQueryClient(); 
+
   const { mutate, status } = useMutation({
     mutationFn: () => createList(formData),
-    onSuccess: () => {
-      toast.info('New list created successfully.');
+    onSuccess: (data) => {
+      const newListData = {
+        listID: data.data.listID,
+        name: data.data.name,
+        tags: formData.tags,
+        isPublic: data.data.isPublic,
+        description: formData.description,
+      }
+      queryClient.setQueryData([queryKeys.PERSONAL_LISTS, 1], (oldData: any) => {
+  
+        if (oldData && oldData.data && Array.isArray(oldData.data.lists)) {
+          let updatedLists = [newListData, ...oldData.data.lists];
+          if (updatedLists.length > 5) {
+            updatedLists = updatedLists.slice(0, 5); 
+          }
+
+          return {
+            ...oldData,
+            data: {
+              ...oldData.data, 
+              lists: updatedLists,  
+              totalItems: oldData.data.totalItems + 1,  
+              totalPages: Math.ceil((oldData.data.totalItems + 1) / 5), 
+            },
+          };
+        }
+  
+        // If no old data or lists, initialize with the new list
+        return {
+          ...oldData,
+          data: {
+            lists: [newListData],           
+          },
+        };
+      });
+      
+
+      toast.success('New list created successfully.');
       setFormData({
         name: '',
         isPublic: true,
