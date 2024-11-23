@@ -15,6 +15,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      retry: false,
       refetchOnWindowFocus: false,
     },
   },

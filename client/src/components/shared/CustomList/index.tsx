@@ -190,12 +190,13 @@ const CustomList = ({
                     <Button
                       variant="outlined"
                       color="primary"
+                      size='small'
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRequestAccess(list.listID);
                       }}                    
                       sx={{
-                        padding: '2px 4px',
+                        padding: '0px 4px',
                         borderRadius: '4px',
                         textTransform: 'none',
                         '&:hover': {
