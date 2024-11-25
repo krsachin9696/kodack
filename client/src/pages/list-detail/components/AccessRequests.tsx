@@ -9,13 +9,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Pagination,
-  Select,
-  MenuItem,
+  Pagination
 } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import queryKeys from '../../../constants/queryKeys';
@@ -29,7 +26,7 @@ export default function AccessRequests() {
 
   const [pendingPage, setPendingPage] = useState(1);
   const [approvedPage, setApprovedPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const limit = 5;
 
   // Fetch access requests
   const { data, isLoading, isError } = useQuery({
@@ -104,6 +101,34 @@ export default function AccessRequests() {
     onError: () => toast.error('Error removing access.'),
   });
 
+  useEffect(() => {
+    if (approvedPage > Math.ceil(usersWithAccess.length / 5)) {
+      setApprovedPage(1); // Reset to the first page if the current page is invalid
+    }
+  }, [usersWithAccess.length, approvedPage]);
+  
+  useEffect(() => {
+    if (pendingPage > Math.ceil(requests.length / 5)) {
+      setPendingPage(1); // Reset to the first page if the current page becomes invalid
+    }
+  }, [requests.length, pendingPage]);
+
+  
+  // useEffect(() => {
+  //   const lastValidPage = Math.ceil(requests.length / 5);
+  //   if (pendingPage > lastValidPage) {
+  //     setPendingPage(lastValidPage); // Reset to the last valid page
+  //   }
+  // }, [requests.length, pendingPage]);
+
+  // useEffect(() => {
+  //   const lastValidPage = Math.ceil(usersWithAccess.length / 5);
+  //   if (approvedPage > lastValidPage) {
+  //     setApprovedPage(lastValidPage); // Reset to the last valid page
+  //   }
+  // }, [usersWithAccess.length, approvedPage]);
+  
+
   // Pagination
   const paginatedPending = requests.slice((pendingPage - 1) * limit, pendingPage * limit);
   const paginatedApproved = usersWithAccess.slice((approvedPage - 1) * limit, approvedPage * limit);
@@ -115,17 +140,15 @@ export default function AccessRequests() {
     <Box
       sx={{
         backgroundColor: 'rgba(255, 255, 255, 0.04)',
-        padding: 4,
+        padding: 3,
         borderRadius: 2,
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-        maxWidth: '35%',
-        margin: 'auto',
-        marginRight: 0,
-        marginLeft: 'auto',
-        display: 'block',
+        width: { xs: '90%', sm: '50%', md: '35%' }, // Responsive width
+        marginLeft: 'auto', // Push the box to the right side
+        marginRight: '16px', // Add spacing from the right edge
       }}
     >
-      <Typography variant="h6" mb={2} color="white">
+      <Typography variant="h6" mb={2} color="white" textAlign="center">
         Pending Requests
       </Typography>
       <Box mb={4}>
@@ -141,15 +164,17 @@ export default function AccessRequests() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ color: 'white' }}>User Name</TableCell>
-                  <TableCell sx={{ color: 'white' }}>Action</TableCell>
+                  <TableCell sx={{ color: 'white', textAlign: 'center' }}>User Name</TableCell>
+                  <TableCell sx={{ color: 'white', textAlign: 'center' }}>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {paginatedPending.map((request) => (
                   <TableRow key={request.userId}>
-                    <TableCell sx={{ color: 'white' }}>{request.userName}</TableCell>
-                    <TableCell>
+                    <TableCell sx={{ color: 'white', textAlign: 'center' }}>
+                      {request.userName}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}>
                       <Button
                         variant="contained"
                         size="small"
@@ -178,24 +203,33 @@ export default function AccessRequests() {
             </Table>
           </TableContainer>
         ) : (
-          <Typography sx={{ color: 'white' }}>No pending requests.</Typography>
+          <Typography sx={{ color: 'white', textAlign: 'center' }}>
+            No pending requests.
+          </Typography>
         )}
-        <Box mt={2} display="flex" justifyContent="flex-end" alignItems="center">
-          <Pagination
-            count={Math.ceil(requests.length / 5)}
-            page={pendingPage}
-            onChange={(e, page) => setPendingPage(page)}
-            color="primary"
-            sx={{
-              '& .MuiPaginationItem-root': {
-                color: 'white',
-              },
-            }}
-          />
+        <Box
+          mt={2}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          {requests.length > 5 && (
+            <Pagination
+              count={Math.ceil(requests.length / 5)}
+              page={pendingPage}
+              onChange={(e, page) => setPendingPage(page)}
+              color="primary"
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  color: 'white',
+                },
+              }}
+            />
+          )}
         </Box>
       </Box>
   
-      <Typography variant="h6" mb={2} color="white">
+      <Typography variant="h6" mb={2} color="white" textAlign="center">
         Users with Access
       </Typography>
       <Box>
@@ -211,15 +245,17 @@ export default function AccessRequests() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ color: 'white' }}>User Name</TableCell>
-                  <TableCell sx={{ color: 'white' }}>Action</TableCell>
+                  <TableCell sx={{ color: 'white', textAlign: 'center' }}>User Name</TableCell>
+                  <TableCell sx={{ color: 'white', textAlign: 'center' }}>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {paginatedApproved.map((user) => (
                   <TableRow key={user.userId}>
-                    <TableCell sx={{ color: 'white' }}>{user.userName}</TableCell>
-                    <TableCell>
+                    <TableCell sx={{ color: 'white', textAlign: 'center' }}>
+                      {user.userName}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}>
                       <Button
                         variant="contained"
                         size="small"
@@ -235,20 +271,29 @@ export default function AccessRequests() {
             </Table>
           </TableContainer>
         ) : (
-          <Typography sx={{ color: 'white' }}>No users with access.</Typography>
+          <Typography sx={{ color: 'white', textAlign: 'center' }}>
+            No users with access.
+          </Typography>
         )}
-        <Box mt={2} display="flex" justifyContent="flex-end" alignItems="center">
-          <Pagination
-            count={Math.ceil(usersWithAccess.length / 5)}
-            page={approvedPage}
-            onChange={(e, page) => setApprovedPage(page)}
-            color="primary"
-            sx={{
-              '& .MuiPaginationItem-root': {
-                color: 'white',
-              },
-            }}
-          />
+        <Box
+          mt={2}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          {usersWithAccess.length > 5 && (
+            <Pagination
+              count={Math.ceil(usersWithAccess.length / 5)}
+              page={approvedPage}
+              onChange={(e, page) => setApprovedPage(page)}
+              color="primary"
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  color: 'white',
+                },
+              }}
+            />
+          )}
         </Box>
       </Box>
     </Box>
