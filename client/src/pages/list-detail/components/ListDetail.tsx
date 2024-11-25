@@ -18,6 +18,7 @@ const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.LIST_DETAILS, listID],
     queryFn: () => getListDetail(listID),
+    refetchOnWindowFocus: false,
   });
   
   // Handle loading and error states

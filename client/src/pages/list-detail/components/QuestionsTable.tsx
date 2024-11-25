@@ -57,11 +57,14 @@ export default function QuestionsTable({
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [modalOpen, setModalOpen] = useState(false);
+  const [bulkAction, setBulkAction] = useState<string>('');
+
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: [queryKeys.LIST_QUESTIONS, listID],
     queryFn: () => getQuestions(listID!),
     enabled: !!listID,
+    refetchOnWindowFocus: false,
   });
 
   const questions =
@@ -114,6 +117,30 @@ export default function QuestionsTable({
         : [...prev, questionId]
     );
 
+    const handleBulkAction = (action: string) => {
+      if (!selectedQuestions.length) return; // Don't do anything if no questions are selected
+    
+      selectedQuestions.forEach((questionId) => {
+        let status: UpdateQuestionInputProps = {};
+    
+        // Handle the status change based on the action clicked
+        if (action === 'important') {
+          status = { important: true };
+        } else if (action === 'done') {
+          status = { done: true };
+        } else if (action === 'review') {
+          status = { review: true };
+        } else if (action === 'delete') {
+          // Handle delete logic here
+          console.log('Deleting question with ID:', questionId);
+          return; // Implement your delete mutation here
+        }
+    
+        // Call mutate to update the question's status
+        mutate({ questionId, status });
+      });
+    };
+
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) =>
     setPage(newPage);
 
@@ -122,6 +149,51 @@ export default function QuestionsTable({
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+  <Typography variant="h6">Questions</Typography>
+
+  {selectedQuestions.length > 1 && (
+    <Box display="flex" gap={2}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleBulkAction('important')}
+      >
+        Mark as Important
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => handleBulkAction('review')}
+      >
+        Mark as Review
+      </Button>
+      <Button
+        variant="contained"
+        onClick={() => handleBulkAction('done')}
+      >
+        Mark as Done
+      </Button>
+      <Button
+        variant="contained"
+        color="error"
+        onClick={() => handleBulkAction('delete')}
+      >
+        Delete
+      </Button>
+    </Box>
+  )}
+
+  <Button
+    variant="contained"
+    startIcon={<Add />}
+    onClick={() => setModalOpen(true)}
+    sx={{ backgroundColor: '#1976d2', color: 'white', '&:hover': { backgroundColor: '#1565c0' } }}
+  >
+    Add Question
+  </Button>
+</Box>
+
+      {/* <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6">Questions</Typography>
         <Button
           variant="contained"
@@ -131,7 +203,7 @@ export default function QuestionsTable({
         >
           Add Question
         </Button>
-      </Box>
+      </Box> */}
 
       {isLoading && <Typography>Loading...</Typography>}
       {isError && <Typography color="error">Error: {String(error)}</Typography>}
@@ -145,7 +217,16 @@ export default function QuestionsTable({
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell padding="checkbox">
+                <TableCell padding="checkbox">
+  <Checkbox
+    indeterminate={selectedQuestions.length > 0 && selectedQuestions.length < questions.length}
+    checked={selectedQuestions.length === questions.length}
+    onChange={handleSelectAllClick}
+    sx={{ color: 'grey' }}
+  />
+</TableCell>
+
+                  {/* <TableCell padding="checkbox">
                     <Checkbox
                       indeterminate={
                         selectedQuestions.length > 0 &&
@@ -158,7 +239,7 @@ export default function QuestionsTable({
                       onChange={handleSelectAllClick}
                       sx={{ color: 'grey' }}
                     />
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell align="center" sx={{ color: 'white' }}>Question</TableCell>
                   <TableCell align="center" sx={{ color: 'white' }}>LeetCode Link</TableCell>
                   <TableCell align="center" sx={{ color: 'white' }}>Mark as Important</TableCell>
