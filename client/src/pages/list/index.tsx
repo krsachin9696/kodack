@@ -7,6 +7,8 @@ import { Button } from '@mui/material';
 import queryKeys from '../../constants/queryKeys';
 import apis from '../../constants/apis';
 import CustomList from '../../components/shared/CustomList';
+import HomeIcon from '@mui/icons-material/Home';
+import { useNavigate } from 'react-router-dom';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -44,58 +46,68 @@ export default function ListPage() {
     setValue(newValue);
   };
 
+  const navigate = useNavigate();
+
+  const goToDashboard = () => {
+    navigate('/');
+  };
+
   return (
     <Box sx={{ width: '100%' }} color="white">
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', color: 'white' }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="List tabs"
-          textColor="primary"
-        >
-          <Tab
-            label="Public Lists"
-            {...a11yProps(0)}
-            sx={{
-              color: value === 0 ? 'inherit' : 'white',
-              fontFamily: 'sans-serif',
-              fontWeight: '600',
-            }}
-          />
-          <Tab
-            label="Personal Lists"
-            {...a11yProps(1)}
-            sx={{
-              color: value === 1 ? 'inherit' : 'white',
-              fontFamily: 'sans-serif',
-              fontWeight: '600',
-            }}
-          />
-          <Tab
-            label="Accessed Lists"
-            {...a11yProps(2)}
-            sx={{
-              color: value === 2 ? 'inherit' : 'white',
-              fontFamily: 'sans-serif',
-              fontWeight: '600',
-            }}
-          />
-          <Box width="100%" display="flex" justifyContent="flex-end" gap={2}>
-            <Box width="30%">
-              <SearchBar />
+      {/* <Box sx={{ borderBottom: 1, borderColor: 'divider', color: 'white' }}> */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider', color: 'white' }}>
+        <HomeIcon onClick={goToDashboard} sx={{ cursor: 'pointer', marginLeft: 1, marginRight: 1}}/>
+        <Box sx={{ flexGrow: 1 }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="List tabs"
+            textColor="primary"
+          >
+            <Tab
+              label="Public Lists"
+              {...a11yProps(0)}
+              sx={{
+                color: value === 0 ? 'inherit' : 'white',
+                fontFamily: 'sans-serif',
+                fontWeight: '600',
+              }}
+            />
+            <Tab
+              label="Personal Lists"
+              {...a11yProps(1)}
+              sx={{
+                color: value === 1 ? 'inherit' : 'white',
+                fontFamily: 'sans-serif',
+                fontWeight: '600',
+              }}
+            />
+            <Tab
+              label="Accessed Lists"
+              {...a11yProps(2)}
+              sx={{
+                color: value === 2 ? 'inherit' : 'white',
+                fontFamily: 'sans-serif',
+                fontWeight: '600',
+              }}
+            />
+            <Box width="100%" display="flex" justifyContent="flex-end" gap={2}>
+              <Box width="30%">
+                <SearchBar />
+              </Box>
+              {value == 1 && (
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  type="submit"
+                >
+                  Create List
+                </Button>
+              )}
             </Box>
-            {value == 1 && (
-              <Button
-                variant="contained"
-                size="small"
-                color="primary"
-                type="submit"
-              >
-                Create List
-              </Button>
-            )}
-          </Box>
-        </Tabs>
+          </Tabs>
+        </Box>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <CustomList
