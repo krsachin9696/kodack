@@ -26,7 +26,7 @@ export default function AccessRequests() {
 
   const [pendingPage, setPendingPage] = useState(1);
   const [approvedPage, setApprovedPage] = useState(1);
-  const limit = 5;
+  const limit = 2;
 
   // Fetch access requests
   const { data, isLoading, isError } = useQuery({
@@ -100,33 +100,20 @@ export default function AccessRequests() {
     },
     onError: () => toast.error('Error removing access.'),
   });
-
-  useEffect(() => {
-    if (approvedPage > Math.ceil(usersWithAccess.length / 5)) {
-      setApprovedPage(1); // Reset to the first page if the current page is invalid
-    }
-  }, [usersWithAccess.length, approvedPage]);
   
   useEffect(() => {
-    if (pendingPage > Math.ceil(requests.length / 5)) {
-      setPendingPage(1); // Reset to the first page if the current page becomes invalid
+    const lastValidPage = Math.ceil(requests.length / 2);
+    if (pendingPage > lastValidPage  && pendingPage !==1) {
+      setPendingPage(lastValidPage); // Reset to the last valid page
     }
   }, [requests.length, pendingPage]);
 
-  
-  // useEffect(() => {
-  //   const lastValidPage = Math.ceil(requests.length / 5);
-  //   if (pendingPage > lastValidPage) {
-  //     setPendingPage(lastValidPage); // Reset to the last valid page
-  //   }
-  // }, [requests.length, pendingPage]);
-
-  // useEffect(() => {
-  //   const lastValidPage = Math.ceil(usersWithAccess.length / 5);
-  //   if (approvedPage > lastValidPage) {
-  //     setApprovedPage(lastValidPage); // Reset to the last valid page
-  //   }
-  // }, [usersWithAccess.length, approvedPage]);
+  useEffect(() => {
+    const lastValidPage = Math.ceil(usersWithAccess.length / 2);
+    if (approvedPage > lastValidPage  && approvedPage !==1) {
+      setApprovedPage(lastValidPage); // Reset to the last valid page
+    }
+  }, [usersWithAccess.length, approvedPage]);
   
 
   // Pagination
@@ -213,9 +200,9 @@ export default function AccessRequests() {
           justifyContent="center"
           alignItems="center"
         >
-          {requests.length > 5 && (
+          {requests.length > 2 && (
             <Pagination
-              count={Math.ceil(requests.length / 5)}
+              count={Math.ceil(requests.length / 2)}
               page={pendingPage}
               onChange={(e, page) => setPendingPage(page)}
               color="primary"
@@ -281,9 +268,9 @@ export default function AccessRequests() {
           justifyContent="center"
           alignItems="center"
         >
-          {usersWithAccess.length > 5 && (
+          {usersWithAccess.length > 2 && (
             <Pagination
-              count={Math.ceil(usersWithAccess.length / 5)}
+              count={Math.ceil(usersWithAccess.length / 2)}
               page={approvedPage}
               onChange={(e, page) => setApprovedPage(page)}
               color="primary"
