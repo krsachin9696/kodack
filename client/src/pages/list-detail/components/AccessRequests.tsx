@@ -35,7 +35,7 @@ export default function AccessRequests() {
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.GET_ACCESS_REQUESTS, listID],
     queryFn: () => getAccessRequests(listID),
-    //refetchOnWindowFocus: false,
+    refetchOnWindowFocus: false,
     staleTime: 0,
   });
 
