@@ -194,7 +194,7 @@ const CustomList = ({
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRequestAccess(list.listID);
-                      }}                    
+                      }}
                       sx={{
                         padding: '0px 4px',
                         borderRadius: '4px',
@@ -208,24 +208,26 @@ const CustomList = ({
                     </Button>
                   )}
                 </Box>
-                <Box display="flex" justifyContent="flex-start" gap={1}>
-                  {list.tags.map((tag, tagIndex) => (
-                    <Chip
-                      key={tagIndex}
-                      label={tag}
-                      size="small"
-                      sx={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                        color: 'white',
-                      }}
-                    />
-                  ))}
+                <Box display="flex" justifyContent="space-between" width="100%" gap={1}>
+                  <Box display="flex" gap={1}>
+                    {list.tags.map((tag, tagIndex) => (
+                      <Chip
+                        key={tagIndex}
+                        label={tag}
+                        size="small"
+                        sx={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                          color: 'white',
+                        }}
+                      />
+                    ))}
+                  </Box>
+                  {!isPersonalList && (
+                    <Typography variant="body2" sx={{ color: 'gray' }}>
+                      {list.owner}
+                    </Typography>
+                  )}
                 </Box>
-                {!isPersonalList && (
-                  <Typography variant="body2" sx={{ color: 'gray' }}>
-                    {list.owner}
-                  </Typography>
-                )}
               </Box>
             );
           })}
