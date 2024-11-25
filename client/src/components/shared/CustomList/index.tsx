@@ -221,7 +221,7 @@ const CustomList = ({
                     />
                   ))}
                 </Box>
-                {!isPersonalList ?? (
+                {!isPersonalList && (
                   <Typography variant="body2" sx={{ color: 'gray' }}>
                     {list.owner}
                   </Typography>
