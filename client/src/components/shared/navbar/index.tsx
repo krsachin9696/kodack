@@ -44,7 +44,7 @@ export default function Navbar(props: Props) {
     isLoading: personalListLoading,
     isError: personalListError,
   } = useQuery({
-    queryKey: [queryKeys.PERSONAL_LISTS, page, limit],
+    queryKey: [queryKeys.PERSONAL_LISTS, page],
     queryFn: () => fetchPersonalLists(page, limit),
   });
 

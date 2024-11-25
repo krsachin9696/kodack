@@ -10,8 +10,12 @@ export interface CreateListInputProps {
 }
 
 interface CreateListResponseProps {
-  message: string;
-  list: CreateListInputProps;
+    listID: string;
+    name: string;
+    tags: string[];
+    accessStatus: AccessStatus | null;
+    isPublic?: boolean;
+    owner?: string;
 }
 
 export default async function createList(

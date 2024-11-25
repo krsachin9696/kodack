@@ -31,8 +31,8 @@ const CustomList = ({
 }: CustomListProps) => {
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: [queryKey, page, limit],
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: [queryKey, page],
     queryFn: () => fetchLists(apiEndpoint, page, limit),
   });
 
@@ -41,6 +41,7 @@ const CustomList = ({
     mutationKey: [queryKeys.REQUEST_ACCESS],
     onSuccess: () => {
       toast.info('Access Request sent successfully!');
+      refetch();
     },
     onError: () => {
       toast.error('Some error occurred');
@@ -122,7 +123,7 @@ const CustomList = ({
   }
 
   const lists = data?.data?.lists;
-  const totalPages = data?.data?.totalPages;
+  const totalPages = data?.data?.totalPages || 0;
 
   return (
     <CardWrapper sx={{ backgroundColor: 'transparent', p: 0 }}>
@@ -159,7 +160,7 @@ const CustomList = ({
                     backgroundColor: 'rgba(255, 255, 255, 0.06)',
                   },
                 }}
-                //onClick={() => navigateToListDetail(list.listID)}
+                onClick={() => navigateToListDetail(list.listID)}
               >
                 <Box
                   display="flex"
@@ -189,9 +190,13 @@ const CustomList = ({
                     <Button
                       variant="outlined"
                       color="primary"
-                      onClick={() => handleRequestAccess(list.listID)}
+                      size='small'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRequestAccess(list.listID);
+                      }}                    
                       sx={{
-                        padding: '2px 4px',
+                        padding: '0px 4px',
                         borderRadius: '4px',
                         textTransform: 'none',
                         '&:hover': {
@@ -225,7 +230,7 @@ const CustomList = ({
             );
           })}
       </Box>
-      {totalPages && totalPages > 1 && (
+      {totalPages != Infinity && totalPages && totalPages > 1 && (
         <Box width="100%" mt={2} display="flex" justifyContent="center">
           <Pagination
             count={totalPages}
