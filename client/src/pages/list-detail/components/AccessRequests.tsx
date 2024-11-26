@@ -102,17 +102,21 @@ export default function AccessRequests() {
   });
   
   useEffect(() => {
+    if (requests.length>0){
     const lastValidPage = Math.ceil(requests.length / 2);
-    if (pendingPage > lastValidPage  && pendingPage !==1) {
+    if (pendingPage > lastValidPage  ) {
       setPendingPage(lastValidPage); // Reset to the last valid page
     }
+  }
   }, [requests.length, pendingPage]);
 
   useEffect(() => {
+    if (usersWithAccess.length>0){
     const lastValidPage = Math.ceil(usersWithAccess.length / 2);
-    if (approvedPage > lastValidPage  && approvedPage !==1) {
+    if (approvedPage > lastValidPage  ) {
       setApprovedPage(lastValidPage); // Reset to the last valid page
     }
+  }
   }, [usersWithAccess.length, approvedPage]);
   
 
@@ -191,7 +195,7 @@ export default function AccessRequests() {
           </TableContainer>
         ) : (
           <Typography sx={{ color: 'white', textAlign: 'center' }}>
-            No pending requests.
+            No pending requests. 
           </Typography>
         )}
         <Box
