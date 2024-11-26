@@ -55,11 +55,11 @@ const ListDetailPage = () => {
     <Box sx={{ padding: 4 }}>
       {/* List Details Section */}
       <ListDetail listDetailData={listDetailData} />
-      <Divider sx={{ my: 2 }} />
+      {/* <Divider sx={{ my: 2 }} /> */}
 
       {/* Access Requests Section */}
       {listDetailData.isOwner && <AccessRequests />}
-      <Divider sx={{ my: 2 }} />
+      {/* <Divider sx={{ my: 2 }} /> */}
 
       {/* Questions Section */}
 
