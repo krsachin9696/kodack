@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Divider, Skeleton, Typography } from '@mui/material';
 import ListDetail from './components/ListDetail';
@@ -64,7 +63,11 @@ const ListDetailPage = () => {
 
       {/* Questions Section */}
 
-      {(listDetailData.isOwner || access == 'APPROVED') && <QuestionsTable isOwner={ listDetailData.isOwner}/>}
+      {
+        (listDetailData.isOwner || access === 'APPROVED')
+          ? <QuestionsTable isOwner={listDetailData.isOwner} />
+          : <Typography>You do not have access to this list. SORRY !!</Typography>
+      }
     </Box>
   );
 };
