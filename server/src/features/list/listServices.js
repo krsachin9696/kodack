@@ -204,13 +204,18 @@ export const getAllAccessRequestedListsService = async (
   };
 };
 
-export const getListDetailsService = async (listID) => {
+export const getListDetailsService = async (listID, userID) => {
   // Fetch the list by its ID, including related tags
-  const list = await listRepository.getListByIdWithTags(listID);
+  const list = await listRepository.getListByIdWithTags(listID, userID);
+
+  console.log(list, 'acess k sath list');
 
   if (!list) {
     throw new Error('List not found');
   }
+
+  const isOwner = list.userID === userID;
+
 
   // Format the response according to the API spec
   return {
@@ -218,6 +223,8 @@ export const getListDetailsService = async (listID) => {
     listName: list.name,
     description: list.description,
     tags: list.tags.map((tag) => tag.name), // Extract tag names
+    isOwner,
+    accessStatus: list.accessRequest?.[0]?.status || null,
   };
 };
 

@@ -153,8 +153,9 @@ export const getAllAccessRequestedLists = async (req, res) => {
 export const getListDetails = async (req, res) => {
   try {
     const { listID } = req.params;
+    const userID = req.user.userID;
 
-    const listDetails = await listServices.getListDetailsService(listID);
+    const listDetails = await listServices.getListDetailsService(listID, userID);
 
     // Send the list details as a response
     res.status(200).json(listDetails);

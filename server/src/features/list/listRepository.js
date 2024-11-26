@@ -305,16 +305,25 @@ export const getAllAccessRequestedLists = async (
   return { lists, totalItems };
 };
 
-export const getListByIdWithTags = async (listID) => {
+export const getListByIdWithTags = async (listID, userID) => {
   return await prisma.list.findUnique({
     where: { listID },
     select: {
       listID: true,
       name: true,
       description: true,
+      userID: true,
       tags: {
         select: {
           name: true,
+        },
+      },
+      accessRequest: {
+        where: {
+          userID,
+        },
+        select: {
+          status: true,
         },
       },
     },
