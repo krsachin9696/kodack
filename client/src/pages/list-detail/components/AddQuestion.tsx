@@ -8,11 +8,11 @@ import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 
-interface AddQuestionProps {
-  onAddQuestion: (question: { listID:string; title:string; link:string;}) => void;
-}
+// interface AddQuestionProps {
+//   onAddQuestion: (question: { listID:string; title:string; link:string;}) => void;
+// }
 
-const AddQuestion: React.FC<AddQuestionProps> = ({ onAddQuestion }) => {
+const AddQuestion: React.FC= () => {
   const [link, setLink] = useState('');
   const [isTouched, setIsTouched] = useState(false);
   const [linkError, setLinkError] = useState('');
@@ -40,11 +40,6 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onAddQuestion }) => {
         return result;
       });
   
-      onAddQuestion({
-        listID,
-        title,
-        link
-      });
       setLink('');
       toast.success('Question added successfully!');
     },

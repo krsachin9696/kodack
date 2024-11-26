@@ -25,7 +25,7 @@ const EditList: React.FC<EditListProps> = ({ list, onClose }) => {
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
-    name: list.listName,
+    name: list.name,
     description: list.description,
     tags: list.tags,
   });
@@ -40,7 +40,7 @@ const EditList: React.FC<EditListProps> = ({ list, onClose }) => {
         ...oldData,
         data: {
           ...oldData.data,
-          listName: formData.name,
+          name: formData.name,
           description: formData.description,
           tags: formData.tags,
         },

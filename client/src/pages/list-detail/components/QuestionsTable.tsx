@@ -12,8 +12,6 @@ import {
   Typography,
   Button,
   Checkbox,
-  Toolbar,
-  Tooltip,
   Pagination,
   Select,
   MenuItem,
@@ -22,9 +20,7 @@ import {
   Star,
   StarBorder,
   Check,
-  Link,
   RateReview,
-  Delete,
   Add,
 } from '@mui/icons-material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -35,20 +31,12 @@ import updateQuestion, { UpdateQuestionInputProps } from '../services/updateQues
 import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Question } from '../index.tsx';
 
-interface QuestionsTableProps {
-  questions: Question[] ;
-    onAddQuestion: (question: {
-    listID: string;
-    title: string;
-    link: string;
-  }) => void;
+interface QuestionTableProps {
+  isOwner: boolean;
 }
 
-export default function QuestionsTable({
-  onAddQuestion,
-}: QuestionsTableProps) {
+export default function QuestionsTable({ isOwner }: QuestionTableProps) {
   const { id } = useParams<{ id: string }>();
   const listID = id || '';
   const queryClient = useQueryClient();
@@ -57,7 +45,6 @@ export default function QuestionsTable({
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [modalOpen, setModalOpen] = useState(false);
-  const [bulkAction, setBulkAction] = useState<string>('');
 
 
   const { data, isLoading, isError, error } = useQuery({
@@ -117,29 +104,29 @@ export default function QuestionsTable({
         : [...prev, questionId]
     );
 
-    const handleBulkAction = (action: string) => {
-      if (!selectedQuestions.length) return; // Don't do anything if no questions are selected
-    
-      selectedQuestions.forEach((questionId) => {
-        let status: UpdateQuestionInputProps = {};
-    
-        // Handle the status change based on the action clicked
-        if (action === 'important') {
-          status = { important: true };
-        } else if (action === 'done') {
-          status = { done: true };
-        } else if (action === 'review') {
-          status = { review: true };
-        } else if (action === 'delete') {
-          // Handle delete logic here
-          console.log('Deleting question with ID:', questionId);
-          return; // Implement your delete mutation here
-        }
-    
-        // Call mutate to update the question's status
-        mutate({ questionId, status });
-      });
-    };
+  const handleBulkAction = (action: string) => {
+    if (!selectedQuestions.length) return; // Don't do anything if no questions are selected
+
+    selectedQuestions.forEach((questionId) => {
+      let status: UpdateQuestionInputProps = {};
+
+      // Handle the status change based on the action clicked
+      if (action === 'important') {
+        status = { important: true };
+      } else if (action === 'done') {
+        status = { done: true };
+      } else if (action === 'review') {
+        status = { review: true };
+      } else if (action === 'delete') {
+        // Handle delete logic here
+        console.log('Deleting question with ID:', questionId);
+        return; // Implement your delete mutation here
+      }
+
+      // Call mutate to update the question's status
+      mutate({ questionId, status });
+    });
+  };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) =>
     setPage(newPage);
@@ -149,49 +136,49 @@ export default function QuestionsTable({
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-  <Typography variant="h6">Questions</Typography>
+        <Typography variant="h6">Questions</Typography>
 
-  {selectedQuestions.length > 1 && (
-    <Box display="flex" gap={2}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => handleBulkAction('important')}
-      >
-        Mark as Important
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => handleBulkAction('review')}
-      >
-        Mark as Review
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => handleBulkAction('done')}
-      >
-        Mark as Done
-      </Button>
-      <Button
-        variant="contained"
-        color="error"
-        onClick={() => handleBulkAction('delete')}
-      >
-        Delete
-      </Button>
-    </Box>
-  )}
+        {selectedQuestions.length > 1 && (
+          <Box display="flex" gap={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleBulkAction('important')}
+            >
+              Mark as Important
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => handleBulkAction('review')}
+            >
+              Mark as Review
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleBulkAction('done')}
+            >
+              Mark as Done
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => handleBulkAction('delete')}
+            >
+              Delete
+            </Button>
+          </Box>
+        )}
 
-  <Button
-    variant="contained"
-    startIcon={<Add />}
-    onClick={() => setModalOpen(true)}
-    sx={{ backgroundColor: '#1976d2', color: 'white', '&:hover': { backgroundColor: '#1565c0' } }}
-  >
-    Add Question
-  </Button>
-</Box>
+        {isOwner && <Button
+          variant="contained"
+          startIcon={<Add />}
+          onClick={() => setModalOpen(true)}
+          sx={{ backgroundColor: '#1976d2', color: 'white', '&:hover': { backgroundColor: '#1565c0' } }}
+        >
+          Add Question
+        </Button>}
+      </Box>
 
       {/* <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6">Questions</Typography>
@@ -217,14 +204,14 @@ export default function QuestionsTable({
             <Table>
               <TableHead>
                 <TableRow>
-                <TableCell padding="checkbox">
-  <Checkbox
-    indeterminate={selectedQuestions.length > 0 && selectedQuestions.length < questions.length}
-    checked={selectedQuestions.length === questions.length}
-    onChange={handleSelectAllClick}
-    sx={{ color: 'grey' }}
-  />
-</TableCell>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      indeterminate={selectedQuestions.length > 0 && selectedQuestions.length < questions.length}
+                      checked={selectedQuestions.length === questions.length}
+                      onChange={handleSelectAllClick}
+                      sx={{ color: 'grey' }}
+                    />
+                  </TableCell>
 
                   {/* <TableCell padding="checkbox">
                     <Checkbox
@@ -260,30 +247,30 @@ export default function QuestionsTable({
                     <TableCell align="center" sx={{ color: 'white' }}>{q.title}</TableCell>
                     <TableCell align="center">
                       {q.leetcodeLink ? (
-                       <IconButton
-                       href={q.leetcodeLink}
-                       target="_blank"
-                       color="primary"
-                       sx={{
-                         borderRadius: '50%',
-                         backgroundColor: 'gray',
-                         padding: 1,
-                         '&:hover': {
-                           backgroundColor: '#ccc',
-                         },
-                       }}
-                     >
-                       <img
-                         src="/leetcode.svg"
-                         alt="LeetCode Link"
-                         style={{
-                           width: 24, 
-                           height: 24, 
-                           borderRadius: '50%', // Ensure the image is also circular
-                         }}
-                       />
-                     </IconButton>
-                     
+                        <IconButton
+                          href={q.leetcodeLink}
+                          target="_blank"
+                          color="primary"
+                          sx={{
+                            borderRadius: '50%',
+                            backgroundColor: 'gray',
+                            padding: 1,
+                            '&:hover': {
+                              backgroundColor: '#ccc',
+                            },
+                          }}
+                        >
+                          <img
+                            src="/leetcode.svg"
+                            alt="LeetCode Link"
+                            style={{
+                              width: 24,
+                              height: 24,
+                              borderRadius: '50%', // Ensure the image is also circular
+                            }}
+                          />
+                        </IconButton>
+
                       ) : (
                         'No Link'
                       )}
@@ -324,51 +311,52 @@ export default function QuestionsTable({
           </TableContainer>
 
           {questions.length > 5 && (
-  <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-    <Typography>Page: {page} of {Math.ceil(questions.length / limit) || 1}</Typography>
-    <Select
-      value={limit}
-      onChange={(e) => setLimit(Number(e.target.value))}
-      sx={{
-        color: 'white',
-        borderColor: 'white',
-        '& .MuiOutlinedInput-root': {
-          borderColor: 'white', // Make border white
-        },
-        '& .MuiSelect-icon': {
-          color: 'white', // Make the dropdown icon white
-        }
-      }}
-    >
-      {[5, 10, 15].map((value) => (
-        <MenuItem key={value} value={value}>
-          {value} per page
-        </MenuItem>
-      ))}
-    </Select>
-    <Pagination
-      count={Math.ceil(questions.length / limit) || 1}
-      page={page}
-      onChange={handlePageChange}
-      color="primary"
-      sx={{
-        '& .MuiPaginationItem-root': {
-          color: 'white', // Make pagination numbers white
-        },
-        '& .MuiPaginationItem-page.Mui-selected': {
-          backgroundColor: 'white', // White background for selected page number
-          color: 'black', // Black text for the selected page number
-        },
-      }}
-    />
-  </Box>
-)}
+            <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+              <Typography>Page: {page} of {Math.ceil(questions.length / limit) || 1}</Typography>
+              <Select
+                value={limit}
+                onChange={(e) => setLimit(Number(e.target.value))}
+                sx={{
+                  color: 'white',
+                  borderColor: 'white',
+                  '& .MuiOutlinedInput-root': {
+                    borderColor: 'white', // Make border white
+                  },
+                  '& .MuiSelect-icon': {
+                    color: 'white', // Make the dropdown icon white
+                  }
+                }}
+              >
+                {[5, 10, 15].map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {value} per page
+                  </MenuItem>
+                ))}
+              </Select>
+              <Pagination
+                count={Math.ceil(questions.length / limit) || 1}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+                sx={{
+                  '& .MuiPaginationItem-root': {
+                    color: 'white', // Make pagination numbers white
+                  },
+                  '& .MuiPaginationItem-page.Mui-selected': {
+                    backgroundColor: 'white', // White background for selected page number
+                    color: 'black', // Black text for the selected page number
+                  },
+                }}
+              />
+            </Box>
+          )}
 
         </>
       )}
 
       <CustomModal open={modalOpen} setOpen={setModalOpen} name="Add Question">
-        <AddQuestion onAddQuestion={onAddQuestion} />
+        {/* <AddQuestion onAddQuestion={onAddQuestion} /> */}
+        <AddQuestion />
       </CustomModal>
     </Box>
   );

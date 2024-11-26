@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Divider } from '@mui/material';
+import { Box, Divider, Skeleton, Typography } from '@mui/material';
 import ListDetail from './components/ListDetail';
 import AccessRequests from './components/AccessRequests';
 import QuestionsTable from './components/QuestionsTable';
-import axios from 'axios';
-
+import { useQuery } from '@tanstack/react-query';
+import queryKeys from '../../constants/queryKeys';
+import getListDetail from './services/getListDetail';
 
 export interface Question {
   questionId: string;
@@ -16,75 +17,54 @@ export interface Question {
   review: boolean;
 };
 
-
 const ListDetailPage = () => {
-  const { id } = useParams<{ id: string }>(); // Retrieve dynamic `id` from the URL
+  const { id } = useParams<{ id: string }>();
   const listID = id || '';
 
-  // State to manage questions, access requests, and users with access
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [accessRequests, setAccessRequests] = useState([]);
-  const [usersWithAccess, setUsersWithAccess] = useState([]);
+  // Use query to fetch the list details
+  const { data, isLoading, isError } = useQuery({
+    queryKey: [queryKeys.LIST_DETAILS, listID],
+    queryFn: () => getListDetail(listID),
+  });
 
-  // Function to fetch data for the list
-  const fetchListData = async () => {
-    try {
-      const { data } = await axios.get(`/api/lists/${listID}`);
-      setQuestions(data.questions || []);
-      setAccessRequests(data.accessRequests || []);
-      setUsersWithAccess(data.usersWithAccess || []);
-    } catch (error) {
-      console.error('Error fetching list data:', error);
-    }
-  };
+  // Handle loading and error states
+  if (isLoading || isError) {
+    return (
+      <Box padding={3}>
+        <Skeleton variant="text" width="60%" height={40} />
+        <Skeleton variant="rectangular" width="100%" height={120} sx={{ marginTop: 2 }} />
+        <Skeleton variant="text" width="50%" height={20} sx={{ marginTop: 2 }} />
+        <Skeleton variant="rounded" width="20%" height={40} sx={{ marginTop: 2 }} />
+      </Box>
+    );
+  }
 
-  // Fetch data on component mount and `listID` change
-  useEffect(() => {
-    if (listID) {
-      fetchListData();
-    }
-  }, [listID]);
-  
+  const listDetailData = data?.data;
+  const access = listDetailData?.accessStatus;
 
-  // Function to handle adding a question
-  const handleAddQuestion = (newQuestion: { title: string; link: string }) => {
-    setQuestions((prevQuestions) => [
-      ...prevQuestions,
-      {
-        questionId: `${Date.now()}`, // Unique question ID
-        title: newQuestion.title,
-        leetcodeLink: newQuestion.link,
-        important: false,
-        done: false,
-        review: false,
-      },
-    ]);
-  };
+  if (!listDetailData) {
+    return (
+      <Box padding={3}>
+        <Typography variant="h6" color="error">
+          Unable to load list details.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ padding: 4 }}>
       {/* List Details Section */}
-      <ListDetail listID={listID} />
+      <ListDetail listDetailData={listDetailData} />
       <Divider sx={{ my: 2 }} />
 
       {/* Access Requests Section */}
-      <AccessRequests
-        // requests={accessRequests}
-        // usersWithAccess={usersWithAccess}
-        // onApprove={(userID) =>
-        //   setAccessRequests((prev) => prev.filter((req) => req !== userID))
-        // }
-        // onReject={(userID) =>
-        //   setAccessRequests((prev) => prev.filter((req) => req !== userID))
-        // }
-      />
+      {listDetailData.isOwner && <AccessRequests />}
       <Divider sx={{ my: 2 }} />
 
       {/* Questions Section */}
-      <QuestionsTable
-        questions={questions}
-        onAddQuestion={handleAddQuestion}
-      />
+
+      {(listDetailData.isOwner || access == 'APPROVED') && <QuestionsTable isOwner={ listDetailData.isOwner}/>}
     </Box>
   );
 };

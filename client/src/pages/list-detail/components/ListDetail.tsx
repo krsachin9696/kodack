@@ -3,70 +3,41 @@ import { Box, Typography, Chip, IconButton, Divider, Skeleton } from '@mui/mater
 import EditIcon from '@mui/icons-material/Edit';
 import CustomModal from '../../../components/base/customModal';
 import EditListDetail from './EditListDetail'; // Edit modal component
-import { useQuery } from '@tanstack/react-query';
-import getListDetail from '../services/getListDetail'; // Assuming the service path is correct
-import queryKeys from '../../../constants/queryKeys';
+// import { useQuery } from '@tanstack/react-query';
+// import getListDetail from '../services/getListDetail'; // Assuming the service path is correct
+// import queryKeys from '../../../constants/queryKeys';
 
 interface ListDetailProps {
-  listID: string;
+  listDetailData: {
+    listID: string;
+    listName: string;
+    description: string;
+    tags: string[];
+    isOwner: boolean;
+    accessStatus: AccessStatus;
+  };
 }
 
-const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
+const ListDetail = ({ listDetailData }: ListDetailProps) => {
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Use query to fetch the list details
-  const { data, isLoading, isError } = useQuery({
-    queryKey: [queryKeys.LIST_DETAILS, listID],
-    queryFn: () => getListDetail(listID),
-    refetchOnWindowFocus: false,
-  });
-  
-  // Handle loading and error states
-  if (isLoading) {
-    return (
-      <Box padding={3}>
-        <Skeleton variant="text" width="60%" height={40} />
-        <Skeleton variant="rectangular" width="100%" height={120} sx={{ marginTop: 2 }} />
-        <Skeleton variant="text" width="50%" height={20} sx={{ marginTop: 2 }} />
-        <Skeleton variant="rounded" width="20%" height={40} sx={{ marginTop: 2 }} />
-      </Box>
-    );
-  }
-
-  if (isError) {
-    return (
-      <Box padding={3}>
-        <Typography color="error">Error loading list details...</Typography>
-      </Box>
-    );
-  }
-  
-  // Destructure the data received from the query
-  const list = data?.data;
-
-  if (!list) {
-    return (
-      <Box padding={3}>
-        <Typography>No list data found.</Typography>
-      </Box>
-    );
-  }
+  // console.log(listDetailData, 'listDetail Data')
 
   return (
     <>
       <Box padding={3}>
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h4" fontWeight="bold">{list.listName}</Typography>
-          <IconButton
+          <Typography variant="h4" fontWeight="bold">{listDetailData.listName}</Typography>
+          {listDetailData.isOwner && <IconButton
             color="primary"
             onClick={() => setModalOpen(true)}
             sx={{ marginLeft: 2 }}
           >
             <EditIcon fontSize="small" />
-          </IconButton>
+          </IconButton>}
         </Box>
         <Box marginTop={2} display="flex" gap={1}>
-          {list.tags.map((tag, index) => (
+          {listDetailData.tags.map((tag, index) => (
             <Chip
               key={index}
               label={tag}
@@ -76,12 +47,12 @@ const ListDetail: React.FC<ListDetailProps> = ({ listID }) => {
           ))}
         </Box>
         <Box marginTop={2}>
-          <Typography variant="body1">{list.description}</Typography>
+          <Typography variant="body1">{listDetailData.description}</Typography>
         </Box>
       </Box>
       <Divider sx={{ marginY: 2 }} />
       <CustomModal open={modalOpen} setOpen={setModalOpen} name="Edit List">
-        <EditListDetail list={list} onClose={() => setModalOpen(false)} />
+        <EditListDetail list={listDetailData} onClose={() => setModalOpen(false)} />
       </CustomModal>
     </>
   );
