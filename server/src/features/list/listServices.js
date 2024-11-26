@@ -219,7 +219,7 @@ export const getListDetailsService = async (listID, userID) => {
 
   // Format the response according to the API spec
   return {
-    listId: list.listID,
+    listID: list.listID,
     listName: list.name,
     description: list.description,
     tags: list.tags.map((tag) => tag.name), // Extract tag names
