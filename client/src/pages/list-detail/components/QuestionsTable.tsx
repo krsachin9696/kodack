@@ -137,7 +137,7 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6">Questions</Typography>
 
-        {selectedQuestions.length > 1 && (
+        {selectedQuestions.length > 0 && (
           <Box display="flex" gap={2}>
             <Button
               variant="contained"
