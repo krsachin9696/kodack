@@ -102,7 +102,6 @@ const ListDetail = ({ listDetailData }: ListDetailProps) => {
           <Typography variant="body1">{listDetailData.description}</Typography>
         </Box>
       </Box>
-      <Divider sx={{ marginY: 2 }} />
       <CustomModal open={modalOpen} setOpen={setModalOpen} name="Edit List">
         <EditListDetail list={listDetailData} onClose={() => setModalOpen(false)} />
       </CustomModal>

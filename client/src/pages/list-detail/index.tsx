@@ -20,13 +20,11 @@ const ListDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const listID = id || '';
 
-  // Use query to fetch the list details
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeys.LIST_DETAILS, listID],
     queryFn: () => getListDetail(listID),
   });
 
-  // Handle loading and error states
   if (isLoading || isError) {
     return (
       <Box padding={3}>
@@ -53,16 +51,12 @@ const ListDetailPage = () => {
 
   return (
     <Box sx={{ padding: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {/* List Details Section */}
       <ListDetail listDetailData={listDetailData} />
-
       {listDetailData.isOwner && <AccessRequests />}
-
-      {/* Questions Section */}
       {
-        (listDetailData.isOwner || access === 'APPROVED')
-          ? <QuestionsTable isOwner={listDetailData.isOwner} />
-          : <Typography>You do not have access to this list. SORRY !!</Typography>
+       (listDetailData.isOwner || access === 'APPROVED')
+        ? <QuestionsTable isOwner={listDetailData.isOwner} />
+        : <Typography>You do not have access to this list. SORRY !!</Typography>
       }
     </Box>
   );

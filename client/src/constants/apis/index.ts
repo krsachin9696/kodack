@@ -29,7 +29,7 @@ export default {
   question: {
     addQuestion: `${SERVERURL}/question/add-question`,
     updateQuestion: `${SERVERURL}/question`,
-    deleteQuestion: `${SERVERURL}/question/delete`
+    deleteQuestion: `${SERVERURL}/question`
   },
   public: {
     contactUs: `${SERVERURL}/contact-us`,

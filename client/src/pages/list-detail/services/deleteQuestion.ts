@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export interface DeleteQuestionInputProps {
     listID: string;
@@ -15,6 +16,6 @@ export default async function deleteQuestion(
     listID: string,
     questionID: string
 ): Promise<AxiosResponse<DeleteQuestionResponseProps>> {
-    return await axios.delete(`${apis.question.deleteQuestion}/${listID}/${questionID}`);
+    return await axiosInstance.delete(`${apis.question.deleteQuestion}/${listID}/${questionID}`);
 }
     

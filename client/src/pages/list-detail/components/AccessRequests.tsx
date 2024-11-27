@@ -131,163 +131,372 @@ export default function AccessRequests() {
   return (
     <Box
       sx={{
-        backgroundColor: 'rgba(255, 255, 255, 0.04)',
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' }, // Stack on smaller screens
+        justifyContent: 'space-between',
+        alignItems: 'flex-start', // Align items at the top
+        gap: 3, // Space between the sections
         padding: 3,
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
         borderRadius: 2,
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-        width: { xs: '90%', sm: '50%', md: '35%' }, // Responsive width
-        marginLeft: 'auto', // Push the box to the right side
-        marginRight: '16px', // Add spacing from the right edge
+        margin: 'auto',
+        width: '90%',
+        maxWidth: '1200px',
       }}
     >
-      <Typography variant="h6" mb={2} color="white" textAlign="center">
-        Pending Requests
-      </Typography>
-      <Box mb={4}>
-        {paginatedPending.length > 0 ? (
-          <TableContainer
-            component={Box}
-            sx={{
-              backgroundColor: 'rgba(255, 255, 255, 0.08)',
-              borderRadius: 2,
-              overflow: 'hidden',
-            }}
-          >
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ color: 'white', textAlign: 'center' }}>User Name</TableCell>
-                  <TableCell sx={{ color: 'white', textAlign: 'center' }}>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {paginatedPending.map((request) => (
-                  <TableRow key={request.userId}>
+      {/* Pending Requests Section */}
+      <Box
+        sx={{
+          backgroundColor: 'rgba(255, 255, 255, 0.04)',
+          padding: 3,
+          borderRadius: 2,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+          flex: 1,
+        }}
+      >
+        <Typography variant="h6" mb={2} color="white" textAlign="center">
+          Pending Requests
+        </Typography>
+        <Box>
+          {paginatedPending.length > 0 ? (
+            <TableContainer
+              component={Box}
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                borderRadius: 2,
+                overflow: 'hidden',
+              }}
+            >
+              <Table>
+                <TableHead>
+                  <TableRow>
                     <TableCell sx={{ color: 'white', textAlign: 'center' }}>
-                      {request.userName}
+                      User Name
                     </TableCell>
-                    <TableCell sx={{ textAlign: 'center' }}>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        color="primary"
-                        onClick={() =>
-                          mutateGrantAccess({ userID: request.userId, status: 'APPROVED' })
-                        }
-                        sx={{ marginRight: 1 }}
-                      >
-                        Approve
-                      </Button>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        color="secondary"
-                        onClick={() =>
-                          mutateGrantAccess({ userID: request.userId, status: 'REJECTED' })
-                        }
-                      >
-                        Reject
-                      </Button>
+                    <TableCell sx={{ color: 'white', textAlign: 'center' }}>
+                      Action
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        ) : (
-          <Typography sx={{ color: 'white', textAlign: 'center' }}>
-            No pending requests. 
-          </Typography>
-        )}
-        <Box
-          mt={2}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          {requests.length > 2 && (
-            <Pagination
-              count={Math.ceil(requests.length / 2)}
-              page={pendingPage}
-              onChange={(e, page) => setPendingPage(page)}
-              color="primary"
-              sx={{
-                '& .MuiPaginationItem-root': {
-                  color: 'white',
-                },
-              }}
-            />
+                </TableHead>
+                <TableBody>
+                  {paginatedPending.map((request) => (
+                    <TableRow key={request.userId}>
+                      <TableCell sx={{ color: 'white', textAlign: 'center' }}>
+                        {request.userName}
+                      </TableCell>
+                      <TableCell sx={{ textAlign: 'center' }}>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="primary"
+                          onClick={() =>
+                            mutateGrantAccess({
+                              userID: request.userId,
+                              status: 'APPROVED',
+                            })
+                          }
+                          sx={{ marginRight: 1 }}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="secondary"
+                          onClick={() =>
+                            mutateGrantAccess({
+                              userID: request.userId,
+                              status: 'REJECTED',
+                            })
+                          }
+                        >
+                          Reject
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <Typography sx={{ color: 'white', textAlign: 'center' }}>
+              No pending requests.
+            </Typography>
           )}
+          <Box mt={2} display="flex" justifyContent="center" alignItems="center">
+            {requests.length > 2 && (
+              <Pagination
+                count={Math.ceil(requests.length / 2)}
+                page={pendingPage}
+                onChange={(e, page) => setPendingPage(page)}
+                color="primary"
+                sx={{
+                  '& .MuiPaginationItem-root': {
+                    color: 'white',
+                  },
+                }}
+              />
+            )}
+          </Box>
         </Box>
       </Box>
   
-      <Typography variant="h6" mb={2} color="white" textAlign="center">
-        Users with Access
-      </Typography>
-      <Box>
-        {paginatedApproved.length > 0 ? (
-          <TableContainer
-            component={Box}
-            sx={{
-              backgroundColor: 'rgba(255, 255, 255, 0.08)',
-              borderRadius: 2,
-              overflow: 'hidden',
-            }}
-          >
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ color: 'white', textAlign: 'center' }}>User Name</TableCell>
-                  <TableCell sx={{ color: 'white', textAlign: 'center' }}>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {paginatedApproved.map((user) => (
-                  <TableRow key={user.userId}>
+      {/* Users with Access Section */}
+      <Box
+        sx={{
+          backgroundColor: 'rgba(255, 255, 255, 0.04)',
+          padding: 3,
+          borderRadius: 2,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+          flex: 1,
+        }}
+      >
+        <Typography variant="h6" mb={2} color="white" textAlign="center">
+          Users with Access
+        </Typography>
+        <Box>
+          {paginatedApproved.length > 0 ? (
+            <TableContainer
+              component={Box}
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                borderRadius: 2,
+                overflow: 'hidden',
+              }}
+            >
+              <Table>
+                <TableHead>
+                  <TableRow>
                     <TableCell sx={{ color: 'white', textAlign: 'center' }}>
-                      {user.userName}
+                      User Name
                     </TableCell>
-                    <TableCell sx={{ textAlign: 'center' }}>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        color="error"
-                        onClick={() => mutateRemoveAccess(user.userId)}
-                      >
-                        Remove Access
-                      </Button>
+                    <TableCell sx={{ color: 'white', textAlign: 'center' }}>
+                      Action
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        ) : (
-          <Typography sx={{ color: 'white', textAlign: 'center' }}>
-            No users with access.
-          </Typography>
-        )}
-        <Box
-          mt={2}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          {usersWithAccess.length > 2 && (
-            <Pagination
-              count={Math.ceil(usersWithAccess.length / 2)}
-              page={approvedPage}
-              onChange={(e, page) => setApprovedPage(page)}
-              color="primary"
-              sx={{
-                '& .MuiPaginationItem-root': {
-                  color: 'white',
-                },
-              }}
-            />
+                </TableHead>
+                <TableBody>
+                  {paginatedApproved.map((user) => (
+                    <TableRow key={user.userId}>
+                      <TableCell sx={{ color: 'white', textAlign: 'center' }}>
+                        {user.userName}
+                      </TableCell>
+                      <TableCell sx={{ textAlign: 'center' }}>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="error"
+                          onClick={() => mutateRemoveAccess(user.userId)}
+                        >
+                          Remove Access
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <Typography sx={{ color: 'white', textAlign: 'center' }}>
+              No users with access.
+            </Typography>
           )}
+          <Box mt={2} display="flex" justifyContent="center" alignItems="center">
+            {usersWithAccess.length > 2 && (
+              <Pagination
+                count={Math.ceil(usersWithAccess.length / 2)}
+                page={approvedPage}
+                onChange={(e, page) => setApprovedPage(page)}
+                color="primary"
+                sx={{
+                  '& .MuiPaginationItem-root': {
+                    color: 'white',
+                  },
+                }}
+              />
+            )}
+          </Box>
         </Box>
       </Box>
     </Box>
   );
-}  
+}
+
+//   return (
+//     <Box
+//       sx={{
+//         display: 'flex',
+//         flexDirection: { xs: 'column', md: 'row' }, // Stack on smaller screens
+//         justifyContent: 'space-between',
+//         alignItems: 'flex-start', // Align items at the top
+//         gap: 3, // Space between the sections
+//         padding: 3,
+//         backgroundColor: 'rgba(0, 0, 0, 0.1)',
+//         borderRadius: 2,
+//         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+//         margin: 'auto',
+//         width: '90%',
+//         maxWidth: '1200px',
+//       }}
+//     >
+//       <Box
+//       sx={{
+//         backgroundColor: 'rgba(255, 255, 255, 0.04)',
+//         padding: 3,
+//         borderRadius: 2,
+//         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+//         flex: 1,
+//       }}
+//     >      
+//     <Typography variant="h6" mb={2} color="white" textAlign="center">
+//         Pending Requests
+//       </Typography>
+//       <Box mb={4}>
+//         {paginatedPending.length > 0 ? (
+//           <TableContainer
+//             component={Box}
+//             sx={{
+//               backgroundColor: 'rgba(255, 255, 255, 0.08)',
+//               borderRadius: 2,
+//               overflow: 'hidden',
+//             }}
+//           >
+//             <Table>
+//               <TableHead>
+//                 <TableRow>
+//                   <TableCell sx={{ color: 'white', textAlign: 'center' }}>User Name</TableCell>
+//                   <TableCell sx={{ color: 'white', textAlign: 'center' }}>Action</TableCell>
+//                 </TableRow>
+//               </TableHead>
+//               <TableBody>
+//                 {paginatedPending.map((request) => (
+//                   <TableRow key={request.userId}>
+//                     <TableCell sx={{ color: 'white', textAlign: 'center' }}>
+//                       {request.userName}
+//                     </TableCell>
+//                     <TableCell sx={{ textAlign: 'center' }}>
+//                       <Button
+//                         variant="contained"
+//                         size="small"
+//                         color="primary"
+//                         onClick={() =>
+//                           mutateGrantAccess({ userID: request.userId, status: 'APPROVED' })
+//                         }
+//                         sx={{ marginRight: 1 }}
+//                       >
+//                         Approve
+//                       </Button>
+//                       <Button
+//                         variant="contained"
+//                         size="small"
+//                         color="secondary"
+//                         onClick={() =>
+//                           mutateGrantAccess({ userID: request.userId, status: 'REJECTED' })
+//                         }
+//                       >
+//                         Reject
+//                       </Button>
+//                     </TableCell>
+//                   </TableRow>
+//                 ))}
+//               </TableBody>
+//             </Table>
+//           </TableContainer>
+//         ) : (
+//           <Typography sx={{ color: 'white', textAlign: 'center' }}>
+//             No pending requests. 
+//           </Typography>
+//         )}
+//         <Box
+//           mt={2}
+//           display="flex"
+//           justifyContent="center"
+//           alignItems="center"
+//         >
+//           {requests.length > 2 && (
+//             <Pagination
+//               count={Math.ceil(requests.length / 2)}
+//               page={pendingPage}
+//               onChange={(e, page) => setPendingPage(page)}
+//               color="primary"
+//               sx={{
+//                 '& .MuiPaginationItem-root': {
+//                   color: 'white',
+//                 },
+//               }}
+//             />
+//           )}
+//         </Box>
+//       </Box>
+  
+//       <Typography variant="h6" mb={2} color="white" textAlign="center">
+//         Users with Access
+//       </Typography>
+//       <Box>
+//         {paginatedApproved.length > 0 ? (
+//           <TableContainer
+//             component={Box}
+//             sx={{
+//               backgroundColor: 'rgba(255, 255, 255, 0.08)',
+//               borderRadius: 2,
+//               overflow: 'hidden',
+//             }}
+//           >
+//             <Table>
+//               <TableHead>
+//                 <TableRow>
+//                   <TableCell sx={{ color: 'white', textAlign: 'center' }}>User Name</TableCell>
+//                   <TableCell sx={{ color: 'white', textAlign: 'center' }}>Action</TableCell>
+//                 </TableRow>
+//               </TableHead>
+//               <TableBody>
+//                 {paginatedApproved.map((user) => (
+//                   <TableRow key={user.userId}>
+//                     <TableCell sx={{ color: 'white', textAlign: 'center' }}>
+//                       {user.userName}
+//                     </TableCell>
+//                     <TableCell sx={{ textAlign: 'center' }}>
+//                       <Button
+//                         variant="contained"
+//                         size="small"
+//                         color="error"
+//                         onClick={() => mutateRemoveAccess(user.userId)}
+//                       >
+//                         Remove Access
+//                       </Button>
+//                     </TableCell>
+//                   </TableRow>
+//                 ))}
+//               </TableBody>
+//             </Table>
+//           </TableContainer>
+//         ) : (
+//           <Typography sx={{ color: 'white', textAlign: 'center' }}>
+//             No users with access.
+//           </Typography>
+//         )}
+//         <Box
+//           mt={2}
+//           display="flex"
+//           justifyContent="center"
+//           alignItems="center"
+//         >
+//           {usersWithAccess.length > 2 && (
+//             <Pagination
+//               count={Math.ceil(usersWithAccess.length / 2)}
+//               page={approvedPage}
+//               onChange={(e, page) => setApprovedPage(page)}
+//               color="primary"
+//               sx={{
+//                 '& .MuiPaginationItem-root': {
+//                   color: 'white',
+//                 },
+//               }}
+//             />
+//           )}
+//         </Box>
+//       </Box>
+//     </Box>
+//   );
+// }  

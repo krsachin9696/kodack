@@ -68,7 +68,7 @@ app.use('/auth', authRoute);
 app.use('/user', userRoute);
 app.use('/list', isAuthenticated, listRoute);
 app.use('/contact-us', contactUsRoute);
-app.use('/question', questionRoute);
+app.use('/question', isAuthenticated, questionRoute);
 
 app.get('/protected', isAuthenticated, (req, res) => {
   res.json({ message: 'This is a protected route.' });
