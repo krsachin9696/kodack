@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Typography, Chip, IconButton, Divider, Button } from '@mui/material';
+import { Box, Typography, Chip, IconButton, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CustomModal from '../../../components/base/customModal';
 import EditListDetail from './EditListDetail';

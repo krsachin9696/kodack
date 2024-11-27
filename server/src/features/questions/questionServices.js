@@ -56,12 +56,13 @@ export const updateQuestionStatus = async (
 };
 
 export const deleteQuestion = async (userID, listID, questionID) => {
-
   const listOwner = await listRepository.validateListAndUser(userID, listID);
-  
-  if(listOwner.userID != userID) {
-    throw new Error({message: 'you do not have access to delete this question'});
+
+  if (listOwner.userID != userID) {
+    throw new Error({
+      message: 'you do not have access to delete this question',
+    });
   }
 
   return await questionRepository.deleteQuestion(listID, questionID);
-}
+};

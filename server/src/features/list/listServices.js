@@ -216,7 +216,6 @@ export const getListDetailsService = async (listID, userID) => {
 
   const isOwner = list.userID === userID;
 
-
   // Format the response according to the API spec
   return {
     listID: list.listID,

@@ -81,7 +81,6 @@ export const updateUserQuestionStatus = async (
 };
 
 export const deleteQuestion = async (listID, questionID) => {
-  
   return await prisma.listQuestion.update({
     where: {
       listID_questionID: {
@@ -89,6 +88,6 @@ export const deleteQuestion = async (listID, questionID) => {
         questionID,
       },
     },
-    data: { isDeleted: true }
-  })
-}
+    data: { isDeleted: true },
+  });
+};
