@@ -349,7 +349,7 @@ export const getAccessRequestsForList = async (listID) => {
 export const getQuestionsForList = async (listID, userID) => {
   // Fetch questions from the list along with their status for the user
   const listQuestions = await prisma.listQuestion.findMany({
-    where: { listID },
+    where: { listID, isDeleted: false },
     include: {
       question: {
         select: {
@@ -415,5 +415,7 @@ export const validateListAndUser = async (userID, listID) => {
   // Check if list exists and if the user is the owner
   if (!list || list.userID !== userID) {
     throw new Error('List not found or user does not have access');
+  } else {
+    return list;
   }
 };

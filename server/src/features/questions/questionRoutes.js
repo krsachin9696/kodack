@@ -18,6 +18,7 @@ questionRoute.patch(
   validate(updateQuestionStatusSchema),
   questionController.updateQuestionStatus,
 );
+questionRoute.delete('/:listID/:questionID', questionController.deleteQuestion);
 questionRoute.get('/:id', questionController.getQuestionDetails);
 
 export default questionRoute;

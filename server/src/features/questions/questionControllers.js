@@ -80,3 +80,24 @@ export const updateQuestionStatus = async (req, res) => {
       .json({ message: error.message || 'Failed to update question status' });
   }
 };
+
+
+export const deleteQuestion = async (req, res) => {
+  const { listID, questionID } = req.params;
+  const { userID } = req.user;
+  
+  try {
+    // console.log(userID, 'user req')
+    // const isowner = await validateListAndUser(userID, listID);
+
+    // console.log(isowner, 'owner hai ya nahi');
+
+    const deleteQuestion = await questionService.deleteQuestion(userID, listID, questionID);
+
+    res.status(200).json(deleteQuestion);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: 'Failed to delete the question'});
+  }
+}
