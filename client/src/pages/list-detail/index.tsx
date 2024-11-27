@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { Box, Divider, Skeleton, Typography } from '@mui/material';
+import { Box, Skeleton, Typography } from '@mui/material';
 import ListDetail from './components/ListDetail';
 import AccessRequests from './components/AccessRequests';
 import QuestionsTable from './components/QuestionsTable';
@@ -53,15 +53,9 @@ const ListDetailPage = () => {
 
   return (
     <Box sx={{ padding: 4 }}>
-      {/* List Details Section */}
       <ListDetail listDetailData={listDetailData} />
-      {/* <Divider sx={{ my: 2 }} /> */}
 
-      {/* Access Requests Section */}
       {listDetailData.isOwner && <AccessRequests />}
-      {/* <Divider sx={{ my: 2 }} /> */}
-
-      {/* Questions Section */}
 
       {
         (listDetailData.isOwner || access === 'APPROVED')

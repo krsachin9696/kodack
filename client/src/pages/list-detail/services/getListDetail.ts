@@ -7,7 +7,7 @@ export interface ListDetailResponse {
     description: string;
     tags: string[];
     isOwner: boolean;
-    accessStatus: AccessStatus;
+    accessStatus: string;
 }
 
 export default async function getListDetail(listID: string): Promise<AxiosResponse<ListDetailResponse>> {
