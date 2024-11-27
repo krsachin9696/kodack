@@ -39,7 +39,7 @@ const ListDetailPage = () => {
   }
 
   const listDetailData = data?.data;
-  const access = listDetailData?.accessStatus;
+  const access = listDetailData?.accessStatus; 
 
   if (!listDetailData) {
     return (
@@ -52,11 +52,13 @@ const ListDetailPage = () => {
   }
 
   return (
-    <Box sx={{ padding: 4 }}>
+    <Box sx={{ padding: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
+      {/* List Details Section */}
       <ListDetail listDetailData={listDetailData} />
 
       {listDetailData.isOwner && <AccessRequests />}
 
+      {/* Questions Section */}
       {
         (listDetailData.isOwner || access === 'APPROVED')
           ? <QuestionsTable isOwner={listDetailData.isOwner} />

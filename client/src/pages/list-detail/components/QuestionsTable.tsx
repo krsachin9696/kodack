@@ -46,7 +46,6 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
   const [limit, setLimit] = useState(5);
   const [modalOpen, setModalOpen] = useState(false);
 
-
   const { data, isLoading, isError, error } = useQuery({
     queryKey: [queryKeys.LIST_QUESTIONS, listID],
     queryFn: () => getQuestions(listID!),
@@ -138,7 +137,7 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6">Questions</Typography>
 
-        {selectedQuestions.length > 1 && (
+        {selectedQuestions.length > 0 && (
           <Box display="flex" gap={2}>
             <Button
               variant="contained"
@@ -180,18 +179,6 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
         </Button>}
       </Box>
 
-      {/* <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h6">Questions</Typography>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={() => setModalOpen(true)}
-          sx={{ backgroundColor: '#1976d2', color: 'white', '&:hover': { backgroundColor: '#1565c0' } }}
-        >
-          Add Question
-        </Button>
-      </Box> */}
-
       {isLoading && <Typography>Loading...</Typography>}
       {isError && <Typography color="error">Error: {String(error)}</Typography>}
 
@@ -205,28 +192,15 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
-                    <Checkbox
-                      indeterminate={selectedQuestions.length > 0 && selectedQuestions.length < questions.length}
-                      checked={selectedQuestions.length === questions.length}
-                      onChange={handleSelectAllClick}
-                      sx={{ color: 'grey' }}
-                    />
+                  {questions.length > 0 && ( // Render checkbox only if there are questions
+        <Checkbox
+          indeterminate={selectedQuestions.length > 0 && selectedQuestions.length < questions.length}
+          checked={selectedQuestions.length === questions.length}
+          onChange={handleSelectAllClick}
+          sx={{ color: 'grey' }}
+        />
+      )}
                   </TableCell>
-
-                  {/* <TableCell padding="checkbox">
-                    <Checkbox
-                      indeterminate={
-                        selectedQuestions.length > 0 &&
-                        selectedQuestions.length < questions.length
-                      }
-                      checked={
-                        questions.length > 0 &&
-                        selectedQuestions.length === questions.length
-                      }
-                      onChange={handleSelectAllClick}
-                      sx={{ color: 'grey' }}
-                    />
-                  </TableCell> */}
                   <TableCell align="center" sx={{ color: 'white' }}>Question</TableCell>
                   <TableCell align="center" sx={{ color: 'white' }}>LeetCode Link</TableCell>
                   <TableCell align="center" sx={{ color: 'white' }}>Mark as Important</TableCell>
@@ -235,78 +209,99 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedQuestions.map((q) => (
-                  <TableRow key={q.questionId}>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedQuestions.includes(q.questionId)}
-                        onChange={() => handleCheckboxClick(q.questionId)}
-                        sx={{ color: 'grey' }}
-                      />
-                    </TableCell>
-                    <TableCell align="center" sx={{ color: 'white' }}>{q.title}</TableCell>
-                    <TableCell align="center">
-                      {q.leetcodeLink ? (
-                        <IconButton
-                          href={q.leetcodeLink}
-                          target="_blank"
-                          color="primary"
-                          sx={{
-                            borderRadius: '50%',
-                            backgroundColor: 'gray',
-                            padding: 1,
-                            '&:hover': {
-                              backgroundColor: '#ccc',
-                            },
-                          }}
-                        >
-                          <img
-                            src="/leetcode.svg"
-                            alt="LeetCode Link"
-                            style={{
-                              width: 24,
-                              height: 24,
-                              borderRadius: '50%', // Ensure the image is also circular
-                            }}
-                          />
-                        </IconButton>
+  {paginatedQuestions.length === 0 ? (
+    <TableRow sx={{ height: '100px' }}> {/* Increase row height */}
+      <TableCell
+        colSpan={6}
+        align="center"
+        sx={{
+          color: 'gray',
+          fontSize: '1.2rem', // Increase text size
+          fontWeight: 'bold', // Make text bold
+          padding: '20px', // Add padding for spacing
+        }}
+      >
+        No questions were added.
+      </TableCell>
+    </TableRow>
+  ) : (
+    paginatedQuestions.map((q) => (
+      <TableRow key={q.questionId}>
+        <TableCell padding="checkbox">
+          <Checkbox
+            checked={selectedQuestions.includes(q.questionId)}
+            onChange={() => handleCheckboxClick(q.questionId)}
+            sx={{ color: 'grey' }}
+          />
+        </TableCell>
+        <TableCell align="center" sx={{ color: 'white' }}>
+          {q.title}
+        </TableCell>
+        <TableCell align="center">
+          {q.leetcodeLink ? (
+            <IconButton
+              href={q.leetcodeLink}
+              target="_blank"
+              color="primary"
+              sx={{
+                borderRadius: '50%',
+                backgroundColor: 'gray',
+                padding: 1,
+                '&:hover': {
+                  backgroundColor: '#ccc',
+                },
+              }}
+            >
+              <img
+                src="/leetcode.svg"
+                alt="LeetCode Link"
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                }}
+              />
+            </IconButton>
+          ) : (
+            'No Link'
+          )}
+        </TableCell>
+        <TableCell align="center">
+          <IconButton onClick={() => handleToggleStatus(q.questionId, 'important', q.important)}>
+            {q.important ? <Star sx={{ color: '#fbc02d' }} /> : <StarBorder sx={{ color: '#fbc02d' }} />}
+          </IconButton>
+        </TableCell>
+        <TableCell align="center">
+          <Box
+            onClick={() => handleToggleStatus(q.questionId, 'done', q.done)}
+            sx={{
+              cursor: 'pointer',
+              fontWeight: q.done ? 'bold' : 'normal',
+              color: q.done ? 'green' : '#2196f3',
+              '&:hover': {
+                backgroundColor: q.done ? 'green' : '#2196f3',
+                color: 'white',
+              },
+            }}
+          >
+            {q.done ? <Check /> : 'Mark as Done'}
+          </Box>
+        </TableCell>
+        <TableCell align="center">
+          <IconButton
+            onClick={() => handleToggleStatus(q.questionId, 'review', q.review)}
+            sx={{ color: q.review ? 'yellow' : 'inherit' }}
+          >
+            <RateReview />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    ))
+  )}
+</TableBody>
 
-                      ) : (
-                        'No Link'
-                      )}
-                    </TableCell>
-                    <TableCell align="center">
-                      <IconButton onClick={() => handleToggleStatus(q.questionId, 'important', q.important)}>
-                        {q.important ? <Star sx={{ color: '#fbc02d' }} /> : <StarBorder sx={{ color: '#fbc02d' }} />}
-                      </IconButton>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Box
-                        onClick={() => handleToggleStatus(q.questionId, 'done', q.done)}
-                        sx={{
-                          cursor: 'pointer',
-                          fontWeight: q.done ? 'bold' : 'normal',
-                          color: q.done ? 'green' : '#2196f3',
-                          '&:hover': {
-                            backgroundColor: q.done ? 'green' : '#2196f3',
-                            color: 'white',
-                          },
-                        }}
-                      >
-                        {q.done ? <Check /> : 'Mark as Done'}
-                      </Box>
-                    </TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        onClick={() => handleToggleStatus(q.questionId, 'review', q.review)}
-                        sx={{ color: q.review ? 'yellow' : 'inherit' }}
-                      >
-                        <RateReview />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+  
+
             </Table>
           </TableContainer>
 
@@ -355,7 +350,6 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
       )}
 
       <CustomModal open={modalOpen} setOpen={setModalOpen} name="Add Question">
-        {/* <AddQuestion onAddQuestion={onAddQuestion} /> */}
         <AddQuestion />
       </CustomModal>
     </Box>
