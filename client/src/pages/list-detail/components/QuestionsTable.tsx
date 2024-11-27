@@ -375,11 +375,11 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
                 color="primary"
                 sx={{
                   '& .MuiPaginationItem-root': {
-                    color: 'white', // Make pagination numbers white
+                    color: 'white',
                   },
                   '& .MuiPaginationItem-page.Mui-selected': {
-                    backgroundColor: 'white', // White background for selected page number
-                    color: 'black', // Black text for the selected page number
+                    backgroundColor: 'white', 
+                    color: 'black',
                   },
                 }}
               />
