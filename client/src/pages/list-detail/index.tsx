@@ -56,7 +56,6 @@ const ListDetailPage = () => {
       {/* List Details Section */}
       <ListDetail listDetailData={listDetailData} />
 
-      {/* Access Requests Section */}
       {listDetailData.isOwner && <AccessRequests />}
 
       {/* Questions Section */}

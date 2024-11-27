@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Typography, Chip, IconButton, Divider, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CustomModal from '../../../components/base/customModal';
-import EditListDetail from './EditListDetail'; 
+import EditListDetail from './EditListDetail';
 import queryKeys from '../../../constants/queryKeys';
 import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
@@ -15,7 +15,7 @@ interface ListDetailProps {
     description: string;
     tags: string[];
     isOwner: boolean;
-    accessStatus: AccessStatus;
+    accessStatus: string;
   };
 }
 
@@ -73,7 +73,8 @@ const ListDetail = ({ listDetailData }: ListDetailProps) => {
               color="primary"
               size='small'
               onClick={() => {
-                handleRequestAccess(listDetailData.listID)}}
+                handleRequestAccess(listDetailData.listID)
+              }}
               sx={{
                 padding: '0px 4px',
                 borderRadius: '4px',
