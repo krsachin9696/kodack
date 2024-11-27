@@ -43,9 +43,9 @@ export default function AccessRequests() {
   const { mutate: mutateGrantAccess } = useMutation({
     mutationFn: ({ userID, status }: { userID: string; status: 'APPROVED' | 'REJECTED' }) =>
       grantAccess({ userID, listID, status }),
+    mutationKey: [queryKeys.GRANT_ACCESS],
     onSuccess: (response) => {
       const { userID, status } = response.data;
-
       queryClient.setQueryData([queryKeys.GET_ACCESS_REQUESTS, listID], (oldData: any) => {
         if (!oldData) return oldData;
 
@@ -79,6 +79,7 @@ export default function AccessRequests() {
   // Mutation for removing access
   const { mutate: mutateRemoveAccess } = useMutation({
     mutationFn: (userId: string) => grantAccess({ userID: userId, listID, status: 'REJECTED' }),
+    mutationKey: [queryKeys.REMOVE_ACCESS],
     onSuccess: (response) => {
       const { userID } = response.data;
 

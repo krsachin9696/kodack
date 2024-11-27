@@ -8,10 +8,6 @@ import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 
-// interface AddQuestionProps {
-//   onAddQuestion: (question: { listID:string; title:string; link:string;}) => void;
-// }
-
 const AddQuestion: React.FC= () => {
   const [link, setLink] = useState('');
   const [isTouched, setIsTouched] = useState(false);

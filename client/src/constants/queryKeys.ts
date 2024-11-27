@@ -18,7 +18,9 @@ enum queryKeys {
   LIST_QUESTIONS = 'list-questions',
   UPDATE_QUESTIONS_STATUS = 'update-questions',
   GET_ACCESS_REQUESTS = 'get-access-requests',
-  GRANT_ACCESS = 'grant-access'
+  GRANT_ACCESS = 'grant-access',
+  REMOVE_ACCESS = 'remove-access',
+  DELETE_QUESTIONS = 'delete-questions'
 }
 
 export default queryKeys;

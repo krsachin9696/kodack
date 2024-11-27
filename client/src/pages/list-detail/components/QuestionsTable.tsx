@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -23,14 +23,14 @@ import {
   RateReview,
   Add,
 } from '@mui/icons-material';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import AddQuestion from './AddQuestion';
 import CustomModal from '../../../components/base/customModal';
 import getQuestions from '../services/getQuestions';
 import updateQuestion, { UpdateQuestionInputProps } from '../services/updateQuestion.ts';
+import deleteQuestion from '../services/deleteQuestion.ts';
 import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 
 interface QuestionTableProps {
   isOwner: boolean;
@@ -63,7 +63,7 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
       review: q.status.review,
     })) || [];
 
-  const { mutate } = useMutation({
+  const { mutate: mutateStatus } = useMutation({
     mutationFn: ({
       questionId,
       status,
@@ -71,6 +71,7 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
       questionId: string;
       status: UpdateQuestionInputProps;
     }) => updateQuestion(listID, questionId, status),
+    mutationKey: [queryKeys.UPDATE_QUESTIONS_STATUS],
     onSuccess: (response) => {
       const { questionID, ...updatedStatus } = response.data;
       queryClient.setQueryData([queryKeys.LIST_QUESTIONS, listID], (oldData: any) => {
@@ -85,11 +86,36 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
     },
   });
 
+  const { mutate: deleteMutate } = useMutation({
+    mutationFn: ({
+      questionId
+    }: {
+      questionId: string;
+    }) => deleteQuestion(listID, questionId),
+    mutationKey: [queryKeys.DELETE_QUESTIONS],
+    onSuccess: (response) => {
+      const { questionID } = response.data;
+  
+      // Update the query cache after successful deletion
+      queryClient.setQueryData([queryKeys.LIST_QUESTIONS, listID], (oldData: any) => {
+        if (!oldData) return;
+  
+        // Filter out the deleted question
+        const updatedQuestions = oldData.data.questions.filter(
+          (q: any) => q.questionId !== questionID
+        );
+  
+        // Return updated data
+        return { ...oldData, data: { ...oldData.data, questions: updatedQuestions } };
+      });
+    },
+  });
+  
   const handleToggleStatus = (
     questionId: string,
     field: keyof UpdateQuestionInputProps,
     currentValue: boolean
-  ) => mutate({ questionId, status: { [field]: !currentValue } });
+  ) => mutateStatus({ questionId, status: { [field]: !currentValue } });
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) =>
     setSelectedQuestions(
@@ -103,30 +129,44 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
         : [...prev, questionId]
     );
 
-  const handleBulkAction = (action: string) => {
-    if (!selectedQuestions.length) return; // Don't do anything if no questions are selected
-
-    selectedQuestions.forEach((questionId) => {
-      let status: UpdateQuestionInputProps = {};
-
-      // Handle the status change based on the action clicked
-      if (action === 'important') {
-        status = { important: true };
-      } else if (action === 'done') {
-        status = { done: true };
-      } else if (action === 'review') {
-        status = { review: true };
-      } else if (action === 'delete') {
-        // Handle delete logic here
-        console.log('Deleting question with ID:', questionId);
-        return; // Implement your delete mutation here
+    const handleBulkAction = (action: string) => {
+      if (!selectedQuestions.length) return; // Don't proceed if no questions are selected
+    
+      if (action === 'delete') {
+        // Handle bulk delete logic
+        selectedQuestions.forEach((questionId) => {
+          deleteMutate({ questionId }); // Call delete mutation for each question
+        });
+        setSelectedQuestions([]); // Clear selection after deletion
+        return;
       }
+    
+      selectedQuestions.forEach((questionId) => {
+        let status: UpdateQuestionInputProps = {};
+    
+        if (action === 'important') {
+          status = { important: true };
+        } else if (action === 'done') {
+          status = { done: true };
+        } else if (action === 'review') {
+          status = { review: true };
+        }
+    
+        // Call mutate to update the question's status
+        mutateStatus({ questionId, status });
+      });
+    };
 
-      // Call mutate to update the question's status
-      mutate({ questionId, status });
-    });
-  };
-
+    useEffect(() => {
+      if (questions.length > 0) {
+        const lastValidPage = Math.ceil(questions.length / limit);
+        if (page > lastValidPage) {
+          setPage(lastValidPage); // Reset to the last valid page
+        }
+      }
+    }, [questions.length, page, limit]);
+    
+    
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) =>
     setPage(newPage);
 
