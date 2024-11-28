@@ -12,7 +12,8 @@ const AddQuestion: React.FC= () => {
   const [link, setLink] = useState('');
   const [isTouched, setIsTouched] = useState(false);
   const [linkError, setLinkError] = useState('');
-  const match = link.match(/problems\/(.*?)\/description/);
+  // const match = link.match(/problems\/(.*?)\/description/);
+  const match = link.match(/problems\/(.*?)\//);
   const title = match ? match[1].replace(/-/g, ' ') : '';
   const { id } = useParams<{ id: string }>();
   const listID = id || '';
@@ -62,7 +63,8 @@ const AddQuestion: React.FC= () => {
   
 
   const handleBlur = () => {
-    const match = link.match(/https:\/\/leetcode.com\/problems\/.+\/description/);
+    // const match = link.match(/https:\/\/leetcode.com\/problems\/.+\/description/);
+    const match = link.match(/https:\/\/leetcode.com\/problems\/.+\//);
     if (match) {
       setLinkError('');
     } else {
