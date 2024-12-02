@@ -132,31 +132,40 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
     const handleBulkAction = (action: string) => {
       if (!selectedQuestions.length) return; // Don't proceed if no questions are selected
     
-      if (action === 'delete') {
-        // Handle bulk delete logic
+      const updateStatus = (status: UpdateQuestionInputProps) => {
         selectedQuestions.forEach((questionId) => {
-          deleteMutate({ questionId }); // Call delete mutation for each question
+          mutateStatus({ questionId, status });
         });
-        setSelectedQuestions([]); // Clear selection after deletion
-        return;
+      };
+    
+      switch (action) {
+        case 'important':
+          updateStatus({ important: true });
+          break;
+        case 'unimportant':
+          updateStatus({ important: false });
+          break;
+        case 'done':
+          updateStatus({ done: true });
+          break;
+        case 'undone':
+          updateStatus({ done: false });
+          break;
+        case 'review':
+          updateStatus({ review: true });
+          break;
+        case 'unreview':
+          updateStatus({ review: false });
+          break;
+        case 'delete':
+          selectedQuestions.forEach((questionId) => deleteMutate({ questionId }));
+          setSelectedQuestions([]);
+          break;
+        default:
+          console.warn(`Unknown action: ${action}`);
       }
-    
-      selectedQuestions.forEach((questionId) => {
-        let status: UpdateQuestionInputProps = {};
-    
-        if (action === 'important') {
-          status = { important: true };
-        } else if (action === 'done') {
-          status = { done: true };
-        } else if (action === 'review') {
-          status = { review: true };
-        }
-    
-        // Call mutate to update the question's status
-        mutateStatus({ questionId, status });
-      });
     };
-
+    
     useEffect(() => {
       if (questions.length > 0) {
         const lastValidPage = Math.ceil(questions.length / limit);
@@ -172,6 +181,13 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
 
   const paginatedQuestions = questions.slice((page - 1) * limit, page * limit);
 
+  const allMarkedAs = (key: keyof UpdateQuestionInputProps) => {
+    return selectedQuestions.every((questionId) => {
+      const question = questions.find((q) => q.questionId === questionId);
+      return question ? question[key] : false;
+    });
+  };
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -179,26 +195,26 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
 
         {selectedQuestions.length > 0 && (
           <Box display="flex" gap={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleBulkAction('important')}
-            >
-              Mark as Important
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => handleBulkAction('review')}
-            >
-              Mark as Review
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleBulkAction('done')}
-            >
-              Mark as Done
-            </Button>
+             <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleBulkAction(allMarkedAs('important') ? 'unimportant' : 'important')}
+        >
+          {allMarkedAs('important') ? 'Unmark as Important' : 'Mark as Important'}
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => handleBulkAction(allMarkedAs('review') ? 'unreview' : 'review')}
+        >
+          {allMarkedAs('review') ? 'Unmark as Review' : 'Mark as Review'}
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => handleBulkAction(allMarkedAs('done') ? 'undone' : 'done')}
+        >
+          {allMarkedAs('done') ? 'Unmark as Done' : 'Mark as Done'}
+        </Button>
             <Button
               variant="contained"
               color="error"
