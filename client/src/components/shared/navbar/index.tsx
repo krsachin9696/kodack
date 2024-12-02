@@ -183,7 +183,7 @@ export default function Navbar(props: Props) {
           </Box>
           <Avatar
             alt={user?.name || 'User'}
-            src="/path/to/profile-pic.jpg"
+            src={user?.avatar}
             onClick={handleAvatarClick}
             sx={{ cursor: 'pointer' }}
           />

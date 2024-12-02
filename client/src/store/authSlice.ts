@@ -17,7 +17,13 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
+      const userWithAvatar = {
+        ...action.payload,
+        avatar: action.payload.avatar ?? `${Math.floor(Math.random() * 6) + 1}.jpg`,
+      };
+
+      // state.user = action.payload;
+      state.user = userWithAvatar;
       state.isAuthenticated = true;
       // Save the user to localStorage
       // localStorage.setItem('user', JSON.stringify(action.payload));
