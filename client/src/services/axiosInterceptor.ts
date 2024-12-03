@@ -14,6 +14,7 @@ axiosInstance.interceptors.response.use(
   (response) => response, // Just return the response if no error
   async (error) => {
     const { response } = error;
+    console.log(response, 'response in axiosInstance');
 
     // Check for 401 Unauthorized status
     if (response?.status === 401) {
@@ -32,7 +33,7 @@ axiosInstance.interceptors.response.use(
     }
 
     // Re-throw the error to be handled elsewhere in your application if necessary
-    return Promise.reject(error);
+    return Promise.reject(error.response.data);
   }
 );
 

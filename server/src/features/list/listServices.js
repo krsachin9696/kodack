@@ -1,3 +1,4 @@
+import { ApiError } from '../../utils/apiError.js';
 import * as listRepository from './listRepository.js';
 
 export const createListService = async (
@@ -9,7 +10,7 @@ export const createListService = async (
 ) => {
   const existingList = await listRepository.findListByNameAndUser(userID, name);
   if (existingList) {
-    throw new Error('List name already exists for this user.');
+    throw new ApiError(400, 'List name already exists for this user.');
   }
 
   const existingTags = await listRepository.findExistingTags(tags);

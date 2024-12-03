@@ -95,8 +95,8 @@ const CreateList: React.FC<CreateListProps> = ({ onClose }) => {
         tags: '',
       });
     },
-    onError: () => {
-      toast.error('Error creating new list.');
+    onError: (error) => {
+      toast.error(error.message || 'Error creating new list.');
       onClose();
     },
   });
