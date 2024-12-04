@@ -56,7 +56,7 @@ export default function ListPage() {
     <Box sx={{ width: '100%' }} color="white">
       {/* <Box sx={{ borderBottom: 1, borderColor: 'divider', color: 'white' }}> */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider', color: 'white' }}>
-        <HomeIcon onClick={goToDashboard} sx={{ cursor: 'pointer', marginLeft: 1, marginRight: 1}}/>
+        <HomeIcon onClick={goToDashboard} sx={{ cursor: 'pointer', marginLeft: 1, marginRight: 1 }} />
         <Box sx={{ flexGrow: 1 }}>
           <Tabs
             value={value}
@@ -65,19 +65,19 @@ export default function ListPage() {
             textColor="primary"
           >
             <Tab
-              label="Public Lists"
+              label="My Lists"
               {...a11yProps(0)}
               sx={{
-                color: value === 0 ? 'inherit' : 'white',
+                color: value === 1 ? 'inherit' : 'white',
                 fontFamily: 'sans-serif',
                 fontWeight: '600',
               }}
             />
             <Tab
-              label="Personal Lists"
+              label="Public Lists"
               {...a11yProps(1)}
               sx={{
-                color: value === 1 ? 'inherit' : 'white',
+                color: value === 0 ? 'inherit' : 'white',
                 fontFamily: 'sans-serif',
                 fontWeight: '600',
               }}
@@ -91,11 +91,11 @@ export default function ListPage() {
                 fontWeight: '600',
               }}
             />
-            <Box width="100%" display="flex" justifyContent="flex-end" gap={2}>
+            {/* <Box width="100%" display="flex" justifyContent="flex-end" gap={2}>
               <Box width="30%">
                 <SearchBar />
               </Box>
-              {value == 1 && (
+              {value == 0 && (
                 <Button
                   variant="contained"
                   size="small"
@@ -105,22 +105,22 @@ export default function ListPage() {
                   Create List
                 </Button>
               )}
-            </Box>
+            </Box> */}
           </Tabs>
         </Box>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <CustomList
-          queryKey={queryKeys.PUBLIC_LISTS}
-          apiEndpoint={apis.list.getPublicLists}
+          isPersonalList
+          queryKey={queryKeys.PERSONAL_LISTS}
+          apiEndpoint={apis.list.getPersonalLists}
           limit={7}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <CustomList
-          isPersonalList
-          queryKey={queryKeys.PERSONAL_LISTS}
-          apiEndpoint={apis.list.getPersonalLists}
+          queryKey={queryKeys.PUBLIC_LISTS}
+          apiEndpoint={apis.list.getPublicLists}
           limit={7}
         />
       </CustomTabPanel>
