@@ -12,6 +12,7 @@ import isAuthenticated from './middlewares/authMiddleware.js';
 import { loggerMiddleware } from './middlewares/loggerMiddleware.js';
 import userRoute from './features/user/userRoutes.js';
 import questionRoute from './features/questions/questionRoutes.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 const PgSession = connectPgSimple(session);
 
@@ -73,6 +74,8 @@ app.use('/question', isAuthenticated, questionRoute);
 app.get('/protected', isAuthenticated, (req, res) => {
   res.json({ message: 'This is a protected route.' });
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);

@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export interface AccessRequest {
     userId: string;
@@ -17,7 +18,7 @@ export default async function getAccessRequests(
     listID: string
 ): Promise<AxiosResponse<GetAccessRequestsResponse>> {
     try {
-        const response = await axios.get(`${apis.list.getAccessRequests}${listID}`, {
+        const response = await axiosInstance.get(`${apis.list.getAccessRequests}${listID}`, {
             withCredentials: true,
         });
         return response;

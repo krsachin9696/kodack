@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 // Define the request input interface
 export interface GrantAccessInputProps {
@@ -18,7 +19,7 @@ interface GrantAccessResponseProps {
 export default async function grantAccess(
   data: GrantAccessInputProps
 ): Promise<AxiosResponse<GrantAccessResponseProps>> {
-  const response = await axios.patch(
+  const response = await axiosInstance.patch(
     `${apis.list.grantAccess}`, data, { withCredentials: true }
   );
   return response;

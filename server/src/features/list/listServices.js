@@ -1,3 +1,4 @@
+import { ApiError } from '../../utils/apiError.js';
 import * as listRepository from './listRepository.js';
 
 export const createListService = async (
@@ -9,7 +10,7 @@ export const createListService = async (
 ) => {
   const existingList = await listRepository.findListByNameAndUser(userID, name);
   if (existingList) {
-    throw new Error('List name already exists for this user.');
+    throw new ApiError(400, 'List name already exists for this user.');
   }
 
   const existingTags = await listRepository.findExistingTags(tags);
@@ -51,7 +52,7 @@ export const updateListService = async (
 ) => {
   const existingList = await listRepository.findListByIdAndUser(listID, userID);
   if (!existingList) {
-    throw new Error('List not found');
+    throw new ApiError(404, 'List not found');
   }
 
   const existingTags = existingList.tags || [];
@@ -143,7 +144,7 @@ export const requestAccessService = async (userID, listID) => {
   );
 
   if (existingAccess) {
-    throw new Error('Access already requested');
+    throw new ApiError(400, 'Access already requested');
   }
 
   return await listRepository.createNewAccessRequest(userID, listID);
@@ -208,10 +209,8 @@ export const getListDetailsService = async (listID, userID) => {
   // Fetch the list by its ID, including related tags
   const list = await listRepository.getListByIdWithTags(listID, userID);
 
-  console.log(list, 'acess k sath list');
-
   if (!list) {
-    throw new Error('List not found');
+    throw new ApiError(404, 'List not found');
   }
 
   const isOwner = list.userID === userID;

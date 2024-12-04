@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export interface UpdateQuestionInputProps {
   done?: boolean;
@@ -21,7 +22,7 @@ export default async function updateQuestion(
   status: UpdateQuestionInputProps
 ): Promise<AxiosResponse<UpdateQuestionResponse>> {
   try {
-    const response = await axios.patch(
+    const response = await axiosInstance.patch(
       `${apis.question.updateQuestion}/${listID}/${questionID}`,
       status,
       {

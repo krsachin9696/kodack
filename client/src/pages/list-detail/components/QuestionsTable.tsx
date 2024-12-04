@@ -31,6 +31,7 @@ import updateQuestion, { UpdateQuestionInputProps } from '../services/updateQues
 import deleteQuestion from '../services/deleteQuestion.ts';
 import queryKeys from '../../../constants/queryKeys';
 import { useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface QuestionTableProps {
   isOwner: boolean;
@@ -84,6 +85,9 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
         return { ...oldData, data: { questions: updatedQuestions } };
       });
     },
+    onError: (error) => {
+      toast.error(error.message || 'Something went wrong.')
+    }
   });
 
   const { mutate: deleteMutate } = useMutation({
@@ -109,6 +113,9 @@ export default function QuestionsTable({ isOwner }: QuestionTableProps) {
         return { ...oldData, data: { ...oldData.data, questions: updatedQuestions } };
       });
     },
+    onError: (error) => {
+      toast.error(error.message || 'Error deleting the Question.');
+    }
   });
   
   const handleToggleStatus = (

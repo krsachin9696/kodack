@@ -7,6 +7,7 @@ import {
 } from './authRepository.js';
 import sendEmail from '../../utils/sendEmail.js';
 import { hashPassword } from '../../utils/hashPassword.js';
+import { ApiError } from '../../utils/apiError.js';
 
 export const signupUser = async (
   name,
@@ -18,12 +19,12 @@ export const signupUser = async (
   const existingUser = await findUserByEmailOrUsername(username, email);
 
   if (existingUser && existingUser.otpVerified) {
-    throw new Error('Username or email already taken');
+    throw new ApiError(400, 'Username or email already taken');
   }
 
   if (password !== confirmPassword) {
     console.log(password, confirmPassword);
-    throw new Error('password & confirm password do not match.');
+    throw new ApiError(400, 'password & confirm password do not match.');
   }
 
   const otp = crypto.randomInt(100000, 999999).toString();
@@ -97,7 +98,7 @@ export const verifyUserOtp = async (email, otp) => {
 
   if (!user) {
     //changed the error here to not reveal user information
-    throw new Error('Invalid OTP');
+    throw new ApiError(400, 'Invalid OTP');
   }
 
   if (user.otp === otp && user.otpExpiresAt > new Date()) {
@@ -108,25 +109,25 @@ export const verifyUserOtp = async (email, otp) => {
     });
     return { message: 'OTP verified successfully' };
   } else {
-    if (user.otp !== otp) throw new Error('Invalid OTP');
-    else throw new Error('OTP expired');
+    if (user.otp !== otp) throw new ApiError(400, 'Invalid OTP');
+    else throw new ApiError(400, 'OTP expired');
   }
 };
 
 export const setupUserPassword = async (email, password, confirmPassword) => {
   if (password !== confirmPassword) {
-    throw new Error('password & confirm password do not match.');
+    throw new ApiError(400, 'password & confirm password do not match.');
   }
 
   const user = await findUserByEmail(email);
 
   if (!user) {
     //changed the error here to not reveal user information
-    throw new Error('password & confirm password do not match.');
+    throw new ApiError(400, 'password & confirm password do not match.');
   }
 
   if (!user.otpVerified) {
-    throw new Error('Email not verified');
+    throw new ApiError(400, 'Email not verified');
   }
 
   const passwordHash = await hashPassword(password);

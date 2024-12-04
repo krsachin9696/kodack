@@ -1,5 +1,6 @@
 import * as questionRepository from './questionRepository.js';
 import * as listRepository from '../list/listRepository.js';
+import { ApiError } from '../../utils/apiError.js';
 
 export const createQuestion = async (data) => {
   return await questionRepository.createQuestion(data);
@@ -34,7 +35,14 @@ export const addQuestionToListService = async (userID, listID, title, link) => {
 };
 
 export const getQuestionDetails = async (id) => {
-  return await questionRepository.getQuestionDetails(id);
+  const question = await questionRepository.getQuestionDetails(id);
+  
+  if (!question) {
+    throw new ApiError(404, 'Question not found');
+  }
+  
+  return question;
+
 };
 
 export const updateQuestionStatus = async (
@@ -43,8 +51,6 @@ export const updateQuestionStatus = async (
   questionID,
   { done, important, review },
 ) => {
-  // Validate that the user has access to the list
-  await listRepository.validateListAndUser(userID, listID);
 
   // Update or create the question status
   return await questionRepository.updateUserQuestionStatus(
@@ -59,9 +65,7 @@ export const deleteQuestion = async (userID, listID, questionID) => {
   const listOwner = await listRepository.validateListAndUser(userID, listID);
 
   if (listOwner.userID != userID) {
-    throw new Error({
-      message: 'you do not have access to delete this question',
-    });
+    throw new ApiError(403, 'You do not have access to delete this question');
   }
 
   return await questionRepository.deleteQuestion(listID, questionID);

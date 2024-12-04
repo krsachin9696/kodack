@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export interface ListDetailResponse {
     listID: string;
@@ -12,7 +13,7 @@ export interface ListDetailResponse {
 
 export default async function getListDetail(listID: string): Promise<AxiosResponse<ListDetailResponse>> {
     try {
-        const response = await axios.get(`${apis.list.getListDetails}${listID}`, {
+        const response = await axiosInstance.get(`${apis.list.getListDetails}${listID}`, {
             withCredentials: true,
         });
         return response;
