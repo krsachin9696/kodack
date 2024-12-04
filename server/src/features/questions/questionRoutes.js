@@ -5,6 +5,7 @@ import {
   addQuestionSchema,
   updateQuestionStatusSchema,
 } from './questionSchema.js';
+import checkListAccess from '../list/listMiddlewares.js'
 
 const questionRoute = express.Router();
 
@@ -16,6 +17,7 @@ questionRoute.post(
 questionRoute.patch(
   '/:listID/:questionID',
   validate(updateQuestionStatusSchema),
+  checkListAccess,
   questionController.updateQuestionStatus,
 );
 questionRoute.delete('/:listID/:questionID', questionController.deleteQuestion);
