@@ -51,7 +51,7 @@ export const updateQuestionStatus = asyncHandler(async (req, res) => {
   const userID = req.user.userID;
 
   // Validate that the user has access to the list and question
-  await validateListAndUser(userID, listID);
+  // await validateListAndUser(userID, listID);
 
   // Update the question status
   const updatedStatus = await questionService.updateQuestionStatus(

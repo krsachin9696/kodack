@@ -51,12 +51,6 @@ export const updateQuestionStatus = async (
   questionID,
   { done, important, review },
 ) => {
-  // Validate that the user has access to the list
-  await listRepository.validateListAndUser(userID, listID);
-
-  if (!list) {
-    throw new ApiError(403, 'User does not have access to this list');
-  }
 
   // Update or create the question status
   return await questionRepository.updateUserQuestionStatus(
