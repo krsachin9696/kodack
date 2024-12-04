@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apis from '../../../constants/apis';
+import axiosInstance from '../../../services/axiosInterceptor';
 
 export interface EditListInputProps {
   name: string;
@@ -16,7 +17,7 @@ export default async function editListDetails(
   data: EditListInputProps,
   listID: string
 ): Promise<AxiosResponse<EditListResponseProps>> {
-  return await axios.put(`${apis.list.editListDetails}${listID}`, data, {
+  return await axiosInstance.put(`${apis.list.editListDetails}${listID}`, data, {
     withCredentials: true,
   });
 }
