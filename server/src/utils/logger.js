@@ -1,24 +1,51 @@
 import { createLogger, format, transports } from 'winston';
-const { combine, timestamp, json, colorize } = format;
+import 'dotenv/config';
 
-// Custom format for console logging with colors
-const consoleLogFormat = format.combine(
-  format.colorize(),
-  format.printf(({ level, message, timestamp }) => {
-    return `${level}: ${message}: ${timestamp}`;
-  }),
-);
+const { combine, timestamp, json, printf } = format;
 
-// Create a Winston logger
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+// Define custom formats for logs
+const logFormat = printf(({ level, message, timestamp, stack }) => {
+  return `${timestamp} [${level.toUpperCase()}]: ${message}${stack ? `\nStack: ${stack}` : ''}`;
+});
+
+// Create a Winston logger instance
 const logger = createLogger({
-  level: 'info',
-  format: combine(colorize(), timestamp(), json()),
+  level: isDevelopment ? 'debug' : 'info', // Debug in development, Info in production
+  format: combine(timestamp(), json()), // Default format
   transports: [
-    new transports.Console({
-      format: consoleLogFormat,
+    new transports.File({
+      filename: 'logs/info.log',
+      level: 'info',
+      format: combine(timestamp(), logFormat), // Custom format for info logs
     }),
-    new transports.File({ filename: 'app.log' }),
+    new transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+      format: combine(timestamp(), logFormat), // Include stack in error logs
+    }),
   ],
 });
+
+// Add debug log file in development only
+if (isDevelopment) {
+  logger.add(
+    new transports.File({
+      filename: 'logs/debug.log',
+      level: 'debug',
+      format: combine(timestamp(), logFormat),
+    }),
+  );
+}
+
+// Add console logging for development
+if (isDevelopment) {
+  logger.add(
+    new transports.Console({
+      format: combine(format.colorize(), logFormat),
+    }),
+  );
+}
 
 export default logger;
