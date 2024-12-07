@@ -1,5 +1,5 @@
 import * as contactUsServices from './contactUsServices.js';
-import asyncHandler from '../../utils/asyncHandler.js'; 
+import asyncHandler from '../../utils/asyncHandler.js';
 
 export const createContactUs = asyncHandler(async (req, res) => {
   const { name, email, subject, message } = req.body;

@@ -15,7 +15,7 @@ const signup = asyncHandler(async (req, res) => {
     username,
     email,
     password,
-    confirmPassword
+    confirmPassword,
   );
   res.status(201).json(result);
 });
@@ -58,9 +58,7 @@ const login = asyncHandler(async (req, res, next) => {
   // Proceed with passport authentication if OTP is verified
   passport.authenticate('local', (err, user, info) => {
     if (err) {
-      return res
-        .status(500)
-        .json({ error: 'An error occurred during login.' });
+      return res.status(500).json({ error: 'An error occurred during login.' });
     }
     if (!user) {
       return res.status(401).json({ error: info.message || 'Login failed.' });
