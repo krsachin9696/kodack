@@ -75,9 +75,8 @@ export const requestAccess = asyncHandler(async (req, res) => {
 export const viewAllAccessRequests = asyncHandler(async (req, res) => {
   const userID = req.user.userID;
 
-  const allAccessRequests = await listServices.viewAllAccessRequestsService(
-    userID,
-  );
+  const allAccessRequests =
+    await listServices.viewAllAccessRequestsService(userID);
 
   res.status(200).json(allAccessRequests);
 });
@@ -112,10 +111,7 @@ export const getListDetails = asyncHandler(async (req, res) => {
   const { listID } = req.params;
   const userID = req.user.userID;
 
-  const listDetails = await listServices.getListDetailsService(
-    listID,
-    userID,
-  );
+  const listDetails = await listServices.getListDetailsService(listID, userID);
 
   res.status(200).json(listDetails);
 });
@@ -123,9 +119,8 @@ export const getListDetails = asyncHandler(async (req, res) => {
 export const getAccessRequestsForList = asyncHandler(async (req, res) => {
   const listID = req.params.listID;
 
-  const accessRequests = await listServices.getAccessRequestsForListService(
-    listID,
-  );
+  const accessRequests =
+    await listServices.getAccessRequestsForListService(listID);
 
   const pendingRequests = accessRequests.filter(
     (req) => req.status === 'PENDING',

@@ -16,6 +16,7 @@ export default [
       // Example rules for Node.js
       'no-console': 'warn', // Warn on console usage
       'callback-return': 'error', // Enforce return of callback functions
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       // Add more Node.js specific rules here
     },
   },
