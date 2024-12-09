@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "AccessStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+
 -- CreateTable
 CREATE TABLE "User" (
     "userID" UUID NOT NULL,
@@ -30,6 +33,17 @@ CREATE TABLE "List" (
     "createdById" UUID NOT NULL,
 
     CONSTRAINT "List_pkey" PRIMARY KEY ("listID")
+);
+
+-- CreateTable
+CREATE TABLE "AccessRequest" (
+    "id" UUID NOT NULL,
+    "userID" UUID NOT NULL,
+    "listID" UUID NOT NULL,
+    "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "status" "AccessStatus" NOT NULL DEFAULT 'PENDING',
+
+    CONSTRAINT "AccessRequest_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -97,6 +111,29 @@ CREATE TABLE "ContactUs" (
 );
 
 -- CreateTable
+CREATE TABLE "session" (
+    "sid" VARCHAR NOT NULL,
+    "sess" JSON NOT NULL,
+    "expire" TIMESTAMP(6) NOT NULL,
+
+    CONSTRAINT "session_pkey" PRIMARY KEY ("sid")
+);
+
+-- CreateTable
+CREATE TABLE "AuditTrail" (
+    "id" UUID NOT NULL,
+    "action" VARCHAR(50) NOT NULL,
+    "actorID" UUID NOT NULL,
+    "tableName" VARCHAR(100) NOT NULL,
+    "recordId" UUID NOT NULL,
+    "previousData" JSON,
+    "newData" JSON,
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AuditTrail_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_ListToTag" (
     "A" UUID NOT NULL,
     "B" UUID NOT NULL
@@ -109,10 +146,16 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "User_googleId_key" ON "User"("googleId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "AccessRequest_userID_listID_key" ON "AccessRequest"("userID", "listID");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ListQuestion_listID_questionID_key" ON "ListQuestion"("listID", "questionID");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserQuestionStatus_userID_listID_questionID_key" ON "UserQuestionStatus"("userID", "listID", "questionID");
+
+-- CreateIndex
+CREATE INDEX "IDX_session_expire" ON "session"("expire");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_ListToTag_AB_unique" ON "_ListToTag"("A", "B");
@@ -121,13 +164,19 @@ CREATE UNIQUE INDEX "_ListToTag_AB_unique" ON "_ListToTag"("A", "B");
 CREATE INDEX "_ListToTag_B_index" ON "_ListToTag"("B");
 
 -- AddForeignKey
-ALTER TABLE "List" ADD CONSTRAINT "List_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "List" ADD CONSTRAINT "List_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "List" ADD CONSTRAINT "List_updatedById_fkey" FOREIGN KEY ("updatedById") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "List" ADD CONSTRAINT "List_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AccessRequest" ADD CONSTRAINT "AccessRequest_listID_fkey" FOREIGN KEY ("listID") REFERENCES "List"("listID") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AccessRequest" ADD CONSTRAINT "AccessRequest_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Question" ADD CONSTRAINT "Question_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -142,7 +191,7 @@ ALTER TABLE "ListQuestion" ADD CONSTRAINT "ListQuestion_listID_fkey" FOREIGN KEY
 ALTER TABLE "ListQuestion" ADD CONSTRAINT "ListQuestion_questionID_fkey" FOREIGN KEY ("questionID") REFERENCES "Question"("questionID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserQuestionStatus" ADD CONSTRAINT "UserQuestionStatus_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserQuestionStatus" ADD CONSTRAINT "UserQuestionStatus_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserQuestionStatus" ADD CONSTRAINT "UserQuestionStatus_listID_fkey" FOREIGN KEY ("listID") REFERENCES "List"("listID") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -151,10 +200,13 @@ ALTER TABLE "UserQuestionStatus" ADD CONSTRAINT "UserQuestionStatus_listID_fkey"
 ALTER TABLE "UserQuestionStatus" ADD CONSTRAINT "UserQuestionStatus_questionID_fkey" FOREIGN KEY ("questionID") REFERENCES "Question"("questionID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserQuestionStatus" ADD CONSTRAINT "UserQuestionStatus_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserQuestionStatus" ADD CONSTRAINT "UserQuestionStatus_updatedById_fkey" FOREIGN KEY ("updatedById") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserQuestionStatus" ADD CONSTRAINT "UserQuestionStatus_updatedById_fkey" FOREIGN KEY ("updatedById") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserQuestionStatus" ADD CONSTRAINT "UserQuestionStatus_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AuditTrail" ADD CONSTRAINT "AuditTrail_actorID_fkey" FOREIGN KEY ("actorID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_ListToTag" ADD CONSTRAINT "_ListToTag_A_fkey" FOREIGN KEY ("A") REFERENCES "List"("listID") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -8,121 +8,85 @@ datasource db {
 }
 
 model User {
-  userID       String    @id @default(uuid()) @db.Uuid
-  name         String    @db.VarChar(100)
-  username     String    @db.VarChar(50)
-  email        String    @unique @db.VarChar(100)
-  passwordHash String?   @db.VarChar(255)
-  tokens       Json?     @db.Json
-  otp          String?   @db.VarChar(6)
-  otpExpiresAt DateTime? @db.Timestamp(6)
-  otpVerified  Boolean   @default(false)
-  googleId     String?   @unique @db.VarChar(255)
-  createdAt    DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime  @updatedAt @db.Timestamp(6)
-
-  // Relations with List and Access
-  lists   List[]   @relation("UserLists")
-  accessRequest AccessRequest[] @relation("UserRequest")
-  
-  // One-to-many relation with List model for created and updated lists
-  createdLists List[] @relation("ListCreatedBy")
-  updatedLists List[] @relation("ListUpdatedBy")
-
-  // One-to-many relation with Question model for created and updated questions
-  createdQuestions Question[] @relation("CreatedQuestions")
-  updatedQuestions Question[] @relation("UpdatedQuestions")
-
-  // One-to-many relation with UserQuestionStatus model
-  userQuestionStatuses        UserQuestionStatus[] @relation("UserQuestionStatuses")
+  userID                      String               @id @default(uuid()) @db.Uuid
+  name                        String               @db.VarChar(100)
+  username                    String               @db.VarChar(50)
+  email                       String               @unique @db.VarChar(100)
+  passwordHash                String?              @db.VarChar(255)
+  tokens                      Json?                @db.Json
+  otp                         String?              @db.VarChar(6)
+  otpExpiresAt                DateTime?            @db.Timestamp(6)
+  otpVerified                 Boolean              @default(false)
+  googleId                    String?              @unique @db.VarChar(255)
+  createdAt                   DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt                   DateTime             @updatedAt @db.Timestamp(6)
+  accessRequest               AccessRequest[]      @relation("UserRequest")
+  AuditTrail                  AuditTrail[]
+  createdLists                List[]               @relation("ListCreatedBy")
+  updatedLists                List[]               @relation("ListUpdatedBy")
+  lists                       List[]               @relation("UserLists")
+  createdQuestions            Question[]           @relation("CreatedQuestions")
+  updatedQuestions            Question[]           @relation("UpdatedQuestions")
   UserQuestionStatusCreatedBy UserQuestionStatus[] @relation("UserQuestionStatusCreatedBy")
   UserQuestionStatusUpdatedBy UserQuestionStatus[] @relation("UserQuestionStatusUpdatedBy")
+  userQuestionStatuses        UserQuestionStatus[] @relation("UserQuestionStatuses")
 }
 
 model List {
-  listID      String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(150)
-  isPublic    Boolean
-  description String
-  isDeleted   Boolean  @default(false)
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime @updatedAt @db.Timestamp(6)
-
-  // Foreign key field for the relation with User
-  userID      String @db.Uuid
-  updatedById String @db.Uuid
-  createdById String @db.Uuid
-
-  // Relation to User model
-  user      User @relation("UserLists", fields: [userID], references: [userID])
-  createdBy User @relation("ListCreatedBy", fields: [createdById], references: [userID])
-  updatedBy User @relation("ListUpdatedBy", fields: [updatedById], references: [userID])
-
-  accessRequest AccessRequest[] @relation("AccessRequest")
-
-  // Many-to-many relation with Question model
-  questions ListQuestion[]
-
-  // One-to-many relation with UserQuestionStatus model
+  listID             String               @id @default(uuid()) @db.Uuid
+  name               String               @db.VarChar(150)
+  isPublic           Boolean
+  description        String
+  isDeleted          Boolean              @default(false)
+  createdAt          DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime             @updatedAt @db.Timestamp(6)
+  userID             String               @db.Uuid
+  updatedById        String               @db.Uuid
+  createdById        String               @db.Uuid
+  accessRequest      AccessRequest[]      @relation("AccessRequest")
+  createdBy          User                 @relation("ListCreatedBy", fields: [createdById], references: [userID])
+  updatedBy          User                 @relation("ListUpdatedBy", fields: [updatedById], references: [userID])
+  user               User                 @relation("UserLists", fields: [userID], references: [userID])
+  questions          ListQuestion[]
   UserQuestionStatus UserQuestionStatus[]
-
-  // Many-to-many relation with Tag model
-  tags Tag[]
+  tags               Tag[]                @relation("ListToTag")
 }
 
-enum AccessStatus{
-  PENDING
-  APPROVED
-  REJECTED
-}
 model AccessRequest {
-  id          String   @id @default(uuid()) @db.Uuid
-  userID      String   @db.Uuid
-  listID      String   @db.Uuid
-  status      AccessStatus  @default(PENDING)
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  id        String       @id @default(uuid()) @db.Uuid
+  userID    String       @db.Uuid
+  listID    String       @db.Uuid
+  createdAt DateTime     @default(now()) @db.Timestamp(6)
+  status    AccessStatus @default(PENDING)
+  list      List         @relation("AccessRequest", fields: [listID], references: [listID])
+  user      User         @relation("UserRequest", fields: [userID], references: [userID])
 
-  // Relations
-  user User @relation("UserRequest",fields: [userID], references: [userID])
-  list List @relation("AccessRequest",fields: [listID], references: [listID])
-
-  // Composite unique constraint
-  @@unique([userID, listID])  // This ensures that each user can only request access to a list once
+  @@unique([userID, listID])
 }
 
 model Question {
-  questionID String   @id @default(uuid()) @db.Uuid
-  title      String   @db.VarChar(255)
-  link       String   @db.Text
-  createdAt  DateTime @default(now()) @db.Timestamp(6)
-  updatedAt  DateTime @updatedAt @db.Timestamp(6)
-
-  // Foreign key fields for createdBy and updatedBy
-  createdById String @db.Uuid
-  updatedById String @db.Uuid
-
-  // Relations to User model for createdBy and updatedBy
-  createdBy User @relation("CreatedQuestions", fields: [createdById], references: [userID])
-  updatedBy User @relation("UpdatedQuestions", fields: [updatedById], references: [userID])
-
-  // Many-to-many relation with List model
-  lists ListQuestion[]
-
+  questionID         String               @id @default(uuid()) @db.Uuid
+  title              String               @db.VarChar(255)
+  link               String
+  createdAt          DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime             @updatedAt @db.Timestamp(6)
+  createdById        String               @db.Uuid
+  updatedById        String               @db.Uuid
+  lists              ListQuestion[]
+  createdBy          User                 @relation("CreatedQuestions", fields: [createdById], references: [userID])
+  updatedBy          User                 @relation("UpdatedQuestions", fields: [updatedById], references: [userID])
   UserQuestionStatus UserQuestionStatus[]
 }
 
 model ListQuestion {
-  id         String  @id @default(uuid()) @db.Uuid
-  listID     String  @db.Uuid
-  questionID String  @db.Uuid
-  isStarred  Boolean @default(false)
-  isDeleted  Boolean @default(false)
+  id         String   @id @default(uuid()) @db.Uuid
+  listID     String   @db.Uuid
+  questionID String   @db.Uuid
+  isStarred  Boolean  @default(false)
+  isDeleted  Boolean  @default(false)
+  list       List     @relation(fields: [listID], references: [listID])
+  question   Question @relation(fields: [questionID], references: [questionID])
 
-  // Relations
-  list     List     @relation(fields: [listID], references: [listID])
-  question Question @relation(fields: [questionID], references: [questionID])
-
-  // Composite unique constraint
   @@unique([listID, questionID])
 }
 
@@ -138,15 +102,12 @@ model UserQuestionStatus {
   updatedAt   DateTime @updatedAt @db.Timestamp(6)
   createdById String   @db.Uuid
   updatedById String   @db.Uuid
+  createdBy   User     @relation("UserQuestionStatusCreatedBy", fields: [createdById], references: [userID])
+  list        List     @relation(fields: [listID], references: [listID])
+  question    Question @relation(fields: [questionID], references: [questionID])
+  updatedBy   User     @relation("UserQuestionStatusUpdatedBy", fields: [updatedById], references: [userID])
+  user        User     @relation("UserQuestionStatuses", fields: [userID], references: [userID])
 
-  // Relations
-  user      User     @relation("UserQuestionStatuses", fields: [userID], references: [userID])
-  list      List     @relation(fields: [listID], references: [listID])
-  question  Question @relation(fields: [questionID], references: [questionID])
-  createdBy User     @relation("UserQuestionStatusCreatedBy", fields: [createdById], references: [userID])
-  updatedBy User     @relation("UserQuestionStatusUpdatedBy", fields: [updatedById], references: [userID])
-
-  // Composite unique constraint
   @@unique([userID, listID, questionID])
 }
 
@@ -155,9 +116,7 @@ model Tag {
   name      String   @db.VarChar(50)
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
-
-  // Many-to-many relation with List model
-  lists List[]
+  lists     List[]   @relation("ListToTag")
 }
 
 model ContactUs {
@@ -168,4 +127,30 @@ model ContactUs {
   message   String   @db.VarChar(500)
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
+}
+
+model session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
+}
+
+model AuditTrail {
+  id           String   @id @default(uuid()) @db.Uuid
+  action       String   @db.VarChar(50)
+  actorID      String   @db.Uuid
+  tableName    String   @db.VarChar(100)
+  recordId     String   @db.Uuid
+  previousData Json?    @db.Json
+  newData      Json?    @db.Json
+  timestamp    DateTime @default(now())
+  actor        User     @relation(fields: [actorID], references: [userID])
+}
+
+enum AccessStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
