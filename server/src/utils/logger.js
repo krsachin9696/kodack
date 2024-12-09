@@ -6,9 +6,19 @@ const { combine, timestamp, json, printf } = format;
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Define custom formats for logs
-const logFormat = printf(({ level, message, timestamp, stack }) => {
-  return `${timestamp} [${level.toUpperCase()}]: ${message}${stack ? `\nStack: ${stack}` : ''}`;
-});
+// const logFormat = printf(({ level, message, timestamp, stack }) => {
+//   return `${timestamp} [${level.toUpperCase()}]: ${message}${stack ? `\nStack: ${stack}` : ''}`;
+// });
+
+const logFormat = printf(
+  ({ level, message, timestamp, stack, ...metadata }) => {
+    const baseMessage = `${timestamp} [${level.toUpperCase()}]: ${message}`;
+    if (stack) {
+      return `${baseMessage}\nStack: ${stack}\n${JSON.stringify(metadata)}`;
+    }
+    return `${baseMessage} ${JSON.stringify(metadata)}`;
+  },
+);
 
 // Create a Winston logger instance
 const logger = createLogger({

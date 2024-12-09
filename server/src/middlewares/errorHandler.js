@@ -1,7 +1,7 @@
 import { ApiError } from '../utils/apiError.js';
 import logger from '../utils/logger.js';
 
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, _next) => {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
   // Log the error with stack trace in development
