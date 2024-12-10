@@ -1,4 +1,5 @@
 import { ApiError } from '../../utils/apiError.js';
+import { logAuditTrail } from '../../utils/auditLogger.js';
 import * as listRepository from './listRepository.js';
 
 export const createListService = async (
@@ -21,13 +22,23 @@ export const createListService = async (
   );
   const allTags = [...existingTags, ...newTags];
 
-  return await listRepository.createList(
+  const newList = await listRepository.createList(
     userID,
     name,
     description,
     isPublic,
     allTags,
   );
+
+  logAuditTrail({
+    actorID: userID,
+    action: 'Create',
+    tableName: 'List',
+    recordId: newList.listID,
+    newData: newList,
+  });
+
+  return newList;
 };
 
 const getTagIDToConnect = async (tags) => {
