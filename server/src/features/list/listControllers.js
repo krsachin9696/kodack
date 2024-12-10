@@ -83,11 +83,13 @@ export const viewAllAccessRequests = asyncHandler(async (req, res) => {
 
 export const updateAccessStatus = asyncHandler(async (req, res) => {
   const { userID, listID, status } = req.body;
+  const ownerID = req.user.userID;
 
   const updatedStatus = await listServices.updateAccessStatusService(
     userID,
     listID,
     status,
+    ownerID,
   );
 
   res.status(200).json(updatedStatus);

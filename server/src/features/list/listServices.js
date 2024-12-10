@@ -93,6 +93,15 @@ export const updateListService = async (
     },
   );
 
+  logAuditTrail({
+    actorID: userID,
+    action: 'Update',
+    tableName: 'List',
+    recordId: listID,
+    newData: updatedList,
+    previousData: existingList,
+  });
+
   return updatedList;
 };
 
@@ -158,7 +167,20 @@ export const requestAccessService = async (userID, listID) => {
     throw new ApiError(400, 'Access already requested');
   }
 
-  return await listRepository.createNewAccessRequest(userID, listID);
+  const accessRequest = await listRepository.createNewAccessRequest(
+    userID,
+    listID,
+  );
+
+  logAuditTrail({
+    actorID: userID,
+    action: 'Create',
+    tableName: 'AccessRequest',
+    recordId: listID,
+    newData: accessRequest,
+  });
+
+  return accessRequest;
 };
 
 export const viewAllAccessRequestsService = async (userID) => {
@@ -168,24 +190,38 @@ export const viewAllAccessRequestsService = async (userID) => {
   return await listRepository.getPendingRequestsForLists(listIDs);
 };
 
-export const updateAccessStatusService = async (userID, listID, status) => {
-  // const existingAccess = await listRepository.findExistingRequest(
-  //   userID,
-  //   listID,
-  //   status
-  // );
-
-  // if (existingAccess) {
-  //   throw new Error('Access already granted to this user.');
-  // }
-
-  const access = await listRepository.updateAccessRequestStatus(
+export const updateAccessStatusService = async (
+  userID,
+  listID,
+  status,
+  ownerID,
+) => {
+  const existingAccess = await listRepository.findExistingRequest(
     userID,
     listID,
     status,
   );
 
-  return access;
+  if (existingAccess == 'accepted' || existingAccess == 'rejected') {
+    throw new Error('Access already granted to this user.');
+  }
+
+  const newAccess = await listRepository.updateAccessRequestStatus(
+    userID,
+    listID,
+    status,
+  );
+
+  logAuditTrail({
+    actorID: ownerID,
+    action: 'Update',
+    tableName: 'AccessRequest',
+    recordId: listID,
+    newData: newAccess,
+    previousData: existingAccess,
+  });
+
+  return newAccess;
 };
 
 export const getAllAccessRequestedListsService = async (
