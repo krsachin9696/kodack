@@ -5,7 +5,7 @@ import {
   addQuestionSchema,
   updateQuestionStatusSchema,
 } from './questionSchema.js';
-import checkListAccess from '../list/listMiddlewares.js'
+import checkListAccess from '../list/listMiddlewares.js';
 
 const questionRoute = express.Router();
 

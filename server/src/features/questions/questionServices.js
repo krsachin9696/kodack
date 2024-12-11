@@ -36,13 +36,12 @@ export const addQuestionToListService = async (userID, listID, title, link) => {
 
 export const getQuestionDetails = async (id) => {
   const question = await questionRepository.getQuestionDetails(id);
-  
+
   if (!question) {
     throw new ApiError(404, 'Question not found');
   }
-  
-  return question;
 
+  return question;
 };
 
 export const updateQuestionStatus = async (
@@ -51,7 +50,6 @@ export const updateQuestionStatus = async (
   questionID,
   { done, important, review },
 ) => {
-
   // Update or create the question status
   return await questionRepository.updateUserQuestionStatus(
     userID,
