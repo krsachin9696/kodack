@@ -21,6 +21,7 @@ import queryKeys from '../../../constants/queryKeys';
 import fetchPersonalLists from './services/getPersonalLists';
 import fetchPublicLists from './services/getPublicLists';
 import ListSection from './components/listSection';
+import ListSectionSkeleton from './components/listSectionSkeleton';
 
 const drawerWidth = 240;
 
@@ -118,19 +119,25 @@ export default function Navbar(props: Props) {
 
       {/* Use ListSection for both Personal and Public Lists */}
       <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <ListSection
-          title="My Lists"
-          lists={personalLists || []}
-          linkPrefix="/list"
-          isActiveListID={listID}
-        />
+        {personalListLoading || personalListError ? (
+          <ListSectionSkeleton title='My Lists'/>
+        ) : (
+          <ListSection
+            title="My Lists"
+            lists={personalLists || []}
+            linkPrefix="/list"
+            isActiveListID={listID}
+          />
+        )}
         <Box sx={{ height: '4px' }} />
-        <ListSection
+        {publicListLoading || publicListError ? (
+          <ListSectionSkeleton title='Public Lists'/>
+        ) : (<ListSection
           title="Public Lists"
           lists={publicLists || []}
           linkPrefix="/list"
           isActiveListID={listID}
-        />
+        />)}
       </Box>
     </Box>
   );
