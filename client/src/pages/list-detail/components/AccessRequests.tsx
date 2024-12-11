@@ -229,7 +229,7 @@ export default function AccessRequests() {
               <Pagination
                 count={Math.ceil(requests.length / 2)}
                 page={pendingPage}
-                onChange={(e, page) => setPendingPage(page)}
+                onChange={(_, page) => setPendingPage(page)}
                 color="primary"
                 sx={{
                   '& .MuiPaginationItem-root': {
@@ -307,7 +307,7 @@ export default function AccessRequests() {
               <Pagination
                 count={Math.ceil(usersWithAccess.length / 2)}
                 page={approvedPage}
-                onChange={(e, page) => setApprovedPage(page)}
+                onChange={(_, page) => setApprovedPage(page)}
                 color="primary"
                 sx={{
                   '& .MuiPaginationItem-root': {

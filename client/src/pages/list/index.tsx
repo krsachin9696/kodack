@@ -2,8 +2,6 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import SearchBar from '../../components/base/Searchbar';
-import { Button } from '@mui/material';
 import queryKeys from '../../constants/queryKeys';
 import apis from '../../constants/apis';
 import CustomList from '../../components/shared/CustomList';
@@ -42,10 +40,10 @@ function a11yProps(index: number) {
 export default function ListPage() {
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (newValue: number) => {
     setValue(newValue);
   };
-
+  
   const navigate = useNavigate();
 
   const goToDashboard = () => {
@@ -60,7 +58,7 @@ export default function ListPage() {
         <Box sx={{ flexGrow: 1 }}>
           <Tabs
             value={value}
-            onChange={handleChange}
+            onChange={() => handleChange}
             aria-label="List tabs"
             textColor="primary"
           >

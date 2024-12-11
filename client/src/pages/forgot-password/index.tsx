@@ -2,7 +2,6 @@ import {
   Button,
   CircularProgress,
   FormControl,
-  InputAdornment,
   InputLabel,
   OutlinedInput,
   TextField,
@@ -10,11 +9,11 @@ import {
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { defaultStyles } from '../../constants/defaultStyles';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { __sendOtp, SendOtpProps } from './services';
-import { __verifyOtp, VerifyOtpProps } from './services';
-import { __resetPassword, ResetPasswordProps } from './services';
+import { __sendOtp } from './services';
+import { __verifyOtp } from './services';
+import { __resetPassword } from './services';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 import queryKeys from '../../constants/queryKeys';
