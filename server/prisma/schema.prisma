@@ -37,6 +37,8 @@ model User {
   userQuestionStatuses        UserQuestionStatus[] @relation("UserQuestionStatuses")
   UserQuestionStatusCreatedBy UserQuestionStatus[] @relation("UserQuestionStatusCreatedBy")
   UserQuestionStatusUpdatedBy UserQuestionStatus[] @relation("UserQuestionStatusUpdatedBy")
+
+  AuditTrail                  AuditTrail[]
 }
 
 model List {
@@ -168,4 +170,24 @@ model ContactUs {
   message   String   @db.VarChar(500)
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
+}
+
+model AuditTrail {
+  id           String   @id @default(uuid()) @db.Uuid
+  action       String   @db.VarChar(50)
+  actorID      String   @db.Uuid
+  tableName    String   @db.VarChar(100)
+  recordId     String   @db.Uuid
+  previousData Json?    @db.Json
+  newData      Json?    @db.Json
+  timestamp    DateTime @default(now())
+  actor        User     @relation(fields: [actorID], references: [userID])
+}
+
+model session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
 }
