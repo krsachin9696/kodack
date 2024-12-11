@@ -119,7 +119,7 @@ export default function Navbar(props: Props) {
       {/* Use ListSection for both Personal and Public Lists */}
       <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <ListSection
-          title="Personal Lists"
+          title="My Lists"
           lists={personalLists || []}
           linkPrefix="/list"
           isActiveListID={listID}

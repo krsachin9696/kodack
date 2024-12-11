@@ -38,7 +38,7 @@ const PersonalListCard: React.FC = () => {
           >
             <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
               <ListAltIcon />
-              <Typography sx={{ fontWeight: 600 }} component={Link} to='/list'>Personal Lists</Typography>
+              <Typography sx={{ fontWeight: 600 }} component={Link} to='/list'>My Lists</Typography>
             </Box>
             <Box>
               <AddCircleTwoToneIcon
