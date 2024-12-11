@@ -30,6 +30,7 @@ model User {
   UserQuestionStatusCreatedBy UserQuestionStatus[] @relation("UserQuestionStatusCreatedBy")
   UserQuestionStatusUpdatedBy UserQuestionStatus[] @relation("UserQuestionStatusUpdatedBy")
   userQuestionStatuses        UserQuestionStatus[] @relation("UserQuestionStatuses")
+
 }
 
 model List {
@@ -154,3 +155,4 @@ enum AccessStatus {
   APPROVED
   REJECTED
 }
+
