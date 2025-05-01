@@ -1,0 +1,92 @@
+<div class="min-h-screen flex px-[10%]">
+    <!-- Left Section -->
+    <div class="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/assets/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
+      <h1 class="font-bold text-6xl mb-10 text-blue-400 p-10">
+        KODACK
+      </h1>
+    </div>
+  
+    <!-- Right Section -->
+    <div class="flex w-full md:w-1/2 justify-center items-center">
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="onSubmit()"
+        class="p-10 rounded-lg w-11/12 max-w-lg flex-col space-y-4"
+        [ngStyle]="{
+          border: '1px solid rgba(51, 60, 77, 0.6)',
+          background: 'rgba(255, 255, 255, 0.02)'
+        }"
+        novalidate
+      >
+        <h1 class="text-white text-xl font-semibold mb-4">Log in</h1>
+  
+        <!-- Email -->
+        <div class="flex flex-col">
+          <label class="text-white mb-1">Email</label>
+          <input
+            type="email"
+            formControlName="email"
+            class="p-3 rounded-md bg-transparent border border-gray-400 text-white"
+            placeholder="Enter your email"
+          />
+          <div class="text-red-400 text-sm mt-1" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+            <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="loginForm.get('email')?.errors?.['email']">Invalid email format</span>
+          </div>
+        </div>
+  
+        <!-- Password -->
+        <div class="relative">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="p-3 rounded-md bg-transparent border border-gray-400 text-white w-full pr-10"
+              placeholder="Enter your password"
+            />
+            <button
+              type="button"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white"
+            >
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+          
+  
+        <!-- Forgot password -->
+        <div class="text-right">
+          <a routerLink="/forgot-password" class="text-blue-400 hover:underline">Forgot password?</a>
+        </div>
+  
+        <!-- Submit button -->
+        <button
+          type="submit"
+          class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition"
+        >
+          Log In
+        </button>
+  
+        <!-- Divider -->
+        <div class="flex items-center mt-4 text-white">
+          <div class="flex-grow border-t border-gray-700"></div>
+          <span class="mx-2">or</span>
+          <div class="flex-grow border-t border-gray-700"></div>
+        </div>
+  
+        <!-- Google button -->
+        <button
+          type="button"
+          class="w-full py-3 border border-white text-white rounded-md flex items-center justify-center gap-2"
+        >
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google" />
+          Sign in with Google
+        </button>
+  
+        <!-- Sign up link -->
+        <div class="mt-4 text-center text-white">
+          New user?
+          <a routerLink="/signup" class="text-blue-400 hover:underline">Sign up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  

@@ -1,0 +1,80 @@
+<div class="min-h-screen flex px-[10%]">
+    <!-- Left Graphic Section -->
+    <div class="hidden md:flex w-1/2 text-white flex-col p-10 bg-[url('/assets/bgsvg.svg')] bg-no-repeat bg-contain bg-center">
+      <h1 class="font-bold text-6xl mb-10 text-blue-400 p-10 font-oswald">KODACK</h1>
+    </div>
+  
+    <!-- Right Form Section -->
+    <div class="flex w-full md:w-1/2 justify-center items-center">
+      <form
+        class="p-10 rounded-lg w-11/12 max-w-lg flex-col space-y-4"
+        [ngStyle]="{
+          border: '1px solid rgba(51, 60, 77, 0.6)',
+          background: 'rgba(255, 255, 255, 0.02)'
+        }"
+        (ngSubmit)="stage === 'signup' ? nextStage() : verifyOTP()"
+      >
+        <h1 class="text-white text-xl font-semibold mb-4">
+          {{ stage === 'signup' ? 'Sign up' : 'Verify OTP' }}
+        </h1>
+  
+        <!-- Signup Stage -->
+        <ng-container *ngIf="stage === 'signup'">
+          <div class="space-y-2">
+            <input class="input" placeholder="Full Name" formControlName="name" [formGroup]="signupForm" />
+            <div class="error" *ngIf="signupForm.get('name')?.invalid && signupForm.get('name')?.touched">Name is required</div>
+  
+            <input class="input" placeholder="Email" formControlName="email" [formGroup]="signupForm" />
+            <div class="error" *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+              Valid email is required
+            </div>
+  
+            <input class="input" placeholder="Username" formControlName="username" [formGroup]="signupForm" />
+            <div class="error" *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched">Username is required</div>
+  
+            <!-- Password -->
+            <div class="relative">
+              <input [type]="showPassword ? 'text' : 'password'" class="input pr-10" placeholder="Password" formControlName="password" [formGroup]="signupForm" />
+              <button type="button" class="eye-btn" (click)="showPassword = !showPassword">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </button>
+              <div class="error" *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+                Password must be 8+ characters
+              </div>
+            </div>
+  
+            <!-- Confirm Password -->
+            <div class="relative">
+              <input [type]="showConfirmPassword ? 'text' : 'password'" class="input pr-10" placeholder="Confirm Password" formControlName="confirmPassword" [formGroup]="signupForm" />
+              <button type="button" class="eye-btn" (click)="showConfirmPassword = !showConfirmPassword">
+                {{ showConfirmPassword ? '🙈' : '👁️' }}
+              </button>
+              <div class="error" *ngIf="signupForm.get('confirmPassword')?.touched && signupForm.value.password !== signupForm.value.confirmPassword">
+                Passwords do not match
+              </div>
+            </div>
+          </div>
+        </ng-container>
+  
+        <!-- OTP Stage -->
+        <ng-container *ngIf="stage === 'otp'">
+          <div class="text-white">OTP sent to: {{ signupForm.value.email }}</div>
+          <input class="input" placeholder="Enter OTP" formControlName="otp" [formGroup]="otpForm" />
+          <div class="error" *ngIf="otpForm.get('otp')?.invalid && otpForm.get('otp')?.touched">
+            OTP must be 6 digits
+          </div>
+        </ng-container>
+  
+        <!-- Submit Button -->
+        <button type="submit" class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition">
+          {{ stage === 'signup' ? 'Sign Up' : 'Verify OTP' }}
+        </button>
+  
+        <div *ngIf="stage === 'signup'" class="mt-4 text-center text-white">
+          Already have an account?
+          <a routerLink="/login" class="text-blue-400 hover:underline">Log in</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  

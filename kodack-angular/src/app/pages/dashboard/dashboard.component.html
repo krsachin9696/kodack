@@ -1,0 +1,11 @@
+<div *ngIf="user; else notLoggedIn">
+    <h2>Welcome, {{ user.name }}!</h2>
+    <p>Email: {{ user.email }}</p>
+    <p>Username: {{ user.username }}</p>
+    <p>User ID: {{ user.userID }}</p>
+  </div>
+  
+  <ng-template #notLoggedIn>
+    <p>User not logged in.</p>
+  </ng-template>
+  
